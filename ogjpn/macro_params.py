@@ -1,12 +1,17 @@
 """
-OG-Japan first-pass macro calibration.
+OG-Japan macro calibration.
 
-IMPORTANT: every value below is a PROVISIONAL placeholder, chosen to be
-in the right ballpark for Japan and annotated with a public source to
-verify. They are Phase-0/1 scaffolding, not a final calibration. Phase 1
-replaces them with values pulled from OECD / IMF / World Bank data (the
-way OG-THA's macro_params.py pulls from FRED and the World Bank). Do not
-cite these numbers as accurate yet.
+Sourced values (IMF World Economic Outlook via the IMF DataMapper API,
+retrieved 2026-08-09):
+  - initial_debt_ratio: Japan gross general government debt, 214.5% of GDP
+    (2024), indicator GGXWDG_NGDP.
+  - g_y_annual: consistent with Japan real GDP growth of ~0.7% (2023,
+    indicator NGDP_RPCH); a conservative proxy for labor-productivity
+    growth given Japan's shrinking workforce.
+
+Still first-pass / to verify (no clean open API pull yet):
+  - gamma (capital share), alpha_G (govt consumption/GDP),
+    alpha_T (non-pension transfers/GDP).
 """
 
 
@@ -16,33 +21,34 @@ def get_macro_params():
     ``Specifications.update_specifications``.
 
     Returns:
-        macro_parameters (dict): provisional Japan macro parameters
+        macro_parameters (dict): Japan macro parameters
     """
     macro_parameters = {}
 
-    # Long-run productivity growth (real GDP per worker). Japan's trend
-    # growth is low; ~0.8%/yr as a first pass.
-    # Verify: OECD long-run productivity / World Bank GDP-per-capita growth.
+    # Long-run productivity growth (real GDP per worker). Set to ~0.8%/yr,
+    # consistent with Japan's low real GDP growth (~0.7% in 2023, IMF WEO
+    # NGDP_RPCH) and a conservative proxy for per-worker productivity
+    # growth given the shrinking workforce.
     macro_parameters["g_y_annual"] = 0.008
 
     # Capital share of income. ~0.38 is a standard value for Japan.
-    # Verify: Penn World Table labor share (1 - labor share).
+    # First pass -- verify against Penn World Table (1 - labor share).
     macro_parameters["gamma"] = [0.38]
 
-    # Initial government-debt-to-GDP ratio. Japan's NET general government
-    # debt is roughly 1.5x GDP (GROSS is ~2.5x). This first pass uses a
-    # deliberately moderate 1.0 so the steady-state budget closure stays
-    # feasible; raising it toward Japan's true ratio is a Phase-1 decision
-    # that interacts with alpha_G (government spending share).
-    # Verify: IMF WEO net general government debt for Japan.
-    macro_parameters["initial_debt_ratio"] = 1.0
+    # Initial government-debt-to-GDP ratio. Japan's gross general
+    # government debt is 214.5% of GDP in 2024 (IMF WEO, GGXWDG_NGDP) --
+    # so extreme that it exceeds OG-Core's built-in maximum for this
+    # parameter (200%). We use the cap, 2.0. (Japan's NET debt, ~1.5-1.6x
+    # GDP, would sit comfortably inside the range; gross-at-the-cap is
+    # used here to reflect Japan's headline debt burden.)
+    macro_parameters["initial_debt_ratio"] = 2.0
 
     # Government consumption spending as a share of GDP. Japan ~0.20.
-    # Verify: OECD general government final consumption expenditure / GDP.
+    # First pass -- verify against OECD govt final consumption / GDP.
     macro_parameters["alpha_G"] = [0.20]
 
-    # Government non-pension transfers as a share of GDP. First pass.
-    # Verify: OECD social spending less public pensions, over GDP.
+    # Government non-pension transfers as a share of GDP. First pass --
+    # verify against OECD social spending less public pensions / GDP.
     macro_parameters["alpha_T"] = [0.10]
 
     return macro_parameters
