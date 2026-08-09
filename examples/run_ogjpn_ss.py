@@ -19,13 +19,18 @@ from ogcore.parameters import Specifications
 from ogcore.execute import runner
 from ogcore import utils
 
-from ogjpn import calibrate
+from ogjpn import calibrate, macro_params
 from ogjpn.constants import START_YEAR, COUNTRY_NAME
 
 
 def main(output_base="/tmp/ogjpn_phase0"):
     p = Specifications(baseline=True, num_workers=1)
     p.update_specifications({"start_year": START_YEAR})
+
+    # Japan macro parameters (provisional first pass, no data access
+    # needed) apply regardless of whether live demographics are available.
+    p.update_specifications(macro_params.get_macro_params())
+    print("Applied provisional Japan macro parameters.")
 
     using_japan_demographics = False
     try:
