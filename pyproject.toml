@@ -1,0 +1,15 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ogjpn"
+version = "0.0.1"
+description = "OG-Japan: an overlapping-generations model of Japanese fiscal policy, built on OG-Core"
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "CC0-1.0" }
+dependencies = ["ogcore"]
+
+[tool.setuptools.packages.find]
+include = ["ogjpn*"]
