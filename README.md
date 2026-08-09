@@ -10,7 +10,16 @@ oldest population of any large economy and a gross public debt of roughly
 250 percent of GDP. Those are exactly the fiscal-demographic dynamics
 overlapping-generations models are built to study.
 
-## Status: Phase 0 (feasibility)
+![Japan is aging: population by age, 1990 vs 2030](docs/japan_aging.png)
+
+The model runs on this real UN population data. Solved on Japan's actual
+age structure, its steady state reproduces Japan's public pension burden
+(~11-12% of GDP) directly from the demographics.
+
+## Status
+
+A country model is a thin calibration layer on top of OG-Core that
+supplies demographics, macro parameters, earnings profiles, an
 
 A country model is a thin calibration layer on top of OG-Core that
 supplies demographics, macro parameters, earnings profiles, an
