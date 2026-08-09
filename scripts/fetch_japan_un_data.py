@@ -21,10 +21,28 @@ Writes:
 
 import os
 import sys
+import time
 from io import StringIO
 
 import pandas as pd
 import requests
+
+
+def get_with_retry(url, headers, attempts=6):
+    """GET a URL, retrying on transient errors (the UN API 502s often)."""
+    for i in range(attempts):
+        try:
+            resp = requests.get(url, headers=headers, timeout=60)
+            if resp.status_code in (502, 503, 504):
+                raise requests.exceptions.HTTPError(f"{resp.status_code}")
+            resp.raise_for_status()
+            return resp
+        except requests.exceptions.RequestException as exc:
+            if i == attempts - 1:
+                raise
+            wait = 2 ** i
+            print(f"    transient error ({exc}); retrying in {wait}s...")
+            time.sleep(wait)
 
 BASE = "https://population.un.org/dataportalapi/api/v1"
 JAPAN = "392"
@@ -50,13 +68,13 @@ def fetch_indicator(code, token):
     """Return a year,age,value DataFrame for one indicator, Japan only."""
     url = (
         f"{BASE}/data/indicators/{code}/locations/{JAPAN}"
-        f"/start/{START_YEAR}/end/{END_YEAR}?format=csv&pageSize=1000"
+        f"/start/{START_YEAR}/end/{END_YEAR}"
+        "?format=csv&pageSize=1000&pagingInHeader=true"
     )
     headers = {"Authorization": "Bearer " + token}
     frames = []
     while url:
-        resp = requests.get(url, headers=headers, timeout=60)
-        resp.raise_for_status()
+        resp = get_with_retry(url, headers)
         # The CSV response has a header line before the pipe-separated table
         df = pd.read_csv(StringIO(resp.text), sep="|", header=1)
         frames.append(df)
@@ -80,6 +98,9 @@ def fetch_indicator(code, token):
     df.age = df.age.astype(int)
     df.year = df.year.astype(int)
     df = df[df.age < 100]
+    # the API returns identical rows across sub-dimensions; keep one per
+    # (year, age)
+    df = df.drop_duplicates(subset=["year", "age"])
     return df.sort_values(["year", "age"]).reset_index(drop=True)
 
 
