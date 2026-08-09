@@ -15,23 +15,11 @@ Phase status:
     token (see README); optional so the pipeline still runs without it
 """
 
+import numpy as np
+
 from ogcore import demographics
 from ogjpn import macro_params, tax_params
 from ogjpn.constants import UN_COUNTRY_CODE
-
-# get_pop_objs returns diagnostic keys that are not model parameters;
-# keep only the demographic keys that update_specifications accepts.
-_DEMOGRAPHIC_KEYS = (
-    "omega",
-    "g_n_ss",
-    "omega_SS",
-    "surv_rate",
-    "rho",
-    "g_n",
-    "imm_rates",
-    "omega_S_preTP",
-)
-
 
 class Calibration:
     """OG-Japan calibration built on top of an OG-Core Specifications."""
@@ -64,6 +52,9 @@ class Calibration:
                 country_id=UN_COUNTRY_CODE,
                 initial_data_year=p.start_year - 1,
                 final_data_year=p.start_year + 1,
+                # income group shares (lambdas) so the demographic arrays
+                # come back J-wide and match the model's J income groups
+                income_percentiles=np.asarray(p.lambdas).ravel(),
                 GraphDiag=False,
                 download_path=demographic_data_path,
             )
@@ -77,7 +68,7 @@ class Calibration:
         calibrated.update(self.macro_params)
         calibrated.update(self.tax_params)
         if self.demographic_params is not None:
-            for key in _DEMOGRAPHIC_KEYS:
-                if key in self.demographic_params:
-                    calibrated[key] = self.demographic_params[key]
+            # get_pop_objs returns exactly the demographic parameters that
+            # update_specifications accepts, so pass them all through.
+            calibrated.update(self.demographic_params)
         return calibrated
