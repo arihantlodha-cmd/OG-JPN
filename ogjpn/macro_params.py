@@ -1,18 +1,49 @@
 """
 OG-Japan macro calibration.
 
-Sourced values (IMF World Economic Outlook via the IMF DataMapper API,
-retrieved 2026-08-09):
-  - initial_debt_ratio: Japan gross general government debt, 214.5% of GDP
-    (2024), indicator GGXWDG_NGDP.
-  - g_y_annual: consistent with Japan real GDP growth of ~0.7% (2023,
-    indicator NGDP_RPCH); a conservative proxy for labor-productivity
-    growth given Japan's shrinking workforce.
+Every value here is sourced in the comment that sets it. Where a parameter can
+only be pinned down by solving the model (the family calls this the in-model
+tuning loop), the starting value is marked ``NEEDS TUNING`` and the target it
+should be tuned to is stated.
 
-Still first-pass / to verify (no clean open API pull yet):
-  - gamma (capital share), alpha_G (govt consumption/GDP),
-    alpha_T (non-pension transfers/GDP).
+The organising fact of Japanese public finance, and the thing this module exists
+to get right, is that **Japan's government pays almost nothing to service its
+debt**. Interest income on government financial assets roughly cancels interest
+paid, so general government net interest is about zero and the real effective
+rate is negative. That is why Japan can carry its debt while running primary
+deficits, and a calibration that does not represent it will demand a primary
+surplus Japan has never run. See ``docs/CALIBRATION_AUDIT.md``.
+
+Debt is calibrated on a **net** basis. OG-Core's government holds no financial
+assets, so charging debt service on gross debt while modelling none of the
+offsetting assets (GPIF, foreign reserves, the Fiscal Loan Fund) overstates the
+burden. Net is the concept the model's own accounting implies.
+
+Sources
+-------
+OECD  Economic Outlook, general government series for Japan, retrieved from the
+      OECD SDMX API 2026-08-10: GGFLQ (gross financial liabilities), GNFLQ (net
+      financial liabilities), NLGQ (net lending), NLGXQ (primary balance).
+IMF   World Economic Outlook via the DataMapper API: GGXWDG_NGDP, NGDP_RPCH.
+MOF   Ministry of Finance Japan, "Japanese Public Finance Fact Sheet", April
+      2025 (FY2025 General Account Budget); "Breakdown by JGB and T-Bill
+      Holders", March 2026 preliminary (BOJ Flow of Funds).
+WB    World Bank World Development Indicators: SL.GDP.PCAP.EM.KD, SP.POP.TOTL.
 """
+
+# ---------------------------------------------------------------------------
+# Productivity-growth window.
+#
+# Named constants with a rationale, per family practice. The window starts in
+# 2000, after Japan's 1997-98 banking crisis, and ends in 2019, before COVID.
+# ---------------------------------------------------------------------------
+PRODUCTIVITY_GROWTH_START_YEAR = 2000
+PRODUCTIVITY_GROWTH_END_YEAR = 2019
+
+# Interest-rate window: a ten-year average, so the steady-state anchor is not a
+# single year of an unusually loose monetary regime.
+INTEREST_RATE_START_YEAR = 2015
+INTEREST_RATE_END_YEAR = 2024
 
 
 def get_macro_params():
@@ -25,30 +56,164 @@ def get_macro_params():
     """
     macro_parameters = {}
 
-    # Long-run productivity growth (real GDP per worker). Set to ~0.8%/yr,
-    # consistent with Japan's low real GDP growth (~0.7% in 2023, IMF WEO
-    # NGDP_RPCH) and a conservative proxy for per-worker productivity
-    # growth given the shrinking workforce.
-    macro_parameters["g_y_annual"] = 0.008
+    # -----------------------------------------------------------------------
+    # Long-run labour-productivity growth.
+    #
+    # g_y is labour-augmenting productivity growth, NOT GDP growth: in the model
+    # GDP growth is g_y plus population growth, and population growth arrives
+    # separately from the demographics. Justifying g_y with GDP growth would
+    # count Japan's demographic decline twice.
+    #
+    # World Bank SL.GDP.PCAP.EM.KD (GDP per person employed, constant PPP),
+    # compound annual growth:
+    #     1995-2019   0.69%
+    #     2000-2019   0.56%   <- window used
+    #     2000-2024   0.45%
+    #     2010-2024   0.15%
+    #
+    # Note the Japanese wrinkle: employment GREW (+0.36%/yr, 2010-2024) while
+    # population fell (-0.23%/yr), because participation among women and older
+    # workers rose. That cannot continue indefinitely, which argues for the
+    # longer window rather than the most recent one.
+    # -----------------------------------------------------------------------
+    macro_parameters["g_y_annual"] = 0.0056
 
-    # Capital share of income. ~0.38 is a standard value for Japan.
-    # First pass -- verify against Penn World Table (1 - labor share).
+    # -----------------------------------------------------------------------
+    # Capital share of income.
+    #
+    # NEEDS SOURCING: 0.38 is retained from the first pass as a plausible value
+    # and is consistent with a growth-accounting cross-check -- gamma =
+    # (r + delta) * K/Y with K/Y ~ 3.7 and r + delta ~ 0.10 gives ~0.37 -- but
+    # it should be replaced with Penn World Table (1 - labsh) for Japan.
+    # -----------------------------------------------------------------------
     macro_parameters["gamma"] = [0.38]
 
-    # Initial government-debt-to-GDP ratio. Japan's gross general
-    # government debt is 214.5% of GDP in 2024 (IMF WEO, GGXWDG_NGDP) --
-    # so extreme that it exceeds OG-Core's built-in maximum for this
-    # parameter (200%). We use the cap, 2.0. (Japan's NET debt, ~1.5-1.6x
-    # GDP, would sit comfortably inside the range; gross-at-the-cap is
-    # used here to reflect Japan's headline debt burden.)
-    macro_parameters["initial_debt_ratio"] = 2.0
+    # -----------------------------------------------------------------------
+    # Government debt: NET, not gross.
+    #
+    # OECD general government net financial liabilities, Japan (GNFLQ):
+    #     2020 125.6 | 2022 117.2 | 2023 98.6 | 2024 86.4 | 2025 78.5
+    # Gross for comparison (GGFLQ): 2024 205.4, 2025 197.5.
+    #
+    # initial_debt_ratio is the MEASURED ratio at the start of the start year,
+    # i.e. end-2024 for a 2025 start: 0.864.
+    #
+    # The sharp fall from 2020 is a valuation effect -- the government's equity
+    # and foreign-currency assets rose with the equity rally and the weaker yen
+    # -- not a fiscal consolidation. That is a reason not to anchor the
+    # steady state on the latest reading alone.
+    # -----------------------------------------------------------------------
+    macro_parameters["initial_debt_ratio"] = 0.864
 
-    # Government consumption spending as a share of GDP. Japan ~0.20.
-    # First pass -- verify against OECD govt final consumption / GDP.
+    # -----------------------------------------------------------------------
+    # Steady-state debt target. A POLICY anchor, not a measurement, and a
+    # deliberate choice rather than an inherited default (OG-Core's default of
+    # 2.0 was silently in force before this).
+    #
+    # Set to 1.0: above the latest reading (0.864) and below the 2015-2022
+    # plateau (~1.20), so the steady state does not bake in the recent asset
+    # revaluation as permanent. Japan's own fiscal target is to stabilise and
+    # then reduce the debt ratio, which this represents.
+    # -----------------------------------------------------------------------
+    macro_parameters["debt_ratio_ss"] = 1.0
+
+    # -----------------------------------------------------------------------
+    # Foreign-held share of government debt.
+    #
+    # MOF "Breakdown by JGB and T-Bill Holders", March 2026 preliminary:
+    # foreigners hold 157.8 of 1,150.1 trillion yen = 13.7%. (Only 8.1% of JGBs
+    # proper; the 55.6% foreign share of T-Bills lifts the combined figure.)
+    # OG-Core's default is 0.4, which is about three times too high.
+    #
+    # This is the "Japan owes it to itself" fact, and it decides who bears the
+    # burden of the debt: at 13.7% the interest is paid to Japanese households,
+    # not abroad.
+    #
+    # zeta_D (foreign share of NEW issuance) is set equal to the stock share,
+    # the family default when the flow is not separately measured.
+    # -----------------------------------------------------------------------
+    macro_parameters["initial_foreign_debt_ratio"] = 0.137
+    macro_parameters["zeta_D"] = [0.137]
+
+    # -----------------------------------------------------------------------
+    # Sovereign interest-rate wedge:  r_gov = r_gov_scale * r - r_gov_shift
+    #
+    # This multiplies the WHOLE debt stock, so it is an average effective rate,
+    # not a new-issue yield.
+    #
+    # Japan's effective rate, two independent routes, both from the government's
+    # own accounts:
+    #
+    #  (a) Central government, MOF FY2025 budget: interest payments of 10.55
+    #      trillion yen on 1,323.7 trillion of debt = 0.80% nominal.
+    #  (b) General government, OECD (NLGXQ - NLGQ = net interest paid):
+    #          2015-2024 average net interest  0.43% of GDP
+    #          2015-2024 average net debt    114.8% of GDP
+    #      => 0.375% nominal. Against realised inflation of ~0.95% over the same
+    #         window, that is about -0.6% real.
+    #
+    #  The OECD's 2027 projection has net interest recovering to 0.86% of GDP
+    #  (about -0.8% real) as policy rates normalise. The two routes and the
+    #  projection agree on roughly -0.6% to -0.8% real, so the steady state is
+    #  anchored there rather than on the 2024 reading of about -2% real, which
+    #  reflects an unusually loose regime.
+    #
+    #  r_gov_scale is set to 0.25 rather than OG-Core's 1.0: Japanese sovereign
+    #  yields are largely decoupled from the private return on capital, held
+    #  down by Bank of Japan holdings (42.2% of JGBs and T-Bills) and by
+    #  domestic demand for safe yen assets.
+    #
+    #  NEEDS TUNING: r_gov_shift is set assuming the model solves to r ~ 4.5%
+    #  (r_gov = 0.25*0.045 - 0.017 = -0.0058). After the first steady-state
+    #  solve, read the solved r and reset the shift so r_gov lands at -0.006.
+    # -----------------------------------------------------------------------
+    macro_parameters["r_gov_scale"] = [0.25]
+    macro_parameters["r_gov_shift"] = [0.017]
+
+    # -----------------------------------------------------------------------
+    # Openness of the capital account.
+    #
+    # NEEDS TUNING: zeta_K is a marginal fill-share no dataset measures. It must
+    # be tuned until the solved steady-state K_f/K matches Japan's IIP
+    # foreign-owned share of the capital stock. Japan is the world's largest net
+    # creditor, so the foreign-owned share of its DOMESTIC capital stock is
+    # small; 0.10 is a low starting value pending the IIP anchor.
+    # -----------------------------------------------------------------------
+    macro_parameters["zeta_K"] = [0.10]
+
+    # -----------------------------------------------------------------------
+    # Government spending shares.
+    #
+    # These are set to satisfy the government budget identity at the debt
+    # target, which is the constraint that decides whether the transition is
+    # stable:
+    #
+    #     alpha_G + alpha_T + alpha_I = revenue/Y - pb*
+    #     pb* = (r_gov - g) / (1 + g) * debt_ratio_ss
+    #
+    # With r_gov = -0.6% real, g = e^g_y (1 + g_n) - 1, and debt_ratio_ss = 1.0,
+    # pb* is a primary DEFICIT of roughly 0.7% of GDP. Japan's actual primary
+    # balance is -1.79% (2024) and -1.02% (2025) of GDP, so the steady state
+    # embeds a modest consolidation relative to today -- which is what Japan's
+    # own fiscal plan intends.
+    #
+    # alpha_G: government final consumption. Japan is ~20% of GDP, and much of
+    #   it is in-kind health and long-term care, which is large in an old
+    #   population.
+    # alpha_T: non-pension transfers. Japan's total social security spending is
+    #   22.8% of GDP, of which public pensions are 9.3% (OECD Pensions at a
+    #   Glance 2023). Pensions are modelled separately by OG-Core's pension
+    #   block, so alpha_T carries the remainder net of what alpha_G already
+    #   counts as in-kind consumption.
+    # alpha_I: public investment. Japan runs ~3% of GDP, high for the OECD.
+    #   OG-Core's default is 0.0; leaving it there breaks the spending identity
+    #   by the full 3 percentage points.
+    #
+    # NEEDS TUNING: re-check all three against the identity after the first
+    # solve, once model revenue/Y and g_n_ss are known.
+    # -----------------------------------------------------------------------
     macro_parameters["alpha_G"] = [0.20]
-
-    # Government non-pension transfers as a share of GDP. First pass --
-    # verify against OECD social spending less public pensions / GDP.
-    macro_parameters["alpha_T"] = [0.10]
+    macro_parameters["alpha_T"] = [0.075]
+    macro_parameters["alpha_I"] = [0.03]
 
     return macro_parameters

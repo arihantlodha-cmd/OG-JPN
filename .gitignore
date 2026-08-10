@@ -7,3 +7,6 @@ dist/
 un_api_token.txt
 OUTPUT*/
 *.pkl
+
+# local venv
+.venv/
