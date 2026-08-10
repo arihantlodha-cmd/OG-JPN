@@ -79,6 +79,32 @@ def get_macro_params():
     macro_parameters["g_y_annual"] = 0.0056
 
     # -----------------------------------------------------------------------
+    # Depreciation rate of capital.
+    #
+    # OG-Core's default of 0.05 is a United States value and was silently in
+    # force. Japan's capital stock wears out noticeably faster.
+    #
+    # Derived from Japan's own accounts: delta = CFC / K = (CFC/Y) / (K/Y).
+    # World Bank NY.ADJ.DKAP.GN.ZS converted to a GDP basis gives consumption
+    # of fixed capital of 23.5-24.1% of GDP over 2016-2019 (the pre-COVID
+    # window; 2020-21 readings of 25-26% are distorted by the output
+    # collapse). Against a Penn World Table capital-output ratio of ~3.7:
+    #
+    #     0.237 / 3.7 = 0.064        (0.061 at the model's own K/Y of 3.87)
+    #
+    # 0.062 is taken as the midpoint of that range. Japan's high depreciation
+    # reflects a short-lived, earthquake-resilient building stock and heavy
+    # machinery intensity.
+    #
+    # This matters more than it looks: in the steady state, investment is
+    # I/Y = (g + delta) * K/Y, so with Japan's NEGATIVE g the depreciation rate
+    # is almost the ONLY thing generating investment demand. At delta = 0.05
+    # the model invested 17.3% of GDP against Japan's actual 27.8%, and the
+    # shortfall landed on consumption.
+    # -----------------------------------------------------------------------
+    macro_parameters["delta_annual"] = 0.062
+
+    # -----------------------------------------------------------------------
     # Capital share of income.
     #
     # NEEDS SOURCING: 0.38 is retained from the first pass as a plausible value
@@ -197,9 +223,26 @@ def get_macro_params():
     # embeds a modest consolidation relative to today -- which is what Japan's
     # own fiscal plan intends.
     #
-    # alpha_G: government final consumption. Japan is ~20% of GDP, and much of
-    #   it is in-kind health and long-term care, which is large in an old
-    #   population.
+    # A note on central versus general government, following OG-ETH's
+    # treatment of the same problem (its macro.md "federal versus general
+    # government" note). EVERY fiscal figure in this calibration is
+    # GENERAL government -- central plus local, consolidated:
+    #   - debt and interest      OECD Economic Outlook general-government series
+    #   - taxes                  OECD Revenue Statistics ("net receipts for all
+    #                            levels of government")
+    #   - spending shares        World Bank general-government series
+    # Mixing levels would be a live risk for Japan specifically, because the
+    # central government's own budget routes 18,872.8 billion yen -- 16.4% of
+    # its general account -- to prefectures and municipalities as Local
+    # Allocation Tax Grants. Those are INTERGOVERNMENTAL transfers, not
+    # household transfers: they must not enter alpha_T, and reading spending
+    # off the central budget would double-count them against local spending.
+    #
+    # alpha_G: general government final consumption. World Bank
+    #   NE.CON.GOVT.ZS for Japan = 20.1% of GDP (2024), stable at 20-21% since
+    #   2020. Note OG-Core's steady-state closure overrides this to whatever
+    #   balances the budget at the debt target -- alpha_G binds on the
+    #   TRANSITION, not the steady state.
     # alpha_T: non-pension transfers. Japan's total social security spending is
     #   22.8% of GDP, of which public pensions are 9.3% (OECD Pensions at a
     #   Glance 2023). Pensions are modelled separately by OG-Core's pension
@@ -212,7 +255,7 @@ def get_macro_params():
     # NEEDS TUNING: re-check all three against the identity after the first
     # solve, once model revenue/Y and g_n_ss are known.
     # -----------------------------------------------------------------------
-    macro_parameters["alpha_G"] = [0.20]
+    macro_parameters["alpha_G"] = [0.201]
     macro_parameters["alpha_T"] = [0.075]
     macro_parameters["alpha_I"] = [0.03]
 

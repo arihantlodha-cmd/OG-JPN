@@ -234,6 +234,7 @@ def test_calibration_dict_covers_all_blocks():
     d = c.get_dict()
     for key in [
         "g_y_annual",
+        "delta_annual",
         "initial_debt_ratio",
         "debt_ratio_ss",
         "initial_foreign_debt_ratio",
@@ -246,3 +247,33 @@ def test_calibration_dict_covers_all_blocks():
         "mean_income_data",
     ]:
         assert key in d, f"{key} not delivered to Specifications"
+
+
+def test_calibration_passes_ogcore_validators():
+    """
+    Apply the whole calibration to a real Specifications object.
+
+    Checking that keys are PRESENT is not enough -- every value also has to
+    satisfy OG-Core's schema. A scalar parameter wrapped in a list (delta_annual
+    = [0.062] instead of 0.062) passes every other test in this file and then
+    fails at solve time, minutes into a run. This test costs a second.
+    """
+    from ogcore.parameters import Specifications
+
+    from ogjpn import calibrate
+    from ogjpn.constants import START_YEAR
+
+    p = Specifications(baseline=True, num_workers=1)
+    p.update_specifications({"start_year": START_YEAR})
+
+    c = calibrate.Calibration.__new__(calibrate.Calibration)
+    c.macro_params = macro_params.get_macro_params()
+    c.tax_params = tax_params.get_tax_params()
+    c.pension_params = pension_params.get_pension_params()
+    c.demographic_params = None
+
+    # Raises ValidationError if any value has the wrong type, shape, or range.
+    p.update_specifications(c.get_dict())
+
+    assert p.tax_func_type == "GS"
+    assert p.pension_system == "Defined Benefits"

@@ -447,9 +447,13 @@ Stated plainly so it is not mistaken for finished work:
 - **The `e` earnings matrix** is OG-USA's, with no Japan Gini tilt.
 - **`gamma = 0.38`** is plausible and passes a growth-accounting cross-check but
   is not sourced to the Penn World Table.
-- **`zeta_K = 0.10`** produces `K_f/K = 0.115`, which is plausible for a country
-  whose inward FDI stock is about 5% of GDP — the lowest in the OECD — but it is
-  not anchored to a constructed IIP share.
+- **`zeta_K = 0.10`** is not anchored to a constructed IIP share. In the final
+  calibration it produces `K_f/K = −0.008` — a marginal net creditor position,
+  which is at least the right *sign* for the world's largest net creditor
+  (net international investment position +¥533tn, about +86% of GDP), though
+  nowhere near the magnitude. Note OG-Core represents foreign ownership of
+  domestic capital but not domestic ownership of foreign capital, so Japan's
+  creditor position cannot be represented properly at any `zeta_K`.
 - **`phi1 = 1.30`** in the income-tax function is a family-analogous value, not a
   fit to Japan's statutory brackets.
 - **`initial_wealth_ratio`** has not been diagnosed. For the oldest population in
