@@ -204,7 +204,11 @@ def get_tax_params():
     # expect to iterate rather than scale proportionally.
     # -----------------------------------------------------------------------
     tax_parameters["tax_func_type"] = "GS"
-    _gs_params = [[[0.55, 1.30, 3.5e-10]]]
+    # phi2 is in units of income^(-phi1) and income is in MILLIONS of yen (see
+    # ogjpn.pension_params.MEAN_INCOME_MILLIONS_YEN). In plain yen this value
+    # would be 3.5e-10; rescaled by 1e6^1.30 it is 0.0221. The effective rate at
+    # every income is identical either way -- only the units change.
+    _gs_params = [[[0.55, 1.30, 0.0221]]]
     tax_parameters["etr_params"] = _gs_params
     tax_parameters["mtrx_params"] = _gs_params
     tax_parameters["mtry_params"] = _gs_params

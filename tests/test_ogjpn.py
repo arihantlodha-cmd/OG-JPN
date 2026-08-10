@@ -238,13 +238,19 @@ def test_alpha_db_reproduces_the_oecd_replacement_rate():
     assert abs(replacement - derived) < 0.06, "fitted residual must stay small"
 
 
-def test_income_anchor_is_in_yen():
+def test_income_anchor_is_japanese_and_in_millions():
     """
-    mean_income_data sets the currency income at which the tax functions and
-    the pension formula are evaluated. OG-Core's default is US$58,644.92.
+    mean_income_data sets the currency income at which the tax functions are
+    evaluated. OG-Core's default is US$58,644.92.
+
+    Japan's is expressed in MILLIONS of yen rather than yen, so that `factor`
+    solves to ~7.0 instead of ~7.0 million and fits under OG-Core's cap of
+    500,000 on initial_guess_factor_SS. The units are arbitrary and the
+    reinterpretation is exact, but it obliges the matching rescale of the
+    Gouveia-Strauss phi2 below.
     """
     pp = pension_params.get_pension_params()
-    assert pp["mean_income_data"] == pytest.approx(4.6e6)
+    assert pp["mean_income_data"] == pytest.approx(4.60)
     assert pp["mean_income_data"] != pytest.approx(58644.924039576625)
 
 
@@ -434,10 +440,44 @@ def test_demographic_window_is_wide_enough_to_see_the_projection():
     """
     from ogjpn import constants
 
-    assert constants.DEMOGRAPHIC_DATA_YEARS >= 10
+    assert constants.DEMOGRAPHIC_DATA_YEARS == 74, (
+        "use the full UN horizon: g_n_ss is a steady-state rate and must come "
+        "from the UN's terminal vital rates, not a mid-transition snapshot"
+    )
 
 
-def test_solver_seeds_are_left_at_ogcore_defaults():
+def test_gs_scale_matches_the_income_units():
+    """
+    phi2 carries units of income^(-phi1). With income in millions of yen it is
+    0.0221; in plain yen it would be 3.5e-10. Getting this out of step with
+    mean_income_data silently re-prices the whole income tax.
+    """
+    t = tax_params.get_tax_params()
+    phi0, phi1, phi2 = t["etr_params"][0][0]
+    expected_in_yen = 3.5e-10
+    assert phi2 == pytest.approx(expected_in_yen * 1e6**phi1, rel=1e-2)
+
+    # the effective rate at Japan's mean wage must be unchanged by the units
+    mean_millions = pension_params.get_pension_params()["mean_income_data"]
+    etr = phi0 * (1 - (1 + phi2 * mean_millions**phi1) ** (-1 / phi1))
+    etr_yen = phi0 * (
+        1 - (1 + expected_in_yen * (mean_millions * 1e6) ** phi1) ** (-1 / phi1)
+    )
+    assert etr == pytest.approx(etr_yen, rel=1e-3)
+
+
+def test_solver_seed_now_fits_ogcores_cap():
+    """
+    Expressing income in millions makes Japan's factor ~7.0, so the seed can be
+    set to the right order of magnitude for the first time. In plain yen the
+    correct value (~7.0e6) exceeds OG-Core's maximum of 500,000 outright.
+    """
+    m = macro_params.get_macro_params()
+    assert m["initial_guess_factor_SS"] == pytest.approx(7.0)
+    assert m["initial_guess_factor_SS"] < 500000
+
+
+def test_solver_rate_seeds_are_left_at_ogcore_defaults():
     """
     OG-Core's initial_guess_factor_SS is a US-DOLLAR value and is capped at
     500,000, below Japan's solved factor of ~7.0m -- so the correct seed cannot
@@ -448,6 +488,5 @@ def test_solver_seeds_are_left_at_ogcore_defaults():
     the decision so the seeds are not "fixed" later on reasoning alone.
     """
     m = macro_params.get_macro_params()
-    for k in ("initial_guess_factor_SS", "initial_guess_r_SS",
-              "initial_guess_TR_SS"):
+    for k in ("initial_guess_r_SS", "initial_guess_TR_SS"):
         assert k not in m, f"{k} should be left at OG-Core's default"

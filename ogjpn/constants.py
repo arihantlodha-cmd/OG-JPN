@@ -19,24 +19,29 @@ START_YEAR = 2025
 # mortality and immigration at their `final_data_year` values, so this decides
 # how much of the UN projection the model actually sees.
 #
+# Set to the FULL UN horizon. UN WPP runs to 2100 and ogcore asserts on
+# start+75, so 74 years (to 2099) is the whole of it.
+#
 # The family convention (and OG-JPN's first pass) is start_year + 1, a
 # three-year window. For most countries that is harmless. For Japan it is not:
 # it freezes mortality at 2026 levels, so the model never receives the UN's
 # projected longevity gains for the world's longest-lived and fastest-ageing
-# population -- the very mechanism the model exists to study.
+# population -- the very mechanism the model exists to study. With the narrow
+# window g_n_ss came out at -1.070%/yr.
 #
-# The cost was measurable. With the narrow window the implied steady-state
-# population growth was -1.070%/yr, and the discontinuity where the data
-# window ends produced a resource-constraint breach at t=2 that failed the
-# transition solve outright.
+# Why the FULL horizon rather than a shorter one: `g_n_ss` is a STEADY-STATE
+# rate, and ogcore computes it from the vital rates prevailing at
+# `final_data_year`. The right rates are therefore the UN's TERMINAL ones, not
+# a mid-transition snapshot. An earlier version of this file used 20 years on
+# the reasoning that the resulting -0.698%/yr matched the UN's 2025-2100
+# implied average of -0.676% -- but that average is a transitional quantity and
+# matching a steady-state parameter to it was a category error. The UN's
+# terminal rates imply -0.463%/yr.
 #
-# Widening to 20 years:
-#   * g_n_ss becomes -0.698%/yr, within 0.02pp of the UN medium variant's own
-#     2025-2100 implied average of -0.676%/yr -- an independent check that the
-#     wider window is the faithful one, not merely the convenient one;
-#   * mortality and immigration then vary over 21 periods rather than 2; and
-#   * the discontinuity moves out of the early transition.
-#
-# Twenty years is also the horizon over which UN projections are most nearly
-# data: the cohorts involved are already alive.
-DEMOGRAPHIC_DATA_YEARS = 20
+# Note this does NOT fix the transition. ogcore replaces the population
+# distribution with its fixed steady-state one at `fixper = int(1.5 * S)` =
+# period 120, a step change that is invariant to this window (the immigration
+# jump there measures 0.50-0.56 at every setting tried, from start+20 to
+# start+74) and that breaches the default RC_TPI tolerance. See
+# docs/UPSTREAM_OGCORE.md item 1.
+DEMOGRAPHIC_DATA_YEARS = 74

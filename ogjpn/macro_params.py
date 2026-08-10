@@ -343,18 +343,14 @@ def get_macro_params():
     # all. That cap is currency-dependent and excludes every low-unit currency
     # (yen, won, rupiah, dong). It is reported in docs/UPSTREAM_OGCORE.md.
     #
-    # Raising the seed to the permitted maximum was tried and took 569 GE
-    # iterations, against 30-267 on the shipped default in earlier solves --
-    # but those earlier solves had DIFFERENT parameter sets, so that is not a
-    # controlled comparison and should not be read as one. What it does
-    # establish is that the shipped default is not the thing blocking a solve
-    # here.
-    #
-    # Left at the defaults on the family's own rule: choose seeds by SOLVE-PATH
-    # ROBUSTNESS, not by proximity to the answer. A seed nearer the solution can
-    # route the solver through a worse region, and the shipped set is the one
-    # with the longer record of working.
+    # Because income is expressed in MILLIONS of yen, Japan's factor solves to
+    # about 7.0 rather than 7.0 million, so for the first time the seed CAN be
+    # set to the right order of magnitude. The r and TR seeds are OG-USA's
+    # solved values and are left alone -- the family's rule is to choose seeds
+    # by solve-path robustness rather than proximity, and the shipped pair has
+    # the longer record of working here.
     # -----------------------------------------------------------------------
+    macro_parameters["initial_guess_factor_SS"] = 7.0
 
     # -----------------------------------------------------------------------
     # Solver settings.

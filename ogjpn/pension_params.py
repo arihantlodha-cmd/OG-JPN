@@ -96,10 +96,21 @@ AVG_EARNINGS_YEARS = 40
 # finished phasing up from 60 to 65 in 2025.
 RETIREMENT_AGE = 65
 
-# National Tax Agency Survey on Private-Sector Wages, 2023 (yen). Used by
-# OG-Core to solve `factor`, which converts model units into currency so the
-# tax functions and the pension formula are evaluated at Japanese income levels.
-MEAN_INCOME_YEN = 4600000.0
+# National Tax Agency Survey on Private-Sector Wages, 2023: 4.60 million yen.
+#
+# UNITS: expressed in MILLIONS of yen, not yen. `factor` converts model units to
+# whatever unit this is in, and OG-Core validates `initial_guess_factor_SS` to a
+# maximum of 500,000 -- in plain yen Japan's factor is about 7.0 million, so the
+# solver seed could not be set at all (docs/UPSTREAM_OGCORE.md item 3). In
+# millions the factor is about 7.0 and the seed becomes settable.
+#
+# The choice of income unit is arbitrary and the reinterpretation is exact, but
+# it is not free: the Gouveia-Strauss scale parameter phi2 carries units of
+# income^(-phi1) and must be rescaled by 1e6^phi1 to match. Nothing else in
+# OG-Core is currency-denominated -- the wealth tax takes savings in model units
+# and the defined-benefit pension is a pure rate -- so those two values are the
+# whole of it. See ogjpn/tax_params.py.
+MEAN_INCOME_MILLIONS_YEN = 4.60
 
 
 def get_pension_params():
@@ -133,7 +144,7 @@ def get_pension_params():
     # Currency anchor for `factor`. Without this the model scales Japanese
     # incomes to US dollars, which mis-prices every tax function as well as the
     # pension.
-    pension_parameters["mean_income_data"] = MEAN_INCOME_YEN
+    pension_parameters["mean_income_data"] = MEAN_INCOME_MILLIONS_YEN
 
     return pension_parameters
 
