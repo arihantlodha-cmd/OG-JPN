@@ -10,6 +10,15 @@ state, so splitting a run into a serial SS call followed by a separate TPI call
 solves the steady state twice — the second time through the dask client, which
 is the slow way round. Keep it as one call.
 
+``num_workers = min(cpu_count(), 7)`` matches the sibling repos, and the 7 is not
+arbitrary: both ``SS.py`` and ``TPI.py`` parallelise with ``client.submit``
+inside ``for j in range(p.J)``, and ``J = 7``. Seven independent tasks means an
+eighth worker would idle — this is already maximally parallel on any machine.
+
+Solving the steady state through the client costs wall-clock (~38 s per GE
+iteration here against ~6 s serial). That is the accepted price of invoking the
+model exactly as the family does rather than through a hand-rolled driver.
+
 ``TPI_outer_method = "anderson"`` is set in ``ogjpn.macro_params`` rather than
 here, so it applies to every run of this calibration and not just this script.
 Watch the distance series on a first run: it should decline monotonically. If it
