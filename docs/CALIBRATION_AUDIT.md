@@ -447,6 +447,143 @@ they are the same thing seen from different sides of the budget.
 **Net exports, −1.3pp.** A residual of the resource constraint, not a modelled
 trade sector.
 
+## Answers to the open questions
+
+Each of these was tested, not asserted.
+
+### The `tau_c` base problem — FIXED
+
+`tau_c` delivers Japan's indirect-tax revenue on a consumption base ~13% larger
+than Japan's, so a *rate change* did not transfer across: applying Japan's
++1.85pp effective rise to the model's base over-collected by the base error.
+
+The fix is to size the reform by the **revenue it must raise** rather than by a
+rate change. Japan's 10% → 12% consumption tax raises VAT collections from 4.94%
+to 5.93% of GDP, a gain of +0.99pp. So:
+
+```
+d(tau_c) = revenue gain / (model C/Y)
+```
+
+The oversized base now appears in both the numerator (via the calibrated `tau_c`)
+and the denominator, and cancels exactly. Implemented as `reform_tau_c()` in
+`examples/analysis_consumption_tax.py`, computed off the solved baseline rather
+than hard-coded.
+
+### The investment gap — mostly an artefact of comparing a steady state to today
+
+The model's population growth is a **path**, not a constant: −0.33%/yr in 2025
+(which is Japan today), deepening to −1.07% only in the long run as the age
+structure matures. Steady-state investment uses the terminal rate.
+
+| `g_n` used | `g` | model private I/Y | vs Japan 0.245 |
+|---|---:|---:|---:|
+| t=0 (2025, UN actual) | +0.23% | 0.2331 | −0.012 |
+| t=10 (2035) | −0.10% | 0.2212 | −0.024 |
+| t=20 (2045) | −0.46% | 0.2079 | −0.037 |
+| steady state (~2100+) | −0.51% | 0.2061 | −0.039 |
+
+**At Japan's current population growth the model invests 23.3% of GDP against
+Japan's actual 24.5% — a 1.2pp gap, not 3.9pp.** The steady state is Japan's
+demographic destiny, not Japan now; scoring it against today's data charges the
+model for a decline that has not happened yet. The right comparison for "does
+this look like Japan today" is the early transition, which is why the transition
+validation matters more than it usually would.
+
+### The government gap — 0.5pp is OG-Core's floor, measured
+
+Tested by monkey-patching the `r_gov` floor out of a scratch copy of ogcore
+(diagnostic only, not committed):
+
+| | `r_gov` | model `G/Y` |
+|---|---:|---:|
+| floored (shipped ogcore) | +0.0000 | 0.1820 |
+| floor removed | −0.0058 | **0.1871** |
+| at Japan's *current* effective rate (−2%) | −0.0200 | 0.2021 |
+| **Japan actual** | | **0.2010** |
+
+So the floor costs **0.51 percentage points** of government consumption. The
+remaining ~1.4pp is not a defect but a deliberate choice: anchoring `r_gov` to
+the *normalised* long-run rate (−0.6%) rather than Japan's current one (−2%). At
+Japan's current rate the model reproduces Japanese government consumption to
+within 0.1pp.
+
+### Preference parameters — not curve-fitting, arithmetically excluded
+
+`beta`, `sigma` and `frisch` remain at OG-Core's values. This is not deference to
+convention; there is no room for them:
+
+```
+I_private/Y = (g + delta) x K/Y
+```
+
+`K/Y` is already on target (3.62 against the PWT's 3.70) and `delta` is sourced
+from Japan's own consumption of fixed capital. To reach Japan's private
+investment rate you would need `K/Y = 4.31` — **16% above the PWT target**.
+Investment and the capital-output ratio cannot both be hit while `g` is fixed.
+Raising `beta` to lift investment would simply break `K/Y`. Only `g` is free, and
+`g` is the UN's demographics.
+
+### The `e` matrix — now tilted to Japan
+
+Ported the family's single-scalar method (`ogjpn/income.py`, from OG-PHL):
+`e_JPN = e_USA · exp(a·e_USA)`, solving one scalar so the model Gini stands in
+the same ratio to the US model Gini as Japan's measured Gini does to the US.
+Japan's World Bank Gini is **32.3** (2020) against the US reference of 41.5 —
+both on the **income** concept, which is the family's standing trap (mixing an
+income Gini against a consumption one mis-states the tilt).
+
+Japan tilts the *opposite* way from most of the family: it is markedly more equal
+than the US, so the profile compresses rather than stretches. The effect on the
+dashboard is small and in the predicted direction — consumption +0.16pp (less
+inequality means less saving) and revenue −0.27pp (a compressed distribution
+yields less under a progressive schedule). It is the right thing to do for
+accuracy even though it moves the consumption gap slightly the wrong way.
+
+### `chi_n` — borrowed, and for Japan that is defensible to within 1%
+
+`chi_n` stays at OG-USA's values, as everywhere in the family. For Japan this is
+better than a convention, because the quantity the model actually needs to match
+is total labour input per working-age person — OG-Core has no extensive margin,
+so everyone supplies some `n`:
+
+| | hours/worker | employment rate (15-64) | hours per working-age person |
+|---|---:|---:|---:|
+| Japan | 1,611 | 79.3% | 1,278 |
+| United States | 1,799 | 71.6% | 1,288 |
+
+**Ratio 0.992.** Japan works 10.5% fewer hours per worker but puts far more
+people to work, and the two almost exactly cancel. A single-scalar re-tilt would
+move `chi_n` by under 1%, which is inside the measurement noise. Documented as
+borrowed, with the evidence that borrowing is harmless here.
+
+### Income-differentiated demographics — deliberately not used
+
+ogcore accepts `fert_gradient`, `mort_gradient` and `infmort_gradient`, and the
+measured tilts live in EAPD-DRB/Demographic-Gradients. **Japan is in none of the
+three files.** The library covers 78 developing countries, and its own AGENTS.md
+is explicit that the income-based fallback is valid only between $200 and
+$10,000 GNI per head — *"high-income countries are out of scope, not missing: do
+not extrapolate to them."* Japan's GNI per head is about $39,000.
+
+Japan does have a measured and widening socioeconomic mortality gradient in the
+epidemiological literature, but it is **ecological** (municipality-level
+deprivation), and the same AGENTS.md warns against pooling measurement bases.
+Extrapolating a developing-country gradient could also get the *sign* wrong for
+fertility, where Japan's pattern runs through marriage rates rather than family
+size. So the gradients are left off; `income_percentiles` is still passed, so the
+arrays stay J-wide with one set of rates per group.
+
+**This is a well-scoped give-back:** Japan has the vital statistics to become the
+library's first high-income entry.
+
+### Where further tuning stops being calibration
+
+Every remaining revenue gap is under 0.3pp of GDP. That is **below the precision
+of the source data** — the family's own guidance flags that a GDP rebasing moves
+tax-to-GDP ratios by 2–3pp (South Africa's 2021 rebasing moved it 2.6pp). Tuning
+past this point fits noise.
+
 ## Adversarial check
 
 Every load-bearing claim in this document was attacked deliberately, on the

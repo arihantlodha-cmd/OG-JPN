@@ -20,20 +20,35 @@ Blocks:
                        yen income anchor
   - demographics       live UN data by country code 392
 
+  - earnings          (ogjpn.income) the ``e`` ability matrix, tilted to
+                      Japan's Gini by the family's single-scalar method
+
 Still on OG-Core's US defaults, and documented as such rather than presented as
 calibrated:
   - ``chi_n``, the disutility-of-labour profile. This is the family-wide norm --
     no country repo has recalibrated it -- but it must be described as borrowed,
     never as calibrated.
-  - the ``e`` earnings-ability matrix, which has no Japan tilt yet. The family
-    method is a single-scalar exponential tilt on OG-USA's matrix solved so the
-    model Gini matches the country's. See docs/CALIBRATION_AUDIT.md.
+
+A note on income-differentiated demographics. ogcore accepts ``fert_gradient``,
+``mort_gradient`` and ``infmort_gradient`` to tilt fertility and mortality across
+the lifetime-income groups, and the measured tilts live in
+EAPD-DRB/Demographic-Gradients. **They are deliberately NOT used here.** That
+library covers 78 developing countries and does not include Japan, and its own
+AGENTS.md is explicit that the income-based fallback formula is valid only
+between 200 and 10,000 US dollars of GNI per head -- "high-income countries are
+out of scope, not missing: do not extrapolate to them". Japan's GNI per head is
+around 39,000 dollars. Japan does have a measured and widening socioeconomic
+mortality gradient in the epidemiological literature, but it is ecological
+(municipality-level deprivation), which the same AGENTS.md warns must not be
+pooled with the library's individual wealth-rank basis. So the gradients are left
+off and every income group shares one set of rates. ``income_percentiles`` IS
+passed, so the demographic arrays are still J-wide.
 """
 
 import numpy as np
 
 from ogcore import demographics
-from ogjpn import macro_params, pension_params, tax_params
+from ogjpn import income, macro_params, pension_params, tax_params
 from ogjpn.constants import UN_COUNTRY_CODE
 
 
@@ -56,6 +71,7 @@ class Calibration:
         self.pension_params = pension_params.get_pension_params()
 
         self.demographic_params = None
+        self.e = None
         if use_demographics:
             # Japan demographics from UN WPP data (country code 392).
             # Requires a UN API token; without one, OG-Core's offline
@@ -76,6 +92,26 @@ class Calibration:
                 download_path=demographic_data_path,
             )
 
+            # A second, 80-period demographic draw purely to build the earnings
+            # matrix: OG-USA's calibrated e matrix is 80 ages wide, so the tilt
+            # has to be solved on an 80-age population weighting before being
+            # mapped down to this model's S.
+            demog80 = demographics.get_pop_objs(
+                20,
+                80,
+                p.T,
+                0,
+                99,
+                country_id=UN_COUNTRY_CODE,
+                initial_data_year=p.start_year - 1,
+                final_data_year=p.start_year + 1,
+                income_percentiles=np.asarray(p.lambdas).ravel(),
+                GraphDiag=False,
+            )
+            self.e = income.get_e_interp(
+                p.E, p.S, p.J, p.lambdas, demog80["omega_SS"]
+            )
+
     def get_dict(self):
         """
         Return the calibrated parameters as a dict for
@@ -89,4 +125,6 @@ class Calibration:
             # get_pop_objs returns exactly the demographic parameters that
             # update_specifications accepts, so pass them all through.
             calibrated.update(self.demographic_params)
+        if self.e is not None:
+            calibrated["e"] = self.e
         return calibrated

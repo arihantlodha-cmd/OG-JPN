@@ -9,7 +9,7 @@ which is what stops documentation drifting away from shipped numbers.
 
 import pytest
 
-from ogjpn import constants, macro_params, pension_params, tax_params
+from ogjpn import constants, income, macro_params, pension_params, tax_params
 
 
 # ---------------------------------------------------------------------------
@@ -265,6 +265,7 @@ def test_calibration_dict_covers_all_blocks():
     c.tax_params = tax_params.get_tax_params()
     c.pension_params = pension_params.get_pension_params()
     c.demographic_params = None
+    c.e = None
 
     d = c.get_dict()
     for key in [
@@ -306,9 +307,52 @@ def test_calibration_passes_ogcore_validators():
     c.tax_params = tax_params.get_tax_params()
     c.pension_params = pension_params.get_pension_params()
     c.demographic_params = None
+    c.e = None
 
     # Raises ValidationError if any value has the wrong type, shape, or range.
     p.update_specifications(c.get_dict())
 
     assert p.tax_func_type == "GS"
     assert p.pension_system == "Defined Benefits"
+
+
+# ---------------------------------------------------------------------------
+# Earnings ability.
+# ---------------------------------------------------------------------------
+def test_gini_target_is_japans_and_concept_matches():
+    """
+    Japan's World Bank Gini (SI.POV.GINI) is 32.3 for 2020, on an INCOME basis.
+    The US reference in income.py must be the same welfare concept -- mixing an
+    income Gini against a consumption Gini is the family's standing trap and
+    systematically mis-states the tilt.
+    """
+    import inspect
+
+    assert income.JAPAN_GINI == pytest.approx(32.3)
+    src = inspect.getsource(income.get_e_interp)
+    assert "gini_usa_data = 41.5" in src
+    # Japan is MORE equal than the US, so the tilt must compress, not stretch
+    assert income.JAPAN_GINI < 41.5
+
+
+def test_demographic_gradients_are_deliberately_absent():
+    """
+    ogcore accepts fert_gradient / mort_gradient / infmort_gradient, but the
+    EAPD-DRB/Demographic-Gradients library covers 78 developing countries and
+    explicitly excludes high-income ones: its income-based fallback is valid
+    only between $200 and $10,000 GNI per head. Japan is ~$39,000.
+
+    This test pins the DECISION so nobody later wires in an extrapolated
+    gradient thinking it was an oversight.
+    """
+    import inspect
+
+    from ogjpn import calibrate
+
+    src = inspect.getsource(calibrate)
+    for gradient in ("fert_gradient", "mort_gradient", "infmort_gradient"):
+        assert f"{gradient}=" not in src, (
+            f"{gradient} must not be passed: Japan is out of the library's scope"
+        )
+    # but income_percentiles IS passed, so the arrays stay J-wide
+    assert "income_percentiles" in src
