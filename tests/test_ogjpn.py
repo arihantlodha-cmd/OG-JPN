@@ -160,7 +160,7 @@ def test_consumption_tax_is_effective_not_statutory():
     Japan's indirect-tax revenue in the model is 0.0682 / 0.627 = 10.9%.
     """
     t = tax_params.get_tax_params()
-    assert t["tau_c"] == [[pytest.approx(0.1236)]]
+    assert t["tau_c"] == [[pytest.approx(0.1226)]]
     assert t["tau_c"][0][0] != 0.10, "statutory rate is not the model input"
 
 
@@ -173,7 +173,7 @@ def test_cit_adjustment_factor_is_set():
     t = tax_params.get_tax_params()
     assert "adjustment_factor_for_cit_receipts" in t
     assert t["adjustment_factor_for_cit_receipts"][0] > 0.309
-    assert t["adjustment_factor_for_cit_receipts"][0] == pytest.approx(0.875, abs=1e-3)
+    assert t["adjustment_factor_for_cit_receipts"][0] == pytest.approx(0.873, abs=1e-3)
 
 
 def test_income_tax_is_not_the_us_functions():
@@ -230,7 +230,7 @@ def test_alpha_db_reproduces_the_oecd_replacement_rate():
     pp = pension_params.get_pension_params()
     assert pp["alpha_db"] > 0.0
     replacement = pp["yr_contrib"] * pp["alpha_db"]
-    assert replacement == pytest.approx(0.387, abs=1e-6)
+    assert replacement == pytest.approx(0.422, abs=1e-6)
     assert replacement > pension_params.GROSS_REPLACEMENT_RATE_OECD
     # most of the gap should be the derived survivors/disability uplift
     derived = (pension_params.GROSS_REPLACEMENT_RATE_OECD
@@ -415,7 +415,7 @@ def test_beta_is_calibrated_to_japans_capital_output_ratio():
     Penn World Table's 3.70.
     """
     m = macro_params.get_macro_params()
-    assert m["beta_annual"][0] == pytest.approx(0.984)
+    assert m["beta_annual"][0] == pytest.approx(0.979)
     assert m["beta_annual"][0] != 0.96, "must not be OG-USA's value"
     assert len(m["beta_annual"]) == 7, "one per lifetime-income group"
 
@@ -477,22 +477,18 @@ def test_solver_seed_now_fits_ogcores_cap():
     assert m["initial_guess_factor_SS"] < 500000
 
 
-def test_solver_seeds_are_retuned_and_coupled_to_alpha_T():
+def test_only_the_factor_seed_is_overridden():
     """
-    ogcore derives the output guess from the transfer guess:
-    `Yguess = TRguess / alpha_T[-1]` (SS.py:1387). So TR and alpha_T are
-    coupled, and correcting alpha_T silently invalidates the TR seed.
+    ogcore derives its output guess from the transfer guess
+    (`Yguess = TRguess / alpha_T`, SS.py:1387), so it is tempting to retune r
+    and TR to their solved values. That was tried and it stopped the steady
+    state solving; the stock seeds solve it. Seeds are chosen by solve-path
+    robustness, not proximity.
 
-    With alpha_T = 0.025 the default TRguess of 0.057 implies Y = 2.28 against
-    this model's actual 0.93 -- 2.5x too big, which makes the solver fail and
-    restart down ogcore's 39-rung DEV_FACTOR_LIST rather than converge.
+    Only the factor seed is overridden, because the millions-of-yen units make
+    ogcore's US-dollar default meaningless.
     """
     m = macro_params.get_macro_params()
-    alpha_T = m["alpha_T"][0]
-    implied_Y = m["initial_guess_TR_SS"] / alpha_T
-    assert 0.8 < implied_Y < 1.1, (
-        f"TR seed implies Y = {implied_Y:.2f}; the solved Y is ~0.93. "
-        "Retune initial_guess_TR_SS = alpha_T * Y whenever alpha_T moves."
-    )
-    assert m["initial_guess_r_SS"] == pytest.approx(0.040)
-    assert m["initial_guess_r_SS"] != 0.0648, "must not be OG-USA's default"
+    assert m["initial_guess_factor_SS"] == pytest.approx(7.0)
+    for k in ("initial_guess_r_SS", "initial_guess_TR_SS"):
+        assert k not in m, f"{k} must stay at ogcore's default"

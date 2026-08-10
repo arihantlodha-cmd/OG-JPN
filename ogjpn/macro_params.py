@@ -316,9 +316,17 @@ def get_macro_params():
     # with gamma and delta both sourced independently here, so K/Y is a
     # function of r, and r is what beta moves. Solving on the model:
     #
-    #     beta 0.979  ->  K/Y 3.500,  r 4.72%
+    #     beta 0.979  ->  K/Y 3.500,  r 4.72%   <- used
     #     beta 0.986  ->  K/Y 3.758,  r 3.99%
-    #     interpolating to the Penn World Table's 3.70  ->  beta 0.984
+    #     interpolation to the PWT's 3.70 suggests 0.984
+    #
+    # 0.979 is used rather than the interpolated 0.984 DELIBERATELY. At 0.984
+    # the steady state stopped solving: ogcore walks a 39-rung retry ladder of
+    # rescaled seeds (`DEV_FACTOR_LIST`) and was exhausting several rungs
+    # without converging. 0.979 solves in ~104 evaluations. A model that solves
+    # and misses K/Y by 5% is worth more than one that hits it and does not,
+    # and 3.50 against the PWT's 3.70 is inside the band the family already
+    # tolerates for this moment.
     #
     # Recalibrated twice as the demographic window widened (see
     # ogjpn.constants.DEMOGRAPHIC_DATA_YEARS): a less negative population growth
@@ -333,7 +341,7 @@ def get_macro_params():
     # matters -- calibrate the sourced parameters first, then use beta for what
     # is left.
     # -----------------------------------------------------------------------
-    macro_parameters["beta_annual"] = [0.984] * 7
+    macro_parameters["beta_annual"] = [0.979] * 7
 
     # -----------------------------------------------------------------------
     # Steady-state solver seeds. RETUNED to this calibration, as every sibling
@@ -359,17 +367,21 @@ def get_macro_params():
     # happened to sit near this model's actual Y of 0.93, to 2.28: two and a
     # half times too large. Fixing the transfers silently broke the seed.
     #
-    # So the seeds are set from a solved steady state:
-    #     r      solves to 0.040
-    #     TR     = alpha_T * Y = 0.025 * 0.928 = 0.0232, so Yguess lands on 0.93
-    #     factor solves to 6.98 on the millions-of-yen scale
+    # Knowing that, the obvious move is to seed r and TR at their solved values
+    # -- and it was tried, and it made things WORSE. The steady state solves
+    # from ogcore's stock r and TR seeds and stops solving from the retuned
+    # ones. This is the family's own rule, learned again the hard way:
     #
-    # RULE: retune these whenever alpha_T, alpha_G, the growth rate or the
-    # demographic window move. They are not free-standing preferences; TR and
-    # alpha_T are coupled by the line above.
+    #     choose seeds by SOLVE-PATH ROBUSTNESS, not by proximity to the answer
+    #
+    # A seed nearer the solution can route the solver through a region where
+    # domestic capital K_d = B - D_d goes negative, where ogcore substitutes
+    # 1e9 residuals and the finite-difference Jacobian becomes meaningless.
+    #
+    # Only `initial_guess_factor_SS` is overridden, and only because the units
+    # demand it: ogcore's default is a US-dollar value and Japan's factor on the
+    # millions-of-yen scale is ~7.0.
     # -----------------------------------------------------------------------
-    macro_parameters["initial_guess_r_SS"] = 0.040
-    macro_parameters["initial_guess_TR_SS"] = 0.0232
     macro_parameters["initial_guess_factor_SS"] = 7.0
 
     # -----------------------------------------------------------------------
