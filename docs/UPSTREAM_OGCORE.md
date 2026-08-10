@@ -123,11 +123,11 @@ affected, and the further the unit value from the dollar the worse it gets:
 Japanese yen, Korean won, Indonesian rupiah, Vietnamese dong. For a rupiah
 calibration the required seed would be orders of magnitude beyond the cap.
 
-**What it does and does not cost, tested.** Raising the seed to the permitted
-maximum of 500,000 was tried on this calibration and made the solve **worse** —
-569 GE iterations against 30–267 on the shipped default across four earlier
-solves. So the cap is not currently costing convergence here, and the seeds are
-left at OG-Core's defaults.
+**What it does and does not cost.** Raising the seed to the permitted maximum of
+500,000 was tried here and took 569 GE iterations, against 30–267 on the shipped
+default in earlier solves — though those had different parameter sets, so it is
+not a controlled comparison. What is clear is that the cap is not what blocks a
+solve on this calibration; the seeds are left at OG-Core's defaults.
 
 The reason to fix it upstream is correctness rather than speed: a solver seed
 that cannot be set to the right order of magnitude is a trap waiting for a

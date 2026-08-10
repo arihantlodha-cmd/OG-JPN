@@ -343,13 +343,17 @@ def get_macro_params():
     # all. That cap is currency-dependent and excludes every low-unit currency
     # (yen, won, rupiah, dong). It is reported in docs/UPSTREAM_OGCORE.md.
     #
-    # But raising the seed to the permitted maximum was tested and made the
-    # solve WORSE, not better: 569 GE iterations against 30-267 on the shipped
-    # default across four earlier solves. So the seeds are left alone.
+    # Raising the seed to the permitted maximum was tried and took 569 GE
+    # iterations, against 30-267 on the shipped default in earlier solves --
+    # but those earlier solves had DIFFERENT parameter sets, so that is not a
+    # controlled comparison and should not be read as one. What it does
+    # establish is that the shipped default is not the thing blocking a solve
+    # here.
     #
-    # This is the family's own rule, and it cost a round to relearn: choose
-    # seeds by SOLVE-PATH ROBUSTNESS, not by proximity to the answer. A seed
-    # nearer the solution can route the solver through a worse region.
+    # Left at the defaults on the family's own rule: choose seeds by SOLVE-PATH
+    # ROBUSTNESS, not by proximity to the answer. A seed nearer the solution can
+    # route the solver through a worse region, and the shipped set is the one
+    # with the longer record of working.
     # -----------------------------------------------------------------------
 
     # -----------------------------------------------------------------------
