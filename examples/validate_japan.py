@@ -72,10 +72,15 @@ DASHBOARD = [
         "OECD Pensions at a Glance 2023 (2022)",
     ),
     (
-        "Debt / Y  (NET)",
+        # NOT a data target: D/Y in the steady state IS debt_ratio_ss, a policy
+        # anchor we chose. Japan's measured net debt (0.864 at end-2024, OECD
+        # GNFLQ) is the INITIAL condition, which the transition starts from.
+        # Scoring the SS against it would be scoring a choice against a
+        # measurement.
+        "Debt / Y  (= SS anchor)",
         lambda ss, Y: _s(ss["D"]) / Y,
-        0.864,
-        "OECD Economic Outlook GNFLQ, Japan 2024",
+        None,
+        "policy anchor debt_ratio_ss=1.0; measured start 0.864",
     ),
     (
         "Foreign-held debt  D_f/D",

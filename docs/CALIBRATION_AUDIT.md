@@ -148,6 +148,35 @@ and near-zero policy rates. The OECD's own 2027 projection has net interest
 rising to 0.86% of GDP (about −0.77% real). A long-run steady state should be
 anchored nearer the normalised value, not today's.
 
+### OG-Core cannot represent a negative sovereign rate — an upstream limitation
+
+Found by running the calibrated model. `ogcore/fiscal.py:390` computes
+
+```python
+r_gov = np.maximum(
+    p.r_gov_scale[t] * r - p.r_gov_shift[t]
+    + p.r_gov_DY * DY_ratio + p.r_gov_DY2 * DY_ratio**2,
+    0.00,        # <- hard floor at zero
+)
+```
+
+The wedge is **floored at zero**. With Japan's parameters the formula returns
+−0.74%; the model reports exactly `0.0000`.
+
+For most of the country family this floor never binds and is a sensible guard.
+For Japan it binds permanently, because a negative real effective rate on
+government debt is not an anomaly there — it is the defining feature of the
+fiscal position and has held for a decade.
+
+The practical cost is about 0.6 percentage points of GDP a year in debt service
+the real Japan does not pay, which flips the debt-stabilising primary balance
+from roughly zero to a small surplus. The calibration gets as close as the model
+allows and the gap is reported in the dashboard rather than hidden.
+
+**This is worth raising upstream** alongside the two give-back items already in
+the README. A country in a sustained negative-real-rate regime is exactly the
+case the floor was not designed for.
+
 ## Finding 3 — the debt ratio is at a cap, and the SS target was never chosen
 
 `initial_debt_ratio = 2.0` is the maximum OG-Core permits
@@ -258,6 +287,47 @@ women and older workers rose. That is a transitional effect that cannot continue
 indefinitely, which is a reason to prefer a longer window.
 
 ---
+
+## Finding 6b — the steady state has NEGATIVE growth, which changes the debt arithmetic
+
+This one only appears once the model is actually solved on Japanese demographics,
+and it matters more than any single parameter.
+
+Solving on UN data gives a steady-state population growth rate of
+
+```
+g_n_ss = -1.07% per year
+```
+
+so the model's steady-state growth rate is
+
+```
+g = e^{g_y}(1 + g_n_ss) - 1 = e^{0.0056} x (1 - 0.0107) - 1 = -0.51% per year
+```
+
+**Japan's steady state is a shrinking economy.** That is the correct
+representation of a country with a total fertility rate near 1.2, but it inverts
+the usual debt intuition, because the debt-stabilising primary balance depends on
+`r_gov − g`:
+
+| | `r_gov` | `g` | `r_gov − g` | `pb*` at `D/Y = 1.0` |
+|---|---:|---:|---:|---:|
+| Typical emerging economy | +2% | +4% | −2.0% | −2.0% (deficit OK) |
+| Japan, this calibration | −0.6% | **−0.51%** | **−0.09%** | **≈ 0** |
+
+So even with the negative real interest rate that makes Japan's debt famously
+cheap, a shrinking economy pushes `r_gov − g` back to roughly zero. **The model
+says Japan needs an approximately balanced primary budget in the long run**, not
+the primary deficit its low interest rate alone would seem to permit.
+
+Against Japan's actual primary balance of −1.79% (2024), the stable-debt steady
+state therefore embeds a consolidation of roughly 1.8 percentage points of GDP.
+That should be stated in the docs as something the calibration deliberately
+assumes, not discovered later as a puzzle.
+
+It also means the negative interest rate and the shrinking population are doing
+**opposite** things to debt sustainability, and a calibration that gets one right
+and the other wrong will be wrong twice over.
 
 ## Finding 7 — structural divergence from the family
 

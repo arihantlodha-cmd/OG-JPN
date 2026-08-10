@@ -118,13 +118,29 @@ def test_payroll_income_split_matches_data():
 
 def test_consumption_tax_is_effective_not_statutory():
     """
-    tau_c must carry ALL indirect taxes, not VAT alone. Japan's statutory
-    consumption tax is 10%, but goods-and-services taxes are 6.82% of GDP
-    against consumption of 53.6%, an effective 12.7%.
+    tau_c must carry ALL indirect taxes, not VAT alone, and must be tuned to
+    deliver the revenue rather than copied from a data ratio.
+
+    Japan's statutory consumption tax is 10%. The data ratio (6.82% of GDP over
+    consumption of 53.6%) implies 12.7%. But the model's consumption share runs
+    at 64.7% of GDP, because a shrinking steady state needs much less
+    investment than Japan currently undertakes -- so the rate that delivers
+    Japan's indirect-tax revenue in the model is 0.0682 / 0.647 = 10.5%.
     """
     t = tax_params.get_tax_params()
-    assert t["tau_c"] == [[pytest.approx(0.1272)]]
+    assert t["tau_c"] == [[pytest.approx(0.1054)]]
     assert t["tau_c"][0][0] != 0.10, "statutory rate is not the model input"
+
+
+def test_cit_adjustment_factor_is_set():
+    """
+    tau_b = cit_rate * c_corp_share_of_assets * adjustment_factor. Leaving the
+    adjustment factor at OG-Core's US default of 0.309 collected 1.56% of GDP
+    against Japan's 4.70%.
+    """
+    t = tax_params.get_tax_params()
+    assert "adjustment_factor_for_cit_receipts" in t
+    assert t["adjustment_factor_for_cit_receipts"][0] > 0.309
 
 
 def test_income_tax_is_not_the_us_functions():

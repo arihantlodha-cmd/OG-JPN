@@ -85,9 +85,14 @@ def get_tax_params():
     # (fuel, liquor, tobacco, motor vehicles) add 1.27% of GDP on top of VAT's
     # 4.94%. Using the statutory 10% would under-collect.
     #
-    # NEEDS TUNING: target cons_tax_revenue/Y = 0.0682 in the solved SS.
+    # TUNED (round 3): the data ratio implies 12.7%, but the model's
+    # consumption share (0.647 of GDP) runs above Japan's actual (0.536),
+    # because a shrinking steady state needs far less investment than Japan
+    # currently undertakes. The rate that delivers Japan's INDIRECT-TAX REVENUE
+    # in the model is therefore 0.0682 / 0.647 = 0.1054. Revenue is the moment
+    # worth hitting -- it is what the government actually collects.
     # -----------------------------------------------------------------------
-    tax_parameters["tau_c"] = [[0.1272]]
+    tax_parameters["tau_c"] = [[0.1054]]
 
     # -----------------------------------------------------------------------
     # Corporate income tax.
@@ -98,11 +103,17 @@ def get_tax_params():
     # by distorting the rate, so the statutory rate is set here and the
     # adjustment factor carries the gap.
     #
-    # NEEDS TUNING: target business_tax_revenue/Y = 0.0470. The adjustment
-    # factor below is OG-Core's US default and is almost certainly wrong for
-    # Japan; it is the dial to move.
+    # OG-Core forms the effective corporate rate as
+    #     tau_b = cit_rate * c_corp_share_of_assets * adjustment_factor
+    # so the adjustment factor is the dial that maps the statutory rate onto
+    # actual collections (ogcore/parameters.py:339).
+    #
+    # TUNED (rounds 2-3): OG-Core's US default of 0.309 produced CIT revenue of
+    # 1.56% of GDP against a target of 4.70%. Scaled to 0.930, then to 1.038
+    # after the income-tax fix moved the capital-income base.
     # -----------------------------------------------------------------------
     tax_parameters["cit_rate"] = [[0.2974]]
+    tax_parameters["adjustment_factor_for_cit_receipts"] = [1.038]
 
     # -----------------------------------------------------------------------
     # Property taxes -> the wealth tax.
@@ -118,10 +129,12 @@ def get_tax_params():
     # rate approximately flat at p_wealth and zero at zero wealth. m_wealth
     # must not be exactly zero -- it divides 0/0 at b = 0.
     #
-    # NEEDS TUNING: p_wealth is a first guess assuming household wealth of
-    # about 4x GDP (0.0221 / 4 = 0.0055). Tune against the solved SS.
+    # TUNED (round 3): the solved steady state puts household wealth at 4.69x
+    # GDP, so p_wealth = 0.0221 / 4.69 = 0.00471. The first guess of 0.0055
+    # (assuming 4x GDP) was over-collecting 2.58% of GDP against a 2.21%
+    # target.
     # -----------------------------------------------------------------------
-    tax_parameters["p_wealth"] = [0.0055]
+    tax_parameters["p_wealth"] = [0.00471]
     tax_parameters["h_wealth"] = [1.0]
     tax_parameters["m_wealth"] = [0.001]
 
@@ -138,10 +151,13 @@ def get_tax_params():
     # It is still far below statutory, because the basic exclusion means only
     # roughly 9% of estates pay it at all.
     #
-    # NEEDS TUNING: target bequest tax revenue of about 0.55% of GDP. The
-    # starting value assumes model bequest flows of roughly 7% of GDP.
+    # TUNED (round 3): model bequest flows are 25.1% of GDP, far above the 7%
+    # first guess, so the starting tau_bq of 0.08 collected 2.01% of GDP
+    # against a 0.55% target -- nearly four times too much. The effective rate
+    # is 0.0055 / 0.251 = 0.0219, which is the right order for a tax where the
+    # basic exclusion means only about 9% of estates pay anything.
     # -----------------------------------------------------------------------
-    tax_parameters["tau_bq"] = [0.08]
+    tax_parameters["tau_bq"] = [0.0219]
 
     # -----------------------------------------------------------------------
     # Personal income tax -- Gouveia-Strauss progressive form.
@@ -166,13 +182,23 @@ def get_tax_params():
     # mtrx_params (labour) and mtry_params (capital) take the same triple; the
     # x/y naming is not mnemonic.
     #
-    # NEEDS TUNING AND FITTING: phi1 is a family-analogous starting value, not
-    # a fit to Japan's schedule. phi2 must be tuned to iit_revenue/Y = 0.0617.
-    # Revenue responds concavely to phi2 -- expect 2-3 iterations, not one
-    # proportional step.
+    # TUNED (round 2): the starting phi2 of 2.0e-8 put the effective rate at
+    # mean income at 45.8%, collecting 37.8% of GDP against a 6.17% target --
+    # because phi2 * y^phi1 was large enough to saturate the ETR near phi0 for
+    # essentially every household. Inverting the GS effective-rate expression,
+    #
+    #     ETR(y) = phi0 * (1 - (1 + phi2 * y^phi1)^(-1/phi1))
+    #
+    # at Japan's mean income of 4.6m yen for an ETR of about 6% gives
+    # phi2 = 3.5e-10. Incomes are evaluated in currency via `factor`, so phi2
+    # carries units of income^(-phi1) and is therefore very small in yen.
+    #
+    # STILL NEEDS FITTING: phi1 = 1.30 is a family-analogous value, not a fit
+    # to Japan's statutory brackets. Revenue responds concavely to phi2, so
+    # expect to iterate rather than scale proportionally.
     # -----------------------------------------------------------------------
     tax_parameters["tax_func_type"] = "GS"
-    _gs_params = [[[0.55, 1.30, 2.0e-8]]]
+    _gs_params = [[[0.55, 1.30, 3.5e-10]]]
     tax_parameters["etr_params"] = _gs_params
     tax_parameters["mtrx_params"] = _gs_params
     tax_parameters["mtry_params"] = _gs_params
