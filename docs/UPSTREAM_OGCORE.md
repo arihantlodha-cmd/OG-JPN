@@ -45,22 +45,44 @@ orders of magnitude smaller:
 | start+40 | −0.568% | 4.83e-02 | 4.06e-01 (t=118) |
 | start+60 | −0.463% | 4.36e-02 | 4.64e-01 (t=118) |
 
-Widening shrinks the boundary jump but **the t≈118 discontinuity is invariant to
-it** — it is internal to ogcore. So no choice of `final_data_year` lets a
-country repo solve the transition here; the fix has to be upstream. (And
-widening further trades demographic faithfulness away: start+20's −0.698% is
-closest to the UN's own −0.676% average.)
+Widening shrinks the boundary jump but **the late discontinuity is invariant to
+it**, at every window from start+20 to start+74 (jump 0.50–0.56, always at
+t=118). Its mechanism is explicit in the source:
 
-**Proposed change.** Let the demographic path optionally follow the **UN
-projection** rather than freezing at a single year — for example a
+```python
+# ogcore/demographics.py
+fixper = int(1.5 * S)                    # = 120 for S = 80
+...
+target_pop[fixper] = total_pop * fixed_full_dist
+```
+
+At `fixper` the evolving population distribution is **replaced** by the fixed
+steady-state one. That is a step change, it lands at period 120 regardless of
+any country-side setting, and for a country with sharp demographic change it
+breaches `RC_TPI`. No choice of `final_data_year` avoids it — the fix has to be
+upstream.
+
+Two smaller notes from the same area: `assert fixper > T0` caps the usable data
+window at `1.5 * S` periods, and `final_data_year = start_year + 75` fails
+outright because UN WPP ends at 2100 and the immigration residual needs the
+following year. So the full usable horizon is 74 years.
+
+**Proposed change (two parts).** First, let the demographic path optionally
+follow the **UN projection** rather than freezing at a single year — for example a
 `use_projection=True` flag, or accepting a `final_data_year` far enough out that
 the projection is consumed and documenting that it is the intended use. Either
 way the current behaviour is a trap: the parameter reads like a data-fetch
 boundary and is in fact the assumption that sets the model's long-run growth
 rate.
 
-Interim mitigation is in this repo (`ogjpn.constants.DEMOGRAPHIC_DATA_YEARS`),
-but it is a workaround for something the whole family needs.
+Second, **smooth or taper the `fixper` handoff** instead of substituting the
+fixed distribution in one period. Blending over a few periods, or aligning the
+handoff with where the projected rates have already flattened, would remove the
+step without changing the steady state it converges to.
+
+The first part alone is not enough: this repo now uses the full UN horizon
+(`ogjpn.constants.DEMOGRAPHIC_DATA_YEARS = 74`) and the transition still
+breaches at `fixper`.
 
 ---
 
