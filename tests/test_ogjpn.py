@@ -477,16 +477,22 @@ def test_solver_seed_now_fits_ogcores_cap():
     assert m["initial_guess_factor_SS"] < 500000
 
 
-def test_solver_rate_seeds_are_left_at_ogcore_defaults():
+def test_solver_seeds_are_retuned_and_coupled_to_alpha_T():
     """
-    OG-Core's initial_guess_factor_SS is a US-DOLLAR value and is capped at
-    500,000, below Japan's solved factor of ~7.0m -- so the correct seed cannot
-    be entered (reported upstream). Raising it to the cap was TESTED and made
-    the solve worse: 569 GE iterations against 30-267 on the default.
+    ogcore derives the output guess from the transfer guess:
+    `Yguess = TRguess / alpha_T[-1]` (SS.py:1387). So TR and alpha_T are
+    coupled, and correcting alpha_T silently invalidates the TR seed.
 
-    Seeds are chosen by solve-path robustness, not proximity. This test pins
-    the decision so the seeds are not "fixed" later on reasoning alone.
+    With alpha_T = 0.025 the default TRguess of 0.057 implies Y = 2.28 against
+    this model's actual 0.93 -- 2.5x too big, which makes the solver fail and
+    restart down ogcore's 39-rung DEV_FACTOR_LIST rather than converge.
     """
     m = macro_params.get_macro_params()
-    for k in ("initial_guess_r_SS", "initial_guess_TR_SS"):
-        assert k not in m, f"{k} should be left at OG-Core's default"
+    alpha_T = m["alpha_T"][0]
+    implied_Y = m["initial_guess_TR_SS"] / alpha_T
+    assert 0.8 < implied_Y < 1.1, (
+        f"TR seed implies Y = {implied_Y:.2f}; the solved Y is ~0.93. "
+        "Retune initial_guess_TR_SS = alpha_T * Y whenever alpha_T moves."
+    )
+    assert m["initial_guess_r_SS"] == pytest.approx(0.040)
+    assert m["initial_guess_r_SS"] != 0.0648, "must not be OG-USA's default"

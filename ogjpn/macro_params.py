@@ -336,23 +336,40 @@ def get_macro_params():
     macro_parameters["beta_annual"] = [0.984] * 7
 
     # -----------------------------------------------------------------------
-    # Steady-state solver seeds: LEFT AT OG-CORE'S DEFAULTS, on evidence.
+    # Steady-state solver seeds. RETUNED to this calibration, as every sibling
+    # repo does -- and here it is not optional.
     #
-    # These are OG-USA's solved values, and one of them is wrong in a way worth
-    # recording: `initial_guess_factor_SS = 139355.15` is the factor that maps
-    # model units to US DOLLARS. `factor` scales with `mean_income_data`, so
-    # Japan's correct seed is about 7.0 million yen -- and OG-Core validates the
-    # parameter to a maximum of 500,000, so the right value cannot be entered at
-    # all. That cap is currency-dependent and excludes every low-unit currency
-    # (yen, won, rupiah, dong). It is reported in docs/UPSTREAM_OGCORE.md.
+    # ogcore does NOT simply start from these and iterate. `run_SS` walks a
+    # hardcoded ladder of 39 (r, TR) rescalings (`ogcore.constants
+    # .DEV_FACTOR_LIST`) and makes a SEPARATE `opt.root` call for each, taking
+    # the first that succeeds. A seed far from the answer therefore does not
+    # converge slowly -- it fails, and the solver restarts from the next rung.
+    # What looks like "hundreds of iterations" is really several failed solves
+    # stacked end to end.
     #
-    # Because income is expressed in MILLIONS of yen, Japan's factor solves to
-    # about 7.0 rather than 7.0 million, so for the first time the seed CAN be
-    # set to the right order of magnitude. The r and TR seeds are OG-USA's
-    # solved values and are left alone -- the family's rule is to choose seeds
-    # by solve-path robustness rather than proximity, and the shipped pair has
-    # the longer record of working here.
+    # The trap that bit this calibration is worth spelling out, because it is
+    # caused by getting something else RIGHT. ogcore derives the output guess
+    # from the transfer guess:
+    #
+    #     Yguess = TRguess / alpha_T[-1]        (ogcore/SS.py:1387)
+    #
+    # Correcting alpha_T from 0.075 to 0.025 -- the cash-versus-in-kind fix,
+    # which is right on the economics -- shrank that denominator by three. With
+    # ogcore's default TRguess of 0.057 the implied Y jumped from 0.76, which
+    # happened to sit near this model's actual Y of 0.93, to 2.28: two and a
+    # half times too large. Fixing the transfers silently broke the seed.
+    #
+    # So the seeds are set from a solved steady state:
+    #     r      solves to 0.040
+    #     TR     = alpha_T * Y = 0.025 * 0.928 = 0.0232, so Yguess lands on 0.93
+    #     factor solves to 6.98 on the millions-of-yen scale
+    #
+    # RULE: retune these whenever alpha_T, alpha_G, the growth rate or the
+    # demographic window move. They are not free-standing preferences; TR and
+    # alpha_T are coupled by the line above.
     # -----------------------------------------------------------------------
+    macro_parameters["initial_guess_r_SS"] = 0.040
+    macro_parameters["initial_guess_TR_SS"] = 0.0232
     macro_parameters["initial_guess_factor_SS"] = 7.0
 
     # -----------------------------------------------------------------------
