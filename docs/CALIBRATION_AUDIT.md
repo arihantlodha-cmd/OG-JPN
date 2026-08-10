@@ -395,26 +395,71 @@ Ordered by how much each changes the answer.
 
 ## Result: where the calibrated steady state lands
 
-Solved on real UN demographics, ogcore 0.19.0, eleven tuning rounds.
+Solved on real UN demographics, ogcore 0.19.0, fourteen tuning rounds.
 
 | Moment | Model | Target | Gap | Source |
 |---|---:|---:|---:|---|
-| **Total tax revenue / Y** | **0.3353** | **0.3370** | **−0.0017** | OECD RevStats 2025 |
+| **Total tax revenue / Y** | **0.3359** | **0.3370** | **−0.0011** | OECD RevStats 2025 |
 | — Income tax (PIT) / Y | 0.0616 | 0.0617 | −0.0001 | OECD RevStats 2025 |
-| — Corporate tax / Y | 0.0471 | 0.0470 | +0.0001 | OECD RevStats 2025 |
-| — Consumption + indirect / Y | 0.0676 | 0.0682 | −0.0006 | OECD RevStats 2025 |
+| — Corporate tax / Y | 0.0472 | 0.0470 | +0.0002 | OECD RevStats 2025 |
+| — Consumption + indirect / Y | 0.0682 | 0.0682 | **0.0000** | OECD RevStats 2025 |
 | — Payroll / social insurance / Y | 0.1316 | 0.1318 | −0.0002 | OECD RevStats 2025 |
-| **Pension outlays / Y** | **0.0927** | **0.0930** | **−0.0003** | OECD PaG 2023 |
-| Foreign-held debt `D_f/D` | 0.1370 | 0.1370 | 0.0000 | MOF, Mar 2026 |
-| Capital-output `K/Y` | 3.651 | 3.70 | −0.049 | Penn World Table |
-| Consumption / Y | 0.6019 | 0.5360 | +0.0659 | World Bank |
+| **Pension outlays / Y** | **0.0929** | **0.0930** | **−0.0001** | OECD PaG 2023 |
+| Foreign-held debt `D_f/D` | 0.1370 | 0.1370 | **0.0000** | MOF, Mar 2026 |
+| **Capital-output `K/Y`** | **3.696** | **3.700** | **−0.004** | Penn World Table |
+| Consumption / Y | 0.5765 | 0.5310 | +0.0455 | World Bank |
 | Sovereign real rate `r_gov` | 0.0000 | −0.0060 | +0.0060 | OECD EO (model floor) |
-| Interest rate `r` | 0.0429 | — | — | no data target |
+| Interest rate `r` | 0.0416 | — | — | no data target |
 
-Every fiscal moment lands within **0.17 percentage points of GDP**; pension
-outlays within 0.03.
+Every fiscal moment lands within **0.11 percentage points of GDP**. The
+capital-output ratio, the consumption tax and the foreign debt share are exact
+to the reported precision.
 
-### Earnings: the full two-part method
+## The consumption gap, fully decomposed
+
+Consumption fell from 0.671 to **0.5765** over the calibration, against a target
+of 0.531. There is no consumption parameter in OG-Core — `C` is the residual of
+the resource constraint — so the remaining 4.55pp is exactly the sum of the
+other three components, and each now has a named, quantified cause:
+
+| | Model | Japan | Gap | Cause |
+|---|---:|---:|---:|---|
+| Consumption / Y | 0.5765 | 0.531 | **+4.55pp** | the residual of the three below |
+| Investment / Y | 0.2578 | 0.278 | −2.02pp | growth-rate difference |
+| Government / Y | 0.1877 | 0.201 | −1.33pp | `r_gov` floor + consolidation |
+| Net exports / Y | −0.0220 | −0.009 | −1.30pp | no investment-income balance |
+
+**Investment, −2.0pp — the growth rate, and nothing else now.** With `K/Y`
+exactly on target and `delta` sourced from Japan's own consumption of fixed
+capital, steady-state investment `(g + delta)·K/Y` is pinned by `g` alone.
+Japan's investment rate implies `g = +0.51%`; the model's demographic steady
+state gives `g = −0.04%`. Every other route into this number is closed: raising
+it through `beta` would break the `K/Y` match that `beta` was just calibrated to.
+
+**Government, −1.3pp — half of it is an OG-Core limitation.** Measured by
+removing the `r_gov` floor in a scratch copy: **0.51pp**. The remainder is the
+consolidation the stable-debt steady state embeds relative to Japan's actual
+primary deficit. See `docs/UPSTREAM_OGCORE.md`.
+
+**Net exports, −1.3pp — OG-Core cannot represent Japan's creditor position.**
+This one is structural and worth stating plainly, because it is specific to
+Japan. Japan runs a current-account surplus of 3–4% of GDP that is almost
+entirely **investment income** on the world's largest net foreign asset position
+(+¥533 trillion, about +86% of GDP); its *trade* balance is near zero. OG-Core
+has no income balance — net exports are a pure residual of the resource
+constraint, and the model represents foreign ownership of domestic capital but
+not domestic ownership of foreign capital. So the single largest external fact
+about Japan has no home in the model at any parameter setting.
+
+### What that means for using the model
+
+The fiscal block is calibrated to Japanese data essentially exactly, and the
+capital stock is on target. The consumption *level* runs about 4.5pp of GDP high
+for three reasons that are all understood and none of which is a free parameter.
+Reform exercises reported as **percentage changes** are unaffected by the level;
+level statements about consumption should carry the caveat.
+
+### Earnings: the full two-part method### Earnings: the full two-part method
 
 The family's earnings method (EAPD-DRB/OG-ZAF#18, tracked for the country repos
 in #63) has two halves, and both are implemented here:

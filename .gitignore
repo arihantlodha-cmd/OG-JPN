@@ -10,3 +10,7 @@ OUTPUT*/
 
 # local venv
 .venv/
+
+# model run output
+examples/OUTPUT_BASELINE/
+examples/OUTPUT_REFORM/
