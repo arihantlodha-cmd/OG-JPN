@@ -64,19 +64,32 @@ def get_macro_params():
     # separately from the demographics. Justifying g_y with GDP growth would
     # count Japan's demographic decline twice.
     #
-    # World Bank SL.GDP.PCAP.EM.KD (GDP per person employed, constant PPP),
-    # compound annual growth:
-    #     1995-2019   0.69%
-    #     2000-2019   0.56%   <- window used
-    #     2000-2024   0.45%
-    #     2010-2024   0.15%
+    # It is productivity per HOUR, not per worker. OG-Core's labour input is
+    # people x hours x ability -- `n` is the fraction of the time endowment
+    # supplied -- and in a steady state hours per worker are CONSTANT. Japan's
+    # measured hours per worker fell about 0.47%/yr over this window, which is a
+    # transitional adjustment, not a balanced-growth feature. Anchoring g_y on
+    # output per WORKER would import that transitional decline into the steady
+    # state as if it were permanent.
     #
-    # Note the Japanese wrinkle: employment GREW (+0.36%/yr, 2010-2024) while
-    # population fell (-0.23%/yr), because participation among women and older
-    # workers rose. That cannot continue indefinitely, which argues for the
-    # longer window rather than the most recent one.
+    # This is the same argument that sets the window below: Japan's employment
+    # ALSO rose faster than population over the period, as participation among
+    # women and older workers increased, and that too cannot continue for ever.
+    # Both adjustments have to be stripped out, or neither.
+    #
+    # Penn World Table via FRED (RGDPNAJPA666NRUG real GDP, EMPENGJPA148NRUG
+    # persons engaged, AVHWPEJPA065NRUG average hours), compound annual growth:
+    #
+    #     window       GDP/worker   hours/worker   GDP/HOUR
+    #     1995-2019      +0.760%       -0.491%      +1.257%
+    #     2000-2019      +0.557%       -0.472%      +1.035%   <- used
+    #     2000-2023      +0.454%       -0.478%      +0.937%
+    #     2010-2019      +0.152%       -0.548%      +0.704%
+    #
+    # The window starts in 2000, after Japan's 1997-98 banking crisis, and ends
+    # in 2019, before COVID.
     # -----------------------------------------------------------------------
-    macro_parameters["g_y_annual"] = 0.0056
+    macro_parameters["g_y_annual"] = 0.0104
 
     # -----------------------------------------------------------------------
     # Depreciation rate of capital.
@@ -290,5 +303,20 @@ def get_macro_params():
     macro_parameters["alpha_G"] = [0.201]
     macro_parameters["alpha_T"] = [0.025]
     macro_parameters["alpha_I"] = [0.03]
+
+    # -----------------------------------------------------------------------
+    # Solver settings.
+    #
+    # Anderson acceleration on the TPI outer loop (ogcore >= 0.16.4). The
+    # family's experience is that it cuts a single-industry transition from
+    # 30-70 damped iterations to 11-12, with monotonically declining distances.
+    # It belongs in the base calibration, not only in a multi-industry overlay.
+    #
+    # Watch the distance series on a first run: if it oscillates or stalls,
+    # fall back to damped Picard with a lower `nu`. Note that neither damping
+    # nor Anderson fixes a FISCAL runaway -- solver knobs treat oscillation,
+    # not an unbalanced budget (see the identity in docs/CALIBRATION_AUDIT.md).
+    # -----------------------------------------------------------------------
+    macro_parameters["TPI_outer_method"] = "anderson"
 
     return macro_parameters

@@ -97,7 +97,7 @@ def get_tax_params():
     # 0.1087 (which lands at 0.0702 once the pension tier is added back). Revenue is the moment worth hitting: it is what the government
     # actually collects.
     # -----------------------------------------------------------------------
-    tax_parameters["tau_c"] = [[0.1123]]
+    tax_parameters["tau_c"] = [[0.1175]]
 
     # -----------------------------------------------------------------------
     # Corporate income tax.
@@ -119,7 +119,7 @@ def get_tax_params():
     # Table value and enlarged the capital-income base.
     # -----------------------------------------------------------------------
     tax_parameters["cit_rate"] = [[0.2974]]
-    tax_parameters["adjustment_factor_for_cit_receipts"] = [0.868]
+    tax_parameters["adjustment_factor_for_cit_receipts"] = [0.850]
 
     # -----------------------------------------------------------------------
     # Property taxes -> the wealth tax.

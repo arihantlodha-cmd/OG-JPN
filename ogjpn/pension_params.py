@@ -64,20 +64,21 @@ NTA   National Tax Agency, Survey on Private-Sector Wages 2023: average annual
 #   and Japan's, and OG-Core's use of an average of the last
 #   `avg_earn_num_years` of earnings rather than the OECD's lifetime basis.
 #
-#   Worth noting as evidence the pieces fit: before the NTA age-shape
-#   adjustment went into ogjpn/income.py, the fitted rate had to be 0.399 --
-#   2.6pp ABOVE the derived 0.373. Once Japan's own age-earnings profile
-#   replaced the US one (earnings peaking at 57 rather than 61, and falling
-#   hard after mandatory retirement at 60), the required rate fell to 0.358,
-#   1.5pp BELOW the derived value. Improving an unrelated block moved this
-#   parameter toward its independently-derived value rather than away.
+#   The fitted rate is sensitive to the assumed productivity growth, because
+#   OG-Core's DB benefit averages earnings over the last `avg_earn_num_years`
+#   and faster growth lowers that average relative to contemporaneous wages.
+#   At g_y = 0.56%/yr the rate fitted to 0.358; at the corrected per-hour
+#   g_y = 1.04%/yr it fits to 0.416. Worth noting that the OECD's own pension
+#   modelling assumes real earnings growth of 1.25%/yr, so the corrected g_y is
+#   much closer to the assumption under which the 32.4% was produced than the
+#   per-worker figure was.
 #
 # So: treat this as an EFFECTIVE system-wide replacement rate, not as an accrual
 # rate you could read off Japanese pension law. It is NOT independently
 # corroborated by the OECD's net replacement rate of 38.8% -- that figure is net
 # of tax and is a different concept; its numerical closeness is a coincidence
 # and was cited as corroboration in an earlier version of this file in error.
-REPLACEMENT_RATE = 0.358
+REPLACEMENT_RATE = 0.416
 GROSS_REPLACEMENT_RATE_OECD = 0.324   # OLD-AGE, whole public system, full career
 SURVIVORS_DISABILITY_UPLIFT = 1.15    # benefits OG-Core's DB block cannot separate
 
@@ -118,7 +119,7 @@ def get_pension_params():
     # (average earnings) x yr_contrib x alpha_db, the product
     # yr_contrib * alpha_db is the replacement rate:
     #
-    #     alpha_db = 0.358 / 40 = 0.00895
+    #     alpha_db = 0.416 / 40 = 0.01040
     #
     # IMPORTANT: OG-Core's default alpha_db is 0.0. Switching pension_system to
     # "Defined Benefits" WITHOUT setting alpha_db silently produces zero
