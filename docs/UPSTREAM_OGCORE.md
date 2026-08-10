@@ -1,12 +1,47 @@
 # Upstream contributions this calibration identifies
 
-Three things OG-JPN needs that belong in OG-Core or the shared data repos rather
-than in this country model. Each is stated with what it costs to work around,
-because that is what decides whether it is worth a maintainer's time.
+Five things this calibration needs that belong in OG-Core or the shared data
+repos rather than in a country model. Each is stated with what it costs to work
+around, because that is what decides whether it is worth a maintainer's time.
+
+Items 1 and 5 affect **every** country repo, not just Japan.
 
 ---
 
-## 1. `r_gov` is floored at zero, which Japan is permanently below
+## 1. `get_pop_objs` freezes the vital rates at `final_data_year`
+
+**Where:** `ogcore/demographics.py`, `get_pop_objs()`.
+
+**Status: identified here, PR to follow.**
+
+Fertility, mortality and immigration are held constant at their
+`final_data_year` values for the whole path. Every country repo in the family
+passes a window of one to two years (`start_year + 1`; ogcore's own default is
+`start_year + 2`), so every model runs on two years of UN data and then frozen
+rates forever — even though the UN publishes projections to 2100 for all of
+them.
+
+**What it cost here.** With the family's window, Japanese mortality was frozen at
+its 2026 level and the implied steady-state population growth came out at
+**−1.070%/yr**, against the UN medium variant's own 2025–2100 implied average of
+**−0.676%**. Widening to 20 years gives −0.698%, within 0.02pp of the UN. The
+discontinuity where the window ends also produced a resource-constraint breach
+two periods into the transition that failed the solve outright.
+
+**Proposed change.** Let the demographic path optionally follow the **UN
+projection** rather than freezing at a single year — for example a
+`use_projection=True` flag, or accepting a `final_data_year` far enough out that
+the projection is consumed and documenting that it is the intended use. Either
+way the current behaviour is a trap: the parameter reads like a data-fetch
+boundary and is in fact the assumption that sets the model's long-run growth
+rate.
+
+Interim mitigation is in this repo (`ogjpn.constants.DEMOGRAPHIC_DATA_YEARS`),
+but it is a workaround for something the whole family needs.
+
+---
+
+## 2. `r_gov` is floored at zero, which Japan is permanently below
 
 **Where:** `ogcore/fiscal.py`, `get_r_gov()` (both the scalar and the path branch).
 
@@ -68,7 +103,7 @@ Defaulting to `0.0` reproduces today's behaviour exactly.
 
 ---
 
-## 2. Japan is missing from the offline demographic mirror
+## 3. Japan is missing from the offline demographic mirror
 
 **Where:** `ogcore/demographics.py`, the `country_dict` fallback (11 countries,
 no `"392"`).
@@ -86,7 +121,7 @@ The CSVs can be generated from the UN API once a token is in hand.
 
 ---
 
-## 3. Demographic gradients have no high-income route
+## 4. Demographic gradients have no high-income route
 
 **Where:** [EAPD-DRB/Demographic-Gradients](https://github.com/EAPD-DRB/Demographic-Gradients).
 
@@ -108,10 +143,32 @@ derivation rather than a citation.
 
 ---
 
+## 5. The NTA age-shape method belongs in a shared place
+
+**Where:** the country repos' `income.py`, or a shared helper.
+
+**Status: implemented here, worth generalising.**
+
+EAPD-DRB/OG-ZAF#18 sets out a two-part earnings method — an NTA age-shape
+adjustment plus the Gini tilt — and #63 tracks getting it into the country
+repos. Only the tilt is in the repos today, which leaves the *US* age profile in
+place for every country.
+
+This repo implements both halves (`ogjpn/income.py`,
+`scripts/fetch_nta_age_profiles.py`). The fetch is the fiddly part and is
+country-agnostic: NTA has no API, so it walks a session form and needs a
+`Referer` header on the download POST. That machinery would be better shared than
+re-derived per country.
+
+For Japan the difference is not cosmetic — the seniority wage system and
+mandatory retirement at 60 move peak earnings age from 61 to 57.
+
+---
+
 ## Note on scope
 
-None of these block the calibration. Items 2 and 3 were already identified in
-the project README; item 1 was found by running the calibrated model and is new.
-All three are recorded here rather than worked around, because a country repo
-quietly compensating for an upstream limitation is how a limitation becomes
+None of these block the calibration. Items 3 and 4 were already identified in
+the project README; items 1, 2 and 5 were found by building and running this
+calibration. All are recorded here rather than quietly worked around, because a
+country repo compensating for an upstream limitation is how a limitation becomes
 invisible.

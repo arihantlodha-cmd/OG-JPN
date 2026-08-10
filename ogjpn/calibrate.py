@@ -49,7 +49,7 @@ import numpy as np
 
 from ogcore import demographics
 from ogjpn import income, macro_params, pension_params, tax_params
-from ogjpn.constants import UN_COUNTRY_CODE
+from ogjpn.constants import DEMOGRAPHIC_DATA_YEARS, UN_COUNTRY_CODE
 
 
 class Calibration:
@@ -84,7 +84,10 @@ class Calibration:
                 99,
                 country_id=UN_COUNTRY_CODE,
                 initial_data_year=p.start_year - 1,
-                final_data_year=p.start_year + 1,
+                # See DEMOGRAPHIC_DATA_YEARS: ogcore freezes the vital rates
+                # at final_data_year, so a short window would hold Japanese
+                # mortality at its 2026 level for the whole transition.
+                final_data_year=p.start_year + DEMOGRAPHIC_DATA_YEARS,
                 # income group shares (lambdas) so the demographic arrays
                 # come back J-wide and match the model's J income groups
                 income_percentiles=np.asarray(p.lambdas).ravel(),
@@ -104,7 +107,7 @@ class Calibration:
                 99,
                 country_id=UN_COUNTRY_CODE,
                 initial_data_year=p.start_year - 1,
-                final_data_year=p.start_year + 1,
+                final_data_year=p.start_year + DEMOGRAPHIC_DATA_YEARS,
                 income_percentiles=np.asarray(p.lambdas).ravel(),
                 GraphDiag=False,
             )

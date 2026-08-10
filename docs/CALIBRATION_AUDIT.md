@@ -679,6 +679,62 @@ of the source data** — the family's own guidance flags that a GDP rebasing mov
 tax-to-GDP ratios by 2–3pp (South Africa's 2021 rebasing moved it 2.6pp). Tuning
 past this point fits noise.
 
+## Finding 8 — the demographic data window was quietly deciding the answer
+
+This was found by the transition failing, and it turned out to be the largest
+single error left in the calibration.
+
+**The symptom.** The baseline transition raised
+`RuntimeError: Transition path equlibrium not found (RC_error)`.
+
+**What it was not.** Anderson acceleration converged cleanly — 11 iterations,
+distance falling monotonically to 6.3e-06 — and the maximum debt ratio sat at
+1.0029 throughout, so this was neither a solver oscillation nor the fiscal
+runaway the family's playbook warns about. The early-transition aggregates were
+smooth, ruling out the initial-wealth windfall that bit OG-PHL.
+
+**What it was.** Only **2 of 320 periods** breached tolerance — t=2 and t=120 —
+with their neighbours five orders of magnitude smaller. Both coincided with
+discontinuities in `rho` and `imm_rates`. The cause:
+
+```python
+final_data_year = p.start_year + 1        # the family convention
+```
+
+`ogcore.demographics.get_pop_objs` **freezes fertility, mortality and
+immigration at `final_data_year`**. A three-year window meant Japanese mortality
+was held at its 2026 level for the entire transition — and the model's
+steady state was built on 2026 vital rates rather than the UN's projection.
+
+For most of the family this is harmless. For Japan it is not: projected
+longevity gains in the world's longest-lived and fastest-ageing population are
+the central mechanism the model exists to study.
+
+**The size of it.** Widening the window to 20 years:
+
+| | narrow (start+1) | wide (start+20) |
+|---|---:|---:|
+| periods over which mortality varies | 2 | 21 |
+| implied `g_n_ss` | **−1.070%/yr** | **−0.698%/yr** |
+| model growth `g` | −0.036% | **+0.340%** |
+| debt-stabilising `pb*` | +0.52% (surplus) | **−0.34% (deficit)** |
+
+**The independent check.** The UN medium variant's own 2025–2100 implied average
+for Japan is **−0.676%/yr**. The wide window produces −0.698% — within 0.02
+percentage points. The narrow window's −1.070% was not a demographic fact about
+Japan; it was an artefact of freezing the vital rates two years in.
+
+**What it cascaded into.** A less negative population decline raises `g`, which
+raises steady-state investment `(g + delta)·K/Y`, lowers the debt-stabilising
+primary balance from a surplus to a deficit (closer to Japan's actual −1.79%),
+and required `beta` to be recalibrated upward to hold `K/Y` on target. The
+consumption gap fell from 4.1pp to about 2pp on the back of it.
+
+**The general lesson.** A convention inherited from sibling repos was silently
+setting the most important parameter in a demographic model. It surfaced only
+because the transition was actually run — the steady state solved and validated
+happily on the wrong demographics for eleven tuning rounds.
+
 ## Adversarial check
 
 Every load-bearing claim in this document was attacked deliberately, on the
