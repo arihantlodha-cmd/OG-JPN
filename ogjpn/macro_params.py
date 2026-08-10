@@ -305,6 +305,30 @@ def get_macro_params():
     macro_parameters["alpha_I"] = [0.03]
 
     # -----------------------------------------------------------------------
+    # Household discount factor, calibrated to Japan's capital-output ratio.
+    #
+    # beta is not directly observable. The standard practice in this literature
+    # is to calibrate it to an observable aggregate, and the capital-output
+    # ratio is the conventional one. OG-Core ships OG-USA's 0.96.
+    #
+    # In the steady state the firm's first-order condition pins
+    #     K/Y = gamma_effective / (r + delta)
+    # with gamma and delta both sourced independently here, so K/Y is a
+    # function of r, and r is what beta moves. Solving on the model:
+    #
+    #     beta 0.960  ->  K/Y 3.435,  r 4.95%
+    #     beta 0.972  ->  K/Y 3.730,  r 4.10%
+    #     interpolating to the Penn World Table's 3.70  ->  beta 0.971
+    #
+    # Note this lever only became available once g_y was corrected to a
+    # per-hour basis: at the earlier per-worker g_y the model's K/Y already sat
+    # on target, and moving beta would have broken it. The order of operations
+    # matters -- calibrate the sourced parameters first, then use beta for what
+    # is left.
+    # -----------------------------------------------------------------------
+    macro_parameters["beta_annual"] = [0.971] * 7
+
+    # -----------------------------------------------------------------------
     # Solver settings.
     #
     # Anderson acceleration on the TPI outer loop (ogcore >= 0.16.4). The

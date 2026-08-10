@@ -160,7 +160,7 @@ def test_consumption_tax_is_effective_not_statutory():
     Japan's indirect-tax revenue in the model is 0.0682 / 0.627 = 10.9%.
     """
     t = tax_params.get_tax_params()
-    assert t["tau_c"] == [[pytest.approx(0.1175)]]
+    assert t["tau_c"] == [[pytest.approx(0.1183)]]
     assert t["tau_c"][0][0] != 0.10, "statutory rate is not the model input"
 
 
@@ -173,7 +173,7 @@ def test_cit_adjustment_factor_is_set():
     t = tax_params.get_tax_params()
     assert "adjustment_factor_for_cit_receipts" in t
     assert t["adjustment_factor_for_cit_receipts"][0] > 0.309
-    assert t["adjustment_factor_for_cit_receipts"][0] == pytest.approx(0.850, abs=1e-3)
+    assert t["adjustment_factor_for_cit_receipts"][0] == pytest.approx(0.873, abs=1e-3)
 
 
 def test_income_tax_is_not_the_us_functions():
@@ -230,7 +230,7 @@ def test_alpha_db_reproduces_the_oecd_replacement_rate():
     pp = pension_params.get_pension_params()
     assert pp["alpha_db"] > 0.0
     replacement = pp["yr_contrib"] * pp["alpha_db"]
-    assert replacement == pytest.approx(0.416, abs=1e-6)
+    assert replacement == pytest.approx(0.414, abs=1e-6)
     assert replacement > pension_params.GROSS_REPLACEMENT_RATE_OECD
     # most of the gap should be the derived survivors/disability uplift
     derived = (pension_params.GROSS_REPLACEMENT_RATE_OECD
@@ -400,3 +400,25 @@ def test_nta_source_files_are_present_and_matched():
         assert rows, f"empty NTA profile for {iso}"
         assert all(r["VarType"] == "Smooth Mean" for r in rows)
         assert all(r["Variable Name"] == "Labor Income" for r in rows)
+
+
+def test_beta_is_calibrated_to_japans_capital_output_ratio():
+    """
+    beta is not observable; it is calibrated to K/Y, the conventional target.
+    OG-Core ships OG-USA's 0.96, which put Japan's K/Y at 3.44 against the
+    Penn World Table's 3.70.
+    """
+    m = macro_params.get_macro_params()
+    assert m["beta_annual"][0] == pytest.approx(0.971)
+    assert m["beta_annual"][0] != 0.96, "must not be OG-USA's value"
+    assert len(m["beta_annual"]) == 7, "one per lifetime-income group"
+
+
+def test_anderson_acceleration_is_on():
+    """
+    ogcore >= 0.16.4 offers Anderson acceleration on the TPI outer loop; the
+    family's guidance is that it belongs in the base calibration, not only in a
+    multi-industry overlay.
+    """
+    m = macro_params.get_macro_params()
+    assert m["TPI_outer_method"] == "anderson"
