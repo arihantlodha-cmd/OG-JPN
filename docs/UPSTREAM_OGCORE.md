@@ -1,11 +1,12 @@
 # Upstream contributions this calibration identifies
 
-Six things this calibration needs that belong in OG-Core or the shared data
+Seven things this calibration needs that belong in OG-Core or the shared data
 repos rather than in a country model. Each is stated with what it costs to work
 around, because that is what decides whether it is worth a maintainer's time.
 
-Items 1, 3 and 6 affect **every** country repo, not just Japan — item 3
-hits every country whose currency is not the US dollar.
+Items 1, 3, 4 and 7 affect **every** country repo, not just Japan. Item 3 is
+worst for countries whose households hold a lot of wealth; item 4 for those
+whose currency is not the US dollar.
 
 ---
 
@@ -148,7 +149,54 @@ Defaulting to `0.0` reproduces today's behaviour exactly.
 
 ---
 
-## 3. `initial_guess_factor_SS` is capped below what a non-dollar currency needs
+## 3. The steady-state bequest seed is hardcoded, and it is two orders of magnitude out
+
+**Where:** `ogcore/SS.py`, `SS_initial_guesses()` — carrying OG-Core's own TODO.
+
+```python
+if p.use_zeta:
+    b_guess = np.ones((p.S, p.J)) * b_val      # b_val IS honoured here
+    ...
+else:
+    b_guess = (
+        np.ones((p.S, p.J)) * 0.07
+    )  # TODO: remove hardcode here and next line
+    BQguess = aggr.get_BQ(rguess, b_guess, None, p, "SS", False)
+```
+
+With `use_zeta = False` — the setting every country repo uses — the `b_val`
+argument is **ignored** and household savings are seeded at a hardcoded `0.07`.
+Bequests for all `J` groups are then derived from that.
+
+**Measured on Japan**, comparing the seed against the solved steady state:
+
+| group | seed | solved | ratio |
+|---|---:|---:|---:|
+| j=0 (bottom 25%) | 0.000330 | 0.0247 | 75× |
+| j=3 | 0.000132 | 0.0219 | 166× |
+| j=6 (top 1%) | 0.0000132 | 0.00461 | **349×** |
+| **total** | **0.00132** | **0.177** | **134×** |
+
+So **7 of the 14 unknowns start two orders of magnitude away**, and the error is
+worst where the model is most nonlinear. Everything the calibration *can* control
+is already at the solution — seeding `r` at 0.040 against a solved 0.0399, and
+the derived `w` at 1.5464 against 1.5476 — and the solve still struggles, because
+half the guess vector is untouchable.
+
+The exposure scales with how much wealth a country's households hold: `0.07` is a
+US-shaped number, and Japan's solved population-weighted savings are about 4.2.
+An old, wealthy, high-saving population is the worst case, which is precisely the
+kind of country this model exists to study.
+
+**Proposed change.** Honour `b_val` in both branches, and default it to something
+derived rather than fixed — the simplest defensible seed is
+`b_val = target wealth-to-GDP × Y_guess`, both of which the calibration already
+knows. Failing that, expose `b_val` as a `Specifications` parameter so a country
+repo can set it; today it is a function argument that `run_SS` never passes.
+
+---
+
+## 4. `initial_guess_factor_SS` is capped below what a non-dollar currency needs
 
 **Where:** `ogcore/default_parameters.json`, `initial_guess_factor_SS`
 (`value` 139355.154, `range` max **500000**).
@@ -192,7 +240,7 @@ from `mean_income_data` rather than shipping a US level.
 
 ---
 
-## 4. Japan is missing from the offline demographic mirror — ALREADY IN FLIGHT
+## 5. Japan is missing from the offline demographic mirror — ALREADY IN FLIGHT
 
 **Where:** `ogcore/demographics.py`, the `country_dict` fallback (11 countries,
 no `"392"`).
@@ -214,7 +262,7 @@ The CSVs can be generated from the UN API once a token is in hand.
 
 ---
 
-## 5. Demographic gradients have no high-income route
+## 6. Demographic gradients have no high-income route
 
 **Where:** [EAPD-DRB/Demographic-Gradients](https://github.com/EAPD-DRB/Demographic-Gradients).
 
@@ -236,7 +284,7 @@ derivation rather than a citation.
 
 ---
 
-## 6. The NTA age-shape method belongs in a shared place
+## 7. The NTA age-shape method belongs in a shared place
 
 **Where:** the country repos' `income.py`, or a shared helper.
 
