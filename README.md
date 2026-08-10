@@ -48,11 +48,13 @@ Without a token, OG-Core falls back to an offline data mirror
 which currently covers 11 countries but **not Japan**. So live Japan
 demographics require the token today.
 
-This also surfaces two clean give-back contributions to the upstream
-ecosystem:
+Two give-backs would fix that, and they only work as a pair:
 1. Add `"392": "JPN"` to the country map in `ogcore/demographics.py`.
 2. Contribute Japan's demographic CSVs to `EAPD-DRB/Population-Data` so
    Japan works offline like the other country models.
+
+They are items 4 and 5 of six in
+[docs/UPSTREAM_OGCORE.md](docs/UPSTREAM_OGCORE.md).
 
 ## What is calibrated to Japan
 
@@ -63,10 +65,10 @@ Every value is sourced in the module that sets it.
 | Debt | net debt 0.864 of GDP; SS target 1.0 | OECD Economic Outlook GNFLQ |
 | Interest | `r_gov` ≈ −0.6% real | OECD net interest ÷ net debt, 2015–2024 |
 | Foreign debt | 13.7% foreign-held | MOF JGB/T-Bill holders, Mar 2026 |
-| Growth | `g_y` 0.56%/yr, 2000–2019 | World Bank GDP per person employed |
-| Social insurance | effective 21.3% of wages (13.2% of GDP) | OECD Revenue Statistics 2025 |
+| Growth | `g_y` 1.04%/yr per HOUR, 2000–2019 | Penn World Table via FRED |
+| Social insurance | effective 23.1% of wages (13.2% of GDP) | OECD Revenue Statistics 2025 |
 | Income tax | Gouveia-Strauss, top rate 55% | OECD RevStats; Japan statutory schedule |
-| Consumption | effective 12.7% (all indirect taxes) | OECD RevStats 2025 |
+| Consumption | effective 12.3% (all indirect taxes) | OECD RevStats 2025 |
 | Corporate | 29.74% statutory | OECD RevStats 2025 |
 | Property / bequest | wealth tax + material inheritance tax | OECD RevStats; MOF FY2025 budget |
 | Pension | Defined Benefits, effective 41.4% replacement | OECD Pensions at a Glance 2023 |
@@ -83,44 +85,67 @@ labour-disutility profile). For Japan that borrow is defensible to within
 so total labour input per working-age person is 1,278 hours against the
 US 1,288.
 
-Three limitations found in OG-Core itself are recorded in
+Six limitations found in OG-Core and the shared data repos are recorded in
 [docs/UPSTREAM_OGCORE.md](docs/UPSTREAM_OGCORE.md) rather than worked
-around; three of the six items there affect every country repo.
+around. Three of them affect every country repo in the family, not just
+Japan.
 
 ## Roadmap
 
 - **Phase 0 (done):** skeleton + demographics feasibility.
 - **Phase 1 (done):** Japanese macro parameters — debt on a net basis, the
   sovereign interest wedge, openness, growth, spending shares.
-- **Phase 2 (mostly done):** tax calibration from collections by
-  instrument, and a defined-benefit pension system. Japan has no open tax
-  microsimulator, so the income tax uses OG-Core's Gouveia-Strauss form fit
-  to the statutory schedule and tuned to published collections. Remaining:
-  the age-earnings profile tilt.
-- **Phase 2b (next):** run the in-model tuning loop. Several parameters can
-  only be pinned down against a solved steady state — they are marked
-  `NEEDS TUNING` in the source with the target each should hit.
-- **Phase 3:** analyze one real policy question (a consumption-tax
-  change, a higher retirement age, or a pension reform) and write it up.
-- **Phase 4:** documentation, tests, and sharing with the PSL community.
+- **Phase 2 (done):** tax calibration from collections by instrument, a
+  defined-benefit pension system, and the earnings profile — both halves of
+  the family method, an NTA age-shape adjustment and the Gini tilt. Japan has
+  no open tax microsimulator, so the income tax uses OG-Core's
+  Gouveia-Strauss form fit to the statutory schedule and tuned to published
+  collections.
+- **Phase 2b (done):** the in-model tuning loop, fourteen rounds. Every
+  fiscal moment now lands within 0.1 percentage points of GDP.
+- **Phase 3 (next):** analyze one real policy question. The obvious
+  candidate is no longer the consumption tax but **interest-rate
+  normalisation**: Japan's fiscal position is far more sensitive to the Bank
+  of Japan unwinding than to a 2pp VAT change, and the model is now
+  calibrated to say by how much.
+- **Phase 4:** documentation, and sharing with the PSL community.
 
 ## Layout
 
 ```
 ogjpn/
-  constants.py   country code (392) and metadata
-  calibrate.py   Calibration class (demographics wired in Phase 0)
+  constants.py       country code (392), start year, demographic window
+  calibrate.py       assembles every block into one Specifications dict
+  macro_params.py    growth, capital, debt, the sovereign wedge, spending
+  tax_params.py      payroll, consumption, corporate, property, bequest, PIT
+  pension_params.py  defined-benefit system and the yen income anchor
+  income.py          the e matrix: NTA age shape + Gini tilt
+  data/              NTA labour-income age profiles (JPN, USA)
 examples/
-  run_ogjpn_ss.py   Phase 0 feasibility: load demographics + solve SS
+  run_ogjpn.py                    baseline + reform, SS and transition
+  validate_japan.py               steady state vs Japanese data
+  plot_calibration_fit.py         model vs data figure
+  plot_calibration_diagnostics.py the model's inputs
+  calibration_table.py            every value with its source
+scripts/
+  fetch_nta_age_profiles.py       pull NTA profiles (session form, no API)
+docs/
+  CALIBRATION_AUDIT.md   what was found, what it lands at, what is not done
+  CALIBRATION_TABLE.md   generated parameter table
+  UPSTREAM_OGCORE.md     limitations to fix in OG-Core, not here
 ```
 
-## Running the feasibility check
+## Running
 
-With OG-Core installed in the environment:
+Live Japan demographics need a free UN Data Portal API token saved as
+`un_api_token.txt` in the run directory.
 
 ```
-PYTHONPATH=. python examples/run_ogjpn_ss.py
+python examples/validate_japan.py    # steady state vs Japanese data
+python examples/run_ogjpn.py         # baseline + reform, SS and transition
+python -m pytest tests/              # calibration tests
 ```
 
-Add `un_api_token.txt` first to use live Japan demographics; otherwise
-the script falls back to OG-Core defaults and says so.
+The steady state is solved serially and the transition in parallel with
+Anderson acceleration — see the note in `examples/run_ogjpn.py` for why
+that split matters.
