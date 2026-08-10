@@ -1,3 +1,5 @@
+import os
+
 """
 Country constants for OG-Japan (OG-JPN).
 """
@@ -45,3 +47,13 @@ START_YEAR = 2025
 # start+74) and that breaches the default RC_TPI tolerance. See
 # docs/UPSTREAM_OGCORE.md item 1.
 DEMOGRAPHIC_DATA_YEARS = 74
+
+# Where the processed demographic arrays are cached between runs. ogcore
+# refetches the entire UN series on every call and never reads its own
+# `download_path` back, so without this each solve pays the full download --
+# substantial at a 74-year window -- and repeated runs can trip UN rate limits.
+# A failed fetch is especially unhelpful: ogcore silently falls back to the
+# offline mirror, which has no Japan, and the run dies with `KeyError: '392'`.
+DEMOGRAPHIC_CACHE_DIR = os.path.join(
+    os.path.dirname(os.path.abspath(__file__)), "data", "demographic_cache"
+)

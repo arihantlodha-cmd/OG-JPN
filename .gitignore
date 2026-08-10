@@ -14,3 +14,6 @@ OUTPUT*/
 # model run output
 examples/OUTPUT_BASELINE/
 examples/OUTPUT_REFORM/
+
+# cached demographic arrays
+ogjpn/data/demographic_cache/
