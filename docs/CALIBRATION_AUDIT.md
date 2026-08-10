@@ -451,6 +451,20 @@ constraint, and the model represents foreign ownership of domestic capital but
 not domestic ownership of foreign capital. So the single largest external fact
 about Japan has no home in the model at any parameter setting.
 
+**An option considered and rejected: `alpha_RM`.** OG-Core's remittance channel
+adds household income from abroad, and structurally that is what Japan's
+investment income *is* — income accruing to residents from foreign assets. It
+looks like the obvious home for Japan's +4.2%-of-GDP primary income balance.
+
+It is the wrong home, and the reason is instructive. `RM` enters the resource
+constraint as an inflow with no matching asset stock: households would receive
+the income but have nowhere to accumulate the foreign assets that generate it.
+Japan does not consume its investment income — it recycles it into further
+foreign asset accumulation, which is why its consumption is only 53% of GDP
+*despite* a GNI 4% above GDP. Switching `alpha_RM` on would add the income
+without the saving, raising consumption and making the fit worse while
+appearing to add realism. Left off deliberately.
+
 ### What that means for using the model
 
 The fiscal block is calibrated to Japanese data essentially exactly, and the
