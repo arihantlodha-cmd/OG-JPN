@@ -793,24 +793,75 @@ defined-benefit block cannot separate. That justifies roughly `0.324 × 1.15 =
 labelled as fitted** in `ogjpn/pension_params.py` rather than dressed up as a
 derivation.
 
-### Status of the transition — open, with the cause located
+### Status of the transition — solved except at two known upstream artefacts
 
-The steady state is verified. **The baseline transition does not currently
-solve**, and the cause is identified rather than mysterious.
+The steady state now solves in **18 evaluations** (see Finding 9), and the
+transition's outer loop converges cleanly: **12 Anderson iterations, distance
+falling monotonically to 5.4e-06**.
 
-`RC_error` breaches the default 1e-4 tolerance in exactly **2 of 320 periods**,
-with neighbouring periods five orders of magnitude smaller. Both coincide with
-discontinuities in `imm_rates`: one at the demographic data window boundary, one
-at t≈118 where OG-Core's internal population stationarization takes over.
-Anderson acceleration converges cleanly (11 iterations, distance 6.3e-06) and
-debt is flat at 1.003, so this is neither a solver nor a fiscal problem.
+The resource constraint holds across essentially the whole path:
 
-Widening the data window shrinks the first discontinuity but not the second,
-which is invariant to it. **No country-side setting fixes this** — see
-`docs/UPSTREAM_OGCORE.md` item 1. Until it is fixed upstream, transition results
-for Japan should be treated as unavailable rather than approximate.
+| | |
+|---|---|
+| periods satisfying `RC_TPI` | **318 of 320** |
+| median \|RC\| | 7.96e-08 (three orders inside tolerance) |
+| breaching periods | t=75 and t=120 only |
 
-### What this check does not cover
+Both breaches were **predicted before this run** from the diagnosis, and both
+land exactly where predicted:
+
+- **t=75** — where the demographic data window ends and ogcore freezes the vital
+  rates;
+- **t=120** — `fixper = int(1.5 * S)`, where ogcore *replaces* the population
+  distribution with its fixed steady-state one in a single period.
+
+Their neighbours sit at 1e-8. These are isolated single-period discontinuities
+in ogcore's own demographic construction, not a property of the calibration, and
+no country-side setting removes the second one. See `docs/UPSTREAM_OGCORE.md`
+item 1, which proposes tapering the `fixper` handoff.
+
+Until that is fixed upstream, `ENFORCE_SOLUTION_CHECKS` will reject the
+transition. The path itself is usable everywhere except those two periods, but
+it should be reported with that caveat rather than as a clean solve.
+
+## Finding 9 — the steady state was never converging, and the cause was the cold start
+
+The steady state did not solve at all for most of this calibration's life. The
+cause was not the calibration:
+
+OG-Core cold-starts the household problem from constants — savings at a
+hardcoded `0.07` for every age and income group (`SS.py`, carrying its own
+TODO), labour at 0.35, with the bequest guesses derived from those. Japan's
+solved savings are ~6.1, so:
+
+- the bequest seed starts **134x low** in aggregate, 349x low for the top group;
+- domestic capital `K_d = B - D_d` therefore starts **negative** — wealth near
+  zero against domestically-held debt of 0.86 of GDP — so `SS_fsolve` clamps it
+  and substitutes `1e9` residuals, destroying the finite-difference Jacobian
+  that the default `hybr` root-finder relies on; and
+- `initial_guess_factor_SS` is capped at 500,000 while Japan's factor is ~7e6,
+  so the right seed cannot be entered as a parameter at all.
+
+`run_SS` then fails and silently restarts down its 39-rung `DEV_FACTOR_LIST`
+ladder. What looked like hundreds of slow iterations was several failed solves
+stacked end to end.
+
+**The fix** (`ogjpn/warm_start.py`): seed from a state that has already solved —
+the household matrices *and* every outer unknown together, so they are mutually
+consistent — and pass `factor` directly, bypassing the cap. Measured on
+identical parameters and the same 7-worker client:
+
+| | evaluations | restarts | residual |
+|---|---:|---:|---:|
+| cold start | >175 | several | never converged |
+| **warm start** | **18-22** | **none** | **5.5e-11** |
+
+This is a workaround for an upstream defect, not a modelling choice. It also
+retired an earlier workaround: income was briefly expressed in millions of yen
+purely to bring `factor` under the seed cap, which the warm start makes
+unnecessary.
+
+### What this check does not cover### What this check does not cover
 
 The steady state is verified; the **transition is not**. The family's experience
 is that a calibration can pass every steady-state check and still diverge on the
