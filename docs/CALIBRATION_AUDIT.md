@@ -793,6 +793,23 @@ defined-benefit block cannot separate. That justifies roughly `0.324 × 1.15 =
 labelled as fitted** in `ogjpn/pension_params.py` rather than dressed up as a
 derivation.
 
+### Status of the transition — open, with the cause located
+
+The steady state is verified. **The baseline transition does not currently
+solve**, and the cause is identified rather than mysterious.
+
+`RC_error` breaches the default 1e-4 tolerance in exactly **2 of 320 periods**,
+with neighbouring periods five orders of magnitude smaller. Both coincide with
+discontinuities in `imm_rates`: one at the demographic data window boundary, one
+at t≈118 where OG-Core's internal population stationarization takes over.
+Anderson acceleration converges cleanly (11 iterations, distance 6.3e-06) and
+debt is flat at 1.003, so this is neither a solver nor a fiscal problem.
+
+Widening the data window shrinks the first discontinuity but not the second,
+which is invariant to it. **No country-side setting fixes this** — see
+`docs/UPSTREAM_OGCORE.md` item 1. Until it is fixed upstream, transition results
+for Japan should be treated as unavailable rather than approximate.
+
 ### What this check does not cover
 
 The steady state is verified; the **transition is not**. The family's experience

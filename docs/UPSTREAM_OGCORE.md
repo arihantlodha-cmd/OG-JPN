@@ -29,6 +29,28 @@ its 2026 level and the implied steady-state population growth came out at
 discontinuity where the window ends also produced a resource-constraint breach
 two periods into the transition that failed the solve outright.
 
+**It also breaks the transition, and widening the window is not a full fix.**
+The freeze creates a discontinuity in `imm_rates` at the window boundary, and
+OG-Core's own population stationarization creates a second one around t=118.
+Both breach the default `RC_TPI` tolerance of 1e-4 for a country with sharp
+demographic change, and the baseline transition raises
+`RuntimeError: ... (RC_error)`.
+
+Measured on Japan — only 2 of 320 periods breach, the neighbours being five
+orders of magnitude smaller:
+
+| window | `g_n_ss` | jump at window boundary | largest late jump |
+|---|---:|---:|---:|
+| start+20 | −0.698% | 1.30e-01 | 5.15e-01 (t=118) |
+| start+40 | −0.568% | 4.83e-02 | 4.06e-01 (t=118) |
+| start+60 | −0.463% | 4.36e-02 | 4.64e-01 (t=118) |
+
+Widening shrinks the boundary jump but **the t≈118 discontinuity is invariant to
+it** — it is internal to ogcore. So no choice of `final_data_year` lets a
+country repo solve the transition here; the fix has to be upstream. (And
+widening further trades demographic faithfulness away: start+20's −0.698% is
+closest to the UN's own −0.676% average.)
+
 **Proposed change.** Let the demographic path optionally follow the **UN
 projection** rather than freezing at a single year — for example a
 `use_projection=True` flag, or accepting a `final_data_year` far enough out that
