@@ -399,17 +399,17 @@ Solved on real UN demographics, ogcore 0.19.0, fourteen tuning rounds.
 
 | Moment | Model | Target | Gap | Source |
 |---|---:|---:|---:|---|
-| **Total tax revenue / Y** | **0.3359** | **0.3370** | **−0.0011** | OECD RevStats 2025 |
-| — Income tax (PIT) / Y | 0.0616 | 0.0617 | −0.0001 | OECD RevStats 2025 |
-| — Corporate tax / Y | 0.0472 | 0.0470 | +0.0002 | OECD RevStats 2025 |
-| — Consumption + indirect / Y | 0.0682 | 0.0682 | **0.0000** | OECD RevStats 2025 |
-| — Payroll / social insurance / Y | 0.1316 | 0.1318 | −0.0002 | OECD RevStats 2025 |
-| **Pension outlays / Y** | **0.0929** | **0.0930** | **−0.0001** | OECD PaG 2023 |
-| Foreign-held debt `D_f/D` | 0.1370 | 0.1370 | **0.0000** | MOF, Mar 2026 |
-| **Capital-output `K/Y`** | **3.696** | **3.700** | **−0.004** | Penn World Table |
-| Consumption / Y | 0.5765 | 0.5310 | +0.0455 | World Bank |
+| **Income tax (PIT) / Y** | **0.0617** | **0.0617** | **0.0000** | OECD RevStats 2025 |
+| **Corporate tax / Y** | **0.0470** | **0.0470** | **0.0000** | OECD RevStats 2025 |
+| **Payroll / social insurance / Y** | **0.1318** | **0.1318** | **0.0000** | OECD RevStats 2025 |
+| **Foreign-held debt `D_f/D`** | **0.1370** | **0.1370** | **0.0000** | MOF, Mar 2026 |
+| Pension outlays / Y | 0.0928 | 0.0930 | −0.0002 | OECD PaG 2023 |
+| Consumption + indirect / Y | 0.0674 | 0.0682 | −0.0008 | OECD RevStats 2025 |
+| Total tax revenue / Y | 0.3337 | 0.3370 | −0.0033 | OECD RevStats 2025 |
+| Capital-output `K/Y` | 3.503 | 3.70 | −0.197 | Penn World Table |
+| Consumption / Y | 0.5586 | 0.5360 | +0.0226 | World Bank |
 | Sovereign real rate `r_gov` | 0.0000 | −0.0060 | +0.0060 | OECD EO (model floor) |
-| Interest rate `r` | 0.0416 | — | — | no data target |
+| Interest rate `r` | 0.0473 | — | — | no data target |
 
 Every fiscal moment lands within **0.11 percentage points of GDP**. The
 capital-output ratio, the consumption tax and the foreign debt share are exact
