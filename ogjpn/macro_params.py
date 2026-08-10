@@ -333,36 +333,24 @@ def get_macro_params():
     macro_parameters["beta_annual"] = [0.979] * 7
 
     # -----------------------------------------------------------------------
-    # Steady-state solver seeds.
+    # Steady-state solver seeds: LEFT AT OG-CORE'S DEFAULTS, on evidence.
     #
-    # OG-Core's defaults are OG-USA's SOLVED values, and one of them is not a
-    # tuning choice but a units mismatch: `initial_guess_factor_SS = 139355.15`
-    # is the factor that converts model units to US DOLLARS. `factor` scales
-    # with `mean_income_data`, so any country whose currency unit differs from
-    # the dollar seeds the solver by that ratio. Japan's mean wage is 4.6m yen
-    # against the US 58,645 dollars -- a ratio of 78 -- and the solved Japanese
-    # factor is about 7.0 million, 50x the default seed.
+    # These are OG-USA's solved values, and one of them is wrong in a way worth
+    # recording: `initial_guess_factor_SS = 139355.15` is the factor that maps
+    # model units to US DOLLARS. `factor` scales with `mean_income_data`, so
+    # Japan's correct seed is about 7.0 million yen -- and OG-Core validates the
+    # parameter to a maximum of 500,000, so the right value cannot be entered at
+    # all. That cap is currency-dependent and excludes every low-unit currency
+    # (yen, won, rupiah, dong). It is reported in docs/UPSTREAM_OGCORE.md.
     #
-    # The symptom is not a clean failure. The steady state still solves, slowly,
-    # and then stalls: the residual reaches machine precision on the first
-    # stage, restarts, and sticks around 1.7e-04 against a 1e-09 tolerance.
+    # But raising the seed to the permitted maximum was tested and made the
+    # solve WORSE, not better: 569 GE iterations against 30-267 on the shipped
+    # default across four earlier solves. So the seeds are left alone.
     #
-    # AND OG-Core will not accept the right value: `initial_guess_factor_SS`
-    # is validated to a maximum of 500,000, so the correct Japanese seed of
-    # ~7.0 million cannot be set at all. The cap is itself currency-dependent
-    # and excludes every low-unit currency -- yen, won, rupiah, dong. We set
-    # the maximum OG-Core allows, which is 3.6x better than the US default but
-    # still 14x below the solved value. Raising the cap is an upstream item
-    # (docs/UPSTREAM_OGCORE.md).
-    #
-    # Seeds are rounded rather than set to solved values to five digits -- the
-    # family's experience (PHL) is that exact-solved guesses can route the
-    # solver through a K_d < 0 region and fail where farther guesses converge.
-    # Choose seeds by solve-path robustness, not by proximity.
+    # This is the family's own rule, and it cost a round to relearn: choose
+    # seeds by SOLVE-PATH ROBUSTNESS, not by proximity to the answer. A seed
+    # nearer the solution can route the solver through a worse region.
     # -----------------------------------------------------------------------
-    macro_parameters["initial_guess_factor_SS"] = 500000.0
-    macro_parameters["initial_guess_r_SS"] = 0.04
-    macro_parameters["initial_guess_TR_SS"] = 0.023
 
     # -----------------------------------------------------------------------
     # Solver settings.

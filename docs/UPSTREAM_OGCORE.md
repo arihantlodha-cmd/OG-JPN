@@ -123,10 +123,18 @@ affected, and the further the unit value from the dollar the worse it gets:
 Japanese yen, Korean won, Indonesian rupiah, Vietnamese dong. For a rupiah
 calibration the required seed would be orders of magnitude beyond the cap.
 
-**Symptom.** Not a clean failure — the steady state still solves, slowly, and
-then becomes fragile: on this calibration the residual reached machine precision
-on the first solve stage, restarted, and stalled at ~1.7e-04 against a 1e-09
-tolerance, burning 97 iterations without progress.
+**What it does and does not cost, tested.** Raising the seed to the permitted
+maximum of 500,000 was tried on this calibration and made the solve **worse** —
+569 GE iterations against 30–267 on the shipped default across four earlier
+solves. So the cap is not currently costing convergence here, and the seeds are
+left at OG-Core's defaults.
+
+The reason to fix it upstream is correctness rather than speed: a solver seed
+that cannot be set to the right order of magnitude is a trap waiting for a
+country whose solve is less forgiving, and the failure mode would be a slow
+stall rather than a clean error. The further a currency's unit value sits from
+the dollar, the larger the mismatch — a rupiah calibration would need a seed
+orders of magnitude past the cap.
 
 **Proposed change.** Raise or remove the maximum. The parameter is a solver
 seed, not an economic quantity, so a wide bound costs nothing:
