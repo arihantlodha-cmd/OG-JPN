@@ -316,13 +316,16 @@ def get_macro_params():
     # with gamma and delta both sourced independently here, so K/Y is a
     # function of r, and r is what beta moves. Solving on the model:
     #
-    #     beta 0.971  ->  K/Y 3.474,  r 4.80%
-    #     beta 0.980  ->  K/Y 3.736,  r 4.05%
-    #     interpolating to the Penn World Table's 3.70  ->  beta 0.979
+    #     beta 0.979  ->  K/Y 3.500,  r 4.72%
+    #     beta 0.986  ->  K/Y 3.758,  r 3.99%
+    #     interpolating to the Penn World Table's 3.70  ->  beta 0.984
     #
-    # Recalibrated after the demographic data window was widened (see
-    # ogjpn.constants.DEMOGRAPHIC_DATA_YEARS): a less negative population
-    # growth rate raises g, which lowers K/Y at a fixed beta.
+    # Recalibrated twice as the demographic window widened (see
+    # ogjpn.constants.DEMOGRAPHIC_DATA_YEARS): a less negative population growth
+    # rate raises g, which lowers K/Y at a fixed beta, so beta has to rise to
+    # hold the capital-output ratio on target. That ordering -- sourced
+    # parameters first, beta last -- is why beta is recalibrated rather than
+    # fixed once.
     #
     # Note this lever only became available once g_y was corrected to a
     # per-hour basis: at the earlier per-worker g_y the model's K/Y already sat
@@ -330,7 +333,7 @@ def get_macro_params():
     # matters -- calibrate the sourced parameters first, then use beta for what
     # is left.
     # -----------------------------------------------------------------------
-    macro_parameters["beta_annual"] = [0.979] * 7
+    macro_parameters["beta_annual"] = [0.984] * 7
 
     # -----------------------------------------------------------------------
     # Steady-state solver seeds: LEFT AT OG-CORE'S DEFAULTS, on evidence.

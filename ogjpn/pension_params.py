@@ -78,7 +78,7 @@ NTA   National Tax Agency, Survey on Private-Sector Wages 2023: average annual
 # corroborated by the OECD's net replacement rate of 38.8% -- that figure is net
 # of tax and is a different concept; its numerical closeness is a coincidence
 # and was cited as corroboration in an earlier version of this file in error.
-REPLACEMENT_RATE = 0.422
+REPLACEMENT_RATE = 0.387
 GROSS_REPLACEMENT_RATE_OECD = 0.324   # OLD-AGE, whole public system, full career
 SURVIVORS_DISABILITY_UPLIFT = 1.15    # benefits OG-Core's DB block cannot separate
 

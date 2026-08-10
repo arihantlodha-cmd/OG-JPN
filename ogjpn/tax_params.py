@@ -97,7 +97,7 @@ def get_tax_params():
     # 0.1087 (which lands at 0.0702 once the pension tier is added back). Revenue is the moment worth hitting: it is what the government
     # actually collects.
     # -----------------------------------------------------------------------
-    tax_parameters["tau_c"] = [[0.1226]]
+    tax_parameters["tau_c"] = [[0.1236]]
 
     # -----------------------------------------------------------------------
     # Corporate income tax.
@@ -119,7 +119,7 @@ def get_tax_params():
     # Table value and enlarged the capital-income base.
     # -----------------------------------------------------------------------
     tax_parameters["cit_rate"] = [[0.2974]]
-    tax_parameters["adjustment_factor_for_cit_receipts"] = [0.873]
+    tax_parameters["adjustment_factor_for_cit_receipts"] = [0.875]
 
     # -----------------------------------------------------------------------
     # Property taxes -> the wealth tax.
@@ -140,7 +140,7 @@ def get_tax_params():
     # (assuming 4x GDP) was over-collecting 2.58% of GDP against a 2.21%
     # target.
     # -----------------------------------------------------------------------
-    tax_parameters["p_wealth"] = [0.00503]
+    tax_parameters["p_wealth"] = [0.00498]
     tax_parameters["h_wealth"] = [1.0]
     tax_parameters["m_wealth"] = [0.001]
 
@@ -163,7 +163,7 @@ def get_tax_params():
     # is 0.0055 / 0.251 = 0.0219, which is the right order for a tax where the
     # basic exclusion means only about 9% of estates pay anything.
     # -----------------------------------------------------------------------
-    tax_parameters["tau_bq"] = [0.0263]
+    tax_parameters["tau_bq"] = [0.0288]
 
     # -----------------------------------------------------------------------
     # Personal income tax -- Gouveia-Strauss progressive form.
