@@ -29,9 +29,11 @@ found and what each value is sourced from.
 
 The thing to understand about a country port is that **anything the
 calibration does not set keeps OG-Core's United States value.** The
-calibration now overrides 30 parameters rather than 7. What is still on
-US defaults is listed explicitly in `ogjpn/calibrate.py` rather than
-left to be discovered.
+calibration now overrides 34 parameters rather than 7, plus the
+earnings matrix and the demographic arrays. What is still on US
+defaults is listed explicitly in `ogjpn/calibrate.py`, and
+[docs/CALIBRATION_TABLE.md](docs/CALIBRATION_TABLE.md) gives every
+calibrated value with its source.
 
 **What works:** OG-Core's `demographics` module can pull Japan's
 fertility, mortality, and population data from the UN World Population
@@ -67,13 +69,23 @@ Every value is sourced in the module that sets it.
 | Consumption | effective 12.7% (all indirect taxes) | OECD RevStats 2025 |
 | Corporate | 29.74% statutory | OECD RevStats 2025 |
 | Property / bequest | wealth tax + material inheritance tax | OECD RevStats; MOF FY2025 budget |
-| Pension | Defined Benefits, 32.4% replacement | OECD Pensions at a Glance 2023 |
+| Pension | Defined Benefits, effective 41.4% replacement | OECD Pensions at a Glance 2023 |
 | Income anchor | ¥4.6m mean salary | National Tax Agency, 2023 |
+| Depreciation | 6.2%/yr | World Bank consumption of fixed capital |
+| Capital share | 0.43 | Penn World Table labour share |
+| Discount factor | 0.979, calibrated to K/Y = 3.70 | Penn World Table |
+| Earnings profile | NTA age shape + Gini tilt to 32.3 | NTA; World Bank |
+| Demographics | 20 years of UN projection, not 2 | UN WPP |
 
-Still on OG-Core's US values, and documented as such rather than presented
-as calibrated: `chi_n` (the labour-disutility profile — no country repo in
-the family has recalibrated it) and the `e` earnings matrix, which needs a
-Japan Gini tilt.
+Still on OG-Core's US values and documented as such: `chi_n` (the
+labour-disutility profile). For Japan that borrow is defensible to within
+1% — Japan works 10.5% fewer hours per worker but employs far more people,
+so total labour input per working-age person is 1,278 hours against the
+US 1,288.
+
+Three limitations found in OG-Core itself are recorded in
+[docs/UPSTREAM_OGCORE.md](docs/UPSTREAM_OGCORE.md) rather than worked
+around; three of the six items there affect every country repo.
 
 ## Roadmap
 
