@@ -40,16 +40,38 @@ NTA   National Tax Agency, Survey on Private-Sector Wages 2023: average annual
 # Replacement rate for a full-career average earner. OECD Pensions at a Glance
 # 2023 reports 32.4% GROSS and 38.8% NET for Japan.
 #
-# TUNED (round 6) to 39.9%, just above the OECD's net figure. The reason is
-# structural, not a fudge: OG-Core has ONE defined-benefit tier, while Japan has
-# TWO -- the flat-rate Basic Pension (国民年金) and the earnings-related
-# Employees' Pension (厚生年金). Pinning alpha_db to the earnings-related GROSS
-# rate leaves the flat tier unrepresented and under-delivers total outlays
-# (7.56% of GDP against Japan's actual 9.3%). Treat this as a COMPOSITE
-# replacement rate standing in for both tiers, not as the EPI accrual rate.
+# CALIBRATED to 39.9%, above the OECD's 32.4%. Part derived, part fitted -- and
+# the honest split matters, so it is written out here.
+#
+# An earlier version of this file justified the gap by claiming OG-Core has one
+# pension tier while Japan has two. That reasoning was WRONG: the OECD country
+# profile states plainly that its modelling covers the whole public system --
+# "The public pension system has two tiers: a basic, flat-rate scheme and an
+# earnings-related plan" -- so 32.4% already includes both.
+#
+# The actual reason the derived rate under-delivers:
+#
+#   DERIVED PART. The OECD's 32.4% is an OLD-AGE replacement rate for a
+#   full-career average earner. Japan's 9.3%-of-GDP pension spending also covers
+#   SURVIVORS' pensions (遺族年金) and DISABILITY pensions (障害年金), which
+#   OG-Core's single defined-benefit block has no separate home for. Those are
+#   roughly 15% of benefits, so the block must carry about
+#       0.324 x 1.15 ~= 0.373
+#   to reproduce total public pension outlays.
+#
+#   FITTED PART. The remaining ~2.6 percentage points were tuned in-model to
+#   land outlays on 9.3% of GDP. It reflects differences between the model's
+#   old-age dependency ratio and Japan's, and OG-Core's use of an average of the
+#   last `avg_earn_num_years` of earnings rather than the OECD's lifetime basis.
+#
+# So: treat this as an EFFECTIVE system-wide replacement rate, not as an accrual
+# rate you could read off Japanese pension law. It is NOT independently
+# corroborated by the OECD's net replacement rate of 38.8% -- that figure is net
+# of tax and is a different concept; its numerical closeness is a coincidence
+# and was cited as corroboration in an earlier version of this file in error.
 REPLACEMENT_RATE = 0.399
-GROSS_REPLACEMENT_RATE_OECD = 0.324   # earnings-related tier, for reference
-NET_REPLACEMENT_RATE_OECD = 0.388     # OECD Pensions at a Glance 2023
+GROSS_REPLACEMENT_RATE_OECD = 0.324   # OLD-AGE, whole public system, full career
+SURVIVORS_DISABILITY_UPLIFT = 1.15    # benefits OG-Core's DB block cannot separate
 
 # Full contribution period. Japan's Basic Pension requires 40 years for the
 # full flat benefit, and 40 years is the standard career used in the OECD

@@ -152,7 +152,7 @@ def test_consumption_tax_is_effective_not_statutory():
     Japan's indirect-tax revenue in the model is 0.0682 / 0.627 = 10.9%.
     """
     t = tax_params.get_tax_params()
-    assert t["tau_c"] == [[pytest.approx(0.1087)]]
+    assert t["tau_c"] == [[pytest.approx(0.1123)]]
     assert t["tau_c"][0][0] != 0.10, "statutory rate is not the model input"
 
 
@@ -214,15 +214,20 @@ def test_alpha_db_reproduces_the_oecd_replacement_rate():
     OG-Core's alpha_db default is 0.0 -- switching pension_system without
     setting it produces zero pensions.
 
-    The rate is a COMPOSITE standing in for both of Japan's pension tiers, so it
-    sits above the OECD's earnings-related gross figure (32.4%) and just above
-    its net figure (38.8%). See ogjpn/pension_params.py.
+    The rate is an EFFECTIVE system-wide rate above the OECD's 32.4%: part
+    derived (survivors' and disability pensions, which OG-Core's single DB block
+    cannot separate) and part fitted to the outlay target. See
+    ogjpn/pension_params.py for the honest split.
     """
     pp = pension_params.get_pension_params()
     assert pp["alpha_db"] > 0.0
     replacement = pp["yr_contrib"] * pp["alpha_db"]
     assert replacement == pytest.approx(0.399, abs=1e-6)
     assert replacement > pension_params.GROSS_REPLACEMENT_RATE_OECD
+    # most of the gap should be the derived survivors/disability uplift
+    derived = (pension_params.GROSS_REPLACEMENT_RATE_OECD
+               * pension_params.SURVIVORS_DISABILITY_UPLIFT)
+    assert abs(replacement - derived) < 0.04, "fitted residual must stay small"
 
 
 def test_income_anchor_is_in_yen():

@@ -256,11 +256,30 @@ def get_macro_params():
     #   2020. Note OG-Core's steady-state closure overrides this to whatever
     #   balances the budget at the debt target -- alpha_G binds on the
     #   TRANSITION, not the steady state.
-    # alpha_T: non-pension transfers. Japan's total social security spending is
-    #   22.8% of GDP, of which public pensions are 9.3% (OECD Pensions at a
-    #   Glance 2023). Pensions are modelled separately by OG-Core's pension
-    #   block, so alpha_T carries the remainder net of what alpha_G already
-    #   counts as in-kind consumption.
+    # alpha_T: non-pension CASH transfers to households -- and ONLY cash.
+    #   This is the parameter the first pass got most wrong (0.075, about three
+    #   times too high), for a reason worth stating: Japan delivers most of its
+    #   non-pension social spending IN KIND, not as cash.
+    #
+    #   Japan's social security spending, FY2023 (IPSS, total 135.5 trn yen
+    #   against GDP of 594.5 trn):
+    #       pensions               56.4 trn   9.49% of GDP   CASH (own block)
+    #       healthcare             45.6 trn   7.67%          IN KIND
+    #       long-term care         11.5 trn   1.93%          IN KIND
+    #       welfare & other ex-LTC 22.0 trn   3.70%          mixed
+    #
+    #   The national accounts book in-kind health and long-term care as
+    #   GOVERNMENT final consumption, which is why Japan's government
+    #   consumption is 20.1% of GDP. In OG-Core those services belong in G,
+    #   which does not enter the household budget -- not in TR, which does.
+    #
+    #   Two independent routes to the cash residual:
+    #     (a) the cash share of welfare & other ex-LTC (child allowance, public
+    #         assistance, employment insurance), roughly 40-45%  => ~1.6% of GDP
+    #     (b) OECD SOCX cash/in-kind split: cash 11.9% of GDP less pensions
+    #         9.3%                                                => ~2.6% of GDP
+    #
+    #   0.025 is taken from the upper end of that range.
     # alpha_I: public investment. Japan runs ~3% of GDP, high for the OECD.
     #   OG-Core's default is 0.0; leaving it there breaks the spending identity
     #   by the full 3 percentage points.
@@ -269,7 +288,7 @@ def get_macro_params():
     # solve, once model revenue/Y and g_n_ss are known.
     # -----------------------------------------------------------------------
     macro_parameters["alpha_G"] = [0.201]
-    macro_parameters["alpha_T"] = [0.075]
+    macro_parameters["alpha_T"] = [0.025]
     macro_parameters["alpha_I"] = [0.03]
 
     return macro_parameters

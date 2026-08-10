@@ -97,7 +97,7 @@ def get_tax_params():
     # 0.1087 (which lands at 0.0702 once the pension tier is added back). Revenue is the moment worth hitting: it is what the government
     # actually collects.
     # -----------------------------------------------------------------------
-    tax_parameters["tau_c"] = [[0.1087]]
+    tax_parameters["tau_c"] = [[0.1123]]
 
     # -----------------------------------------------------------------------
     # Corporate income tax.
@@ -140,7 +140,7 @@ def get_tax_params():
     # (assuming 4x GDP) was over-collecting 2.58% of GDP against a 2.21%
     # target.
     # -----------------------------------------------------------------------
-    tax_parameters["p_wealth"] = [0.00471]
+    tax_parameters["p_wealth"] = [0.00520]
     tax_parameters["h_wealth"] = [1.0]
     tax_parameters["m_wealth"] = [0.001]
 
