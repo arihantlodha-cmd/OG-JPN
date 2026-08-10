@@ -1,10 +1,11 @@
 # Upstream contributions this calibration identifies
 
-Five things this calibration needs that belong in OG-Core or the shared data
+Six things this calibration needs that belong in OG-Core or the shared data
 repos rather than in a country model. Each is stated with what it costs to work
 around, because that is what decides whether it is worth a maintainer's time.
 
-Items 1 and 5 affect **every** country repo, not just Japan.
+Items 1, 3 and 6 affect **every** country repo, not just Japan — item 3
+hits every country whose currency is not the US dollar.
 
 ---
 
@@ -103,7 +104,43 @@ Defaulting to `0.0` reproduces today's behaviour exactly.
 
 ---
 
-## 3. Japan is missing from the offline demographic mirror
+## 3. `initial_guess_factor_SS` is capped below what a non-dollar currency needs
+
+**Where:** `ogcore/default_parameters.json`, `initial_guess_factor_SS`
+(`value` 139355.154, `range` max **500000**).
+
+`factor` converts model units to the country's currency, so it scales directly
+with `mean_income_data`. OG-Core's default is OG-USA's solved value in **US
+dollars**, and the validator caps the parameter at 500,000.
+
+Japan's solved factor is about **7.0 million** yen. The correct seed is
+therefore not merely absent — it **cannot be entered**, because it exceeds the
+maximum by a factor of 14.
+
+The cap is currency-dependent in a way nothing in the parameter's name or
+description suggests. Any country whose currency has a low unit value is
+affected, and the further the unit value from the dollar the worse it gets:
+Japanese yen, Korean won, Indonesian rupiah, Vietnamese dong. For a rupiah
+calibration the required seed would be orders of magnitude beyond the cap.
+
+**Symptom.** Not a clean failure — the steady state still solves, slowly, and
+then becomes fragile: on this calibration the residual reached machine precision
+on the first solve stage, restarted, and stalled at ~1.7e-04 against a 1e-09
+tolerance, burning 97 iterations without progress.
+
+**Proposed change.** Raise or remove the maximum. The parameter is a solver
+seed, not an economic quantity, so a wide bound costs nothing:
+
+```python
+"validators": {"range": {"min": 1.0, "max": 1e12}}
+```
+
+Better still, default it to something currency-neutral — e.g. derive the seed
+from `mean_income_data` rather than shipping a US level.
+
+---
+
+## 4. Japan is missing from the offline demographic mirror
 
 **Where:** `ogcore/demographics.py`, the `country_dict` fallback (11 countries,
 no `"392"`).
@@ -121,7 +158,7 @@ The CSVs can be generated from the UN API once a token is in hand.
 
 ---
 
-## 4. Demographic gradients have no high-income route
+## 5. Demographic gradients have no high-income route
 
 **Where:** [EAPD-DRB/Demographic-Gradients](https://github.com/EAPD-DRB/Demographic-Gradients).
 
@@ -143,7 +180,7 @@ derivation rather than a citation.
 
 ---
 
-## 5. The NTA age-shape method belongs in a shared place
+## 6. The NTA age-shape method belongs in a shared place
 
 **Where:** the country repos' `income.py`, or a shared helper.
 
@@ -167,8 +204,8 @@ mandatory retirement at 60 move peak earnings age from 61 to 57.
 
 ## Note on scope
 
-None of these block the calibration. Items 3 and 4 were already identified in
-the project README; items 1, 2 and 5 were found by building and running this
-calibration. All are recorded here rather than quietly worked around, because a
+None of these block the calibration outright. Items 4 and 5 were already
+identified in the project README; items 1, 2, 3 and 6 were found by building and
+running this calibration. All are recorded here rather than quietly worked around, because a
 country repo compensating for an upstream limitation is how a limitation becomes
 invisible.

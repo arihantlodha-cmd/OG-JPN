@@ -435,3 +435,20 @@ def test_demographic_window_is_wide_enough_to_see_the_projection():
     from ogjpn import constants
 
     assert constants.DEMOGRAPHIC_DATA_YEARS >= 10
+
+
+def test_solver_seeds_are_in_yen_not_dollars():
+    """
+    OG-Core's initial_guess_factor_SS default (139,355.15) is the factor that
+    maps model units to US DOLLARS. `factor` scales with mean_income_data, so
+    any non-dollar country seeds the solver off by that currency ratio --
+    about 50x for Japan. The steady state then stalls rather than failing
+    cleanly.
+    """
+    m = macro_params.get_macro_params()
+    # OG-Core caps this at 500,000, below Japan's solved factor of ~7.0m,
+    # so the best available is the cap itself.
+    assert m["initial_guess_factor_SS"] == pytest.approx(500000.0)
+    assert m["initial_guess_factor_SS"] != pytest.approx(139355.154)
+    # and the rate seeds should be near Japan's solved values, not the US ones
+    assert m["initial_guess_r_SS"] < 0.0648
