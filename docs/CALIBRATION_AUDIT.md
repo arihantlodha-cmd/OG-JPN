@@ -395,26 +395,62 @@ Ordered by how much each changes the answer.
 
 ## Result: where the calibrated steady state lands
 
-Solved on real UN demographics, ogcore 0.19.0, eight tuning rounds.
+Solved on real UN demographics, ogcore 0.19.0, eleven tuning rounds.
 
 | Moment | Model | Target | Gap | Source |
 |---|---:|---:|---:|---|
-| **Total tax revenue / Y** | **0.3364** | **0.3370** | **−0.0006** | OECD RevStats 2025 |
-| — Income tax (PIT) / Y | 0.0619 | 0.0617 | +0.0002 | OECD RevStats 2025 |
-| — Corporate tax / Y | 0.0472 | 0.0470 | +0.0002 | OECD RevStats 2025 |
-| — Consumption + indirect / Y | 0.0678 | 0.0682 | −0.0004 | OECD RevStats 2025 |
-| — Payroll / social insurance / Y | 0.1321 | 0.1318 | +0.0003 | OECD RevStats 2025 |
-| **Pension outlays / Y** | **0.0942** | **0.0930** | **+0.0012** | OECD PaG 2023 |
+| **Total tax revenue / Y** | **0.3353** | **0.3370** | **−0.0017** | OECD RevStats 2025 |
+| — Income tax (PIT) / Y | 0.0616 | 0.0617 | −0.0001 | OECD RevStats 2025 |
+| — Corporate tax / Y | 0.0471 | 0.0470 | +0.0001 | OECD RevStats 2025 |
+| — Consumption + indirect / Y | 0.0676 | 0.0682 | −0.0006 | OECD RevStats 2025 |
+| — Payroll / social insurance / Y | 0.1316 | 0.1318 | −0.0002 | OECD RevStats 2025 |
+| **Pension outlays / Y** | **0.0927** | **0.0930** | **−0.0003** | OECD PaG 2023 |
 | Foreign-held debt `D_f/D` | 0.1370 | 0.1370 | 0.0000 | MOF, Mar 2026 |
-| Capital-output `K/Y` | 3.624 | 3.70 | −0.076 | Penn World Table |
-| Consumption / Y | 0.6038 | 0.5360 | +0.0678 | World Bank |
+| Capital-output `K/Y` | 3.651 | 3.70 | −0.049 | Penn World Table |
+| Consumption / Y | 0.6019 | 0.5360 | +0.0659 | World Bank |
 | Sovereign real rate `r_gov` | 0.0000 | −0.0060 | +0.0060 | OECD EO (model floor) |
-| Interest rate `r` | 0.0436 | — | — | no data target |
+| Interest rate `r` | 0.0429 | — | — | no data target |
 
-Every revenue instrument lands within 0.04 percentage points of GDP of its
-target; total revenue within 0.06.
+Every fiscal moment lands within **0.17 percentage points of GDP**; pension
+outlays within 0.03.
 
-### The full resource constraint
+### Earnings: the full two-part method
+
+The family's earnings method (EAPD-DRB/OG-ZAF#18, tracked for the country repos
+in #63) has two halves, and both are implemented here:
+
+**1. Age shape, from NTA.** Japan's own labour-income-by-age profile replaces
+the US one. `scripts/fetch_nta_age_profiles.py` pulls Japan (2004) and the US
+(2003, nearest-year) from the National Transfer Accounts database — both on the
+same variable and variable type, since NTA levels are not comparable to national
+wage surveys. Each profile is normalised over prime working ages so only the
+*shape* transfers, and the ratio becomes a multiplicative factor on OG-USA's
+curves.
+
+The factor carries Japan's signature clearly:
+
+| age | 20 | 45 | 50 | 55 | 60 | 62 | 65 |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| Japan ÷ US | 0.73 | 1.08 | 1.09 | 1.09 | 0.91 | 0.73 | 0.62 |
+
+Earnings rise more steeply than in the US through the fifties — the seniority
+wage system (年功序列) — then fall much harder after mandatory retirement at 60.
+Peak earnings age moves from **61 to 57**.
+
+**2. Inequality tilt, to Japan's Gini.** The single-scalar tilt
+`e_JPN = e_USA · exp(a·e_USA)`, solved so the model Gini stands in the same ratio
+to the US model Gini as Japan's measured Gini (32.3, World Bank, income basis)
+does to the US reference (41.5, same concept). Japan is markedly more equal than
+the US, so the profile compresses rather than stretches.
+
+**An unplanned cross-check.** Before the age-shape adjustment, the pension
+replacement rate had to be fitted to 0.399 — 2.6pp *above* its derived value of
+0.373. With Japan's own age profile in place it fell to **0.358**, 1.5pp *below*.
+Fixing the earnings block moved an unrelated fitted parameter toward its
+independently-derived value. That is the kind of agreement you cannot arrange by
+tuning.
+
+### The full resource constraint### The full resource constraint
 
 The place to judge a calibration's realism is the whole national-accounts
 identity, not one line of it:

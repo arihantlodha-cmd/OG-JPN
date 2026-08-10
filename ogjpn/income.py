@@ -16,6 +16,7 @@ against the US 41.5, Japan is markedly MORE equal, so the solved `a` is
 negative and the profile compresses rather than stretches.
 """
 
+import csv
 import numpy as np
 import scipy.optimize as opt
 import scipy.interpolate as si
@@ -33,7 +34,9 @@ OUTPUT_DIR = os.path.join(CUR_PATH, "OUTPUT", "ability")
 JAPAN_GINI = 32.3
 
 
-def get_e_interp(E, S, J, lambdas, age_wgts, gini_to_match=32.3, plot=False):
+def get_e_interp(
+    E, S, J, lambdas, age_wgts, gini_to_match=32.3, plot=False, age_shape=True
+):
     """
     This function takes the calibrated lifetime earnings profiles
     (abilities, e matrix) from OG-USA and then adjusts the shape of those
@@ -68,6 +71,9 @@ def get_e_interp(E, S, J, lambdas, age_wgts, gini_to_match=32.3, plot=False):
             https://data.worldbank.org/indicator/SI.POV.GINI
         plot (bool): if True, creates plots of emat_orig and the new
             interpolated emat_new
+        age_shape (bool): if True (the default), first reshape the US age
+            profile to Japan's using NTA labour income by age -- step 1 of the
+            method in EAPD-DRB/OG-ZAF#18. Set False to get the Gini tilt alone.
 
     Returns:
         emat_new_scaled (Numpy array): interpolated ability matrix scaled
@@ -104,6 +110,13 @@ def get_e_interp(E, S, J, lambdas, age_wgts, gini_to_match=32.3, plot=False):
     usa_omega_SS = np.array(usa_json["omega_SS"])
     if usa_omega_SS.ndim == 2:  # SxJ snapshot: age dist is the J-sum
         usa_omega_SS = usa_omega_SS.sum(axis=1)
+
+    # STEP 1 of the method: impose Japan's own age shape on the US curves,
+    # from NTA labour income by single year of age. Done BEFORE the Gini tilt
+    # is solved so the tilt is fitted against the reshaped profile and the
+    # inequality target is still hit exactly.
+    if age_shape:
+        usa_e = apply_age_shape(usa_e, usa_E, usa_S)
 
     # Define a function that will find the "a" in the equation:
     # e_Y = e_USA * exp(a * e_USA)
@@ -243,3 +256,100 @@ def get_e_interp(E, S, J, lambdas, age_wgts, gini_to_match=32.3, plot=False):
             )
 
     return emat_new_scaled
+
+# ---------------------------------------------------------------------------
+# Age-shape adjustment (the first half of the family's earnings method).
+#
+# EAPD-DRB/OG-ZAF#18 sets out two adjustments to OG-USA's estimated lifetime
+# earnings curves:
+#   1. reshape the AGE pattern to the target country's own income-by-age
+#      profile   <- this section
+#   2. tilt the gaps between the J income groups to the target country's
+#      inequality <- get_e_interp above
+# OG-ZAF#63 tracks getting (1) into the country repos; only the resulting
+# curves had been implemented there. This is (1), done from the source data.
+# ---------------------------------------------------------------------------
+
+NTA_DIR = os.path.join(CUR_PATH, "data")
+
+# Ages over which each profile is normalised before the ratio is taken. NTA
+# reports levels in each country's own currency, so only the SHAPE transfers;
+# normalising over prime working ages makes the two comparable.
+NORMALISE_AGES = (20, 65)
+
+# Above this age both profiles approach zero and their ratio becomes noise, so
+# the factor is held flat at its value here rather than dividing small by small.
+FACTOR_TAPER_AGE = 72
+
+
+def _load_nta_profile(iso):
+    """
+    Read one NTA labour-income age profile written by
+    ``scripts/fetch_nta_age_profiles.py``.
+
+    Args:
+        iso (str): "JPN" or "USA"
+
+    Returns:
+        dict: {year (int): numpy array of income by single year of age 0-110}
+    """
+    path = os.path.join(NTA_DIR, f"nta_labor_income_{iso}.csv")
+    out = {}
+    with open(path, encoding="utf-8") as fh:
+        for row in csv.DictReader(fh):
+            ages = []
+            for age in range(0, 111):
+                val = row.get(f"Age{age}", "")
+                ages.append(float(val) if val not in ("", None) else np.nan)
+            out[int(row["Year"])] = np.array(ages)
+    return out
+
+
+def get_age_shape_factor(E, S):
+    """
+    Ratio of Japan's to the USA's labour-income age profile, by model age.
+
+    Japan's profile differs from the USA's in a way that matters for an
+    overlapping-generations model: the seniority wage system (年功序列) makes
+    earnings rise more steeply into the fifties, and mandatory retirement at 60
+    makes them fall much harder afterwards. At age 65 Japanese labour income is
+    about 62% of the US level once both profiles are put on a common scale.
+
+    Args:
+        E (int): age at which agents become economically active
+        S (int): number of model ages
+
+    Returns:
+        numpy array of length S: multiplicative factor to apply to the OG-USA
+        earnings profile at each model age
+    """
+    jpn, usa = _load_nta_profile("JPN"), _load_nta_profile("USA")
+    jpn_year = sorted(jpn)[0]
+    # Nearest-year comparator, as the method specifies.
+    usa_year = min(usa, key=lambda y: abs(y - jpn_year))
+    j, u = jpn[jpn_year], usa[usa_year]
+
+    lo, hi = NORMALISE_AGES
+    j_norm = j / np.nanmean(j[lo:hi])
+    u_norm = u / np.nanmean(u[lo:hi])
+
+    ages = np.arange(E, E + S)
+    capped = np.minimum(ages, FACTOR_TAPER_AGE)
+    factor = j_norm[capped] / u_norm[capped]
+    return np.nan_to_num(factor, nan=1.0, posinf=1.0, neginf=1.0)
+
+
+def apply_age_shape(emat, E, S):
+    """
+    Reshape an earnings matrix by the Japan/USA age factor and renormalise.
+
+    Args:
+        emat (numpy array): SxJ earnings matrix
+        E (int): age agents become economically active
+        S (int): number of model ages
+
+    Returns:
+        numpy array: SxJ matrix with the Japanese age shape imposed
+    """
+    factor = get_age_shape_factor(E, S)
+    return emat * factor[:, None]

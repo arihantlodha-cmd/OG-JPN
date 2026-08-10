@@ -222,7 +222,7 @@ def test_alpha_db_reproduces_the_oecd_replacement_rate():
     pp = pension_params.get_pension_params()
     assert pp["alpha_db"] > 0.0
     replacement = pp["yr_contrib"] * pp["alpha_db"]
-    assert replacement == pytest.approx(0.399, abs=1e-6)
+    assert replacement == pytest.approx(0.358, abs=1e-6)
     assert replacement > pension_params.GROSS_REPLACEMENT_RATE_OECD
     # most of the gap should be the derived survivors/disability uplift
     derived = (pension_params.GROSS_REPLACEMENT_RATE_OECD
@@ -356,3 +356,39 @@ def test_demographic_gradients_are_deliberately_absent():
         )
     # but income_percentiles IS passed, so the arrays stay J-wide
     assert "income_percentiles" in src
+
+
+def test_age_shape_factor_has_japans_signature():
+    """
+    The NTA age-shape factor (step 1 of the earnings method, OG-ZAF#18) must
+    carry Japan's distinctive pattern: earnings rise more steeply than the US
+    into the fifties under the seniority wage system, then fall much harder
+    after mandatory retirement at 60.
+    """
+    f = income.get_age_shape_factor(20, 80)
+    assert len(f) == 80
+    age = lambda a: f[a - 20]
+    # steeper than the US through the seniority years
+    assert age(50) > 1.05
+    assert age(55) > 1.05
+    # and a hard drop once mandatory retirement bites
+    assert age(65) < 0.70
+    assert age(65) < age(55), "Japan must fall faster after 60 than the US"
+    # the factor is bounded -- no divide-by-near-zero blow-ups at old ages
+    assert f.min() > 0.4 and f.max() < 1.6
+
+
+def test_nta_source_files_are_present_and_matched():
+    """Both profiles must come from NTA; mixing sources breaks the ratio."""
+    import csv as _csv
+    import os as _os
+
+    for iso in ("JPN", "USA"):
+        path = _os.path.join(
+            _os.path.dirname(income.__file__), "data", f"nta_labor_income_{iso}.csv"
+        )
+        assert _os.path.exists(path), f"missing NTA profile for {iso}"
+        rows = list(_csv.DictReader(open(path, encoding="utf-8")))
+        assert rows, f"empty NTA profile for {iso}"
+        assert all(r["VarType"] == "Smooth Mean" for r in rows)
+        assert all(r["Variable Name"] == "Labor Income" for r in rows)
