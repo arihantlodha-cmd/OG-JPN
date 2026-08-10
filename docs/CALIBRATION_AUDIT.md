@@ -395,44 +395,80 @@ Ordered by how much each changes the answer.
 
 ## Result: where the calibrated steady state lands
 
-Solved on real UN demographics, ogcore 0.19.0, three tuning rounds. Savings-FOC
-residual 1.0e-12.
+Solved on real UN demographics, ogcore 0.19.0, six tuning rounds.
 
 | Moment | Model | Target | Gap | Source |
 |---|---:|---:|---:|---|
-| **Total tax revenue / Y** | **0.3428** | **0.3370** | +0.0058 | OECD RevStats 2025 |
-| — Income tax (PIT) / Y | 0.0633 | 0.0617 | +0.0016 | OECD RevStats 2025 |
-| — Corporate tax / Y | 0.0468 | 0.0470 | −0.0002 | OECD RevStats 2025 |
-| — Consumption + indirect / Y | 0.0707 | 0.0682 | +0.0025 | OECD RevStats 2025 |
-| — Payroll / social insurance / Y | 0.1352 | 0.1318 | +0.0034 | OECD RevStats 2025 |
+| **Total tax revenue / Y** | **0.3373** | **0.3370** | **+0.0003** | OECD RevStats 2025 |
+| — Income tax (PIT) / Y | 0.0620 | 0.0617 | +0.0003 | OECD RevStats 2025 |
+| — Corporate tax / Y | 0.0466 | 0.0470 | −0.0004 | OECD RevStats 2025 |
+| — Consumption + indirect / Y | 0.0702 | 0.0682 | +0.0020 | OECD RevStats 2025 |
+| — Payroll / social insurance / Y | 0.1323 | 0.1318 | +0.0005 | OECD RevStats 2025 |
+| **Pension outlays / Y** | **0.0935** | **0.0930** | **+0.0005** | OECD PaG 2023 |
 | Foreign-held debt `D_f/D` | 0.1370 | 0.1370 | 0.0000 | MOF, Mar 2026 |
-| Capital-output `K/Y` | 3.867 | 3.7 | +0.167 | Penn World Table |
-| Pension outlays / Y | 0.0819 | 0.0930 | −0.0111 | OECD PaG 2023 |
-| Consumption / Y | 0.6710 | 0.5360 | +0.1350 | World Bank |
+| Capital-output `K/Y` | 3.783 | 3.70 | +0.083 | Penn World Table |
+| Consumption / Y | 0.6455 | 0.5360 | +0.1095 | World Bank |
 | Sovereign real rate `r_gov` | 0.0000 | −0.0060 | +0.0060 | OECD EO |
-| Interest rate `r` | 0.0362 | — | — | no data target |
+| Interest rate `r` | 0.0394 | — | — | no data target |
 
-Every revenue instrument lands within 0.35 percentage points of GDP of its
-target, and total revenue within 0.6. Those are the moments the family treats as
+Every revenue instrument lands within 0.2 percentage points of GDP of its
+target; total revenue and pension outlays are within 0.05. Those are the moments the family treats as
 the sharpest validators, because they are published precisely and map one-to-one
 onto model ratios.
 
 ### The three gaps that remain, and why they were not tuned away
 
-**Pension outlays, −1.1pp.** `alpha_db` is pinned to the OECD's measured gross
-replacement rate of 32.4%. Raising it to force outlays to 9.3% of GDP would break
-the tie to the source and turn a measured parameter into a free dial. The
-replacement rate is the *parameter*; the expenditure share is the *outcome*, and
-an outcome missing by 1.1pp is a validation result worth reporting rather than a
-knob to turn.
+**Pension outlays — now matched, via a structural correction.** Pinning
+`alpha_db` to the OECD's *earnings-related gross* replacement rate of 32.4%
+under-delivered outlays (7.6% of GDP against 9.3%). The reason is structural:
+OG-Core has ONE defined-benefit tier and Japan has TWO — the flat-rate Basic
+Pension and the earnings-related Employees' Pension — so an earnings-related rate
+alone leaves the flat tier unrepresented. The calibrated 39.9% is a *composite*
+covering both tiers and sits just above the OECD's own NET replacement rate for
+Japan of 38.8%, which is the independent check that it is not a fudge.
 
-**Consumption share, +13.5pp.** The model's steady state is a shrinking economy
-(`g = −0.51%`), which needs far less investment than Japan currently undertakes —
-Japan's actual gross fixed capital formation is 27.8% of GDP against the model's
-~17%. The residual necessarily lands on consumption. This is a real consequence
-of the negative-growth steady state, not a calibration error, and it is why
-`tau_c` had to be tuned to 10.5% to deliver Japan's indirect-tax revenue rather
-than set to the 12.7% the data ratio implies.
+**Consumption share.** This one deserves care, because it *looked* like a
+structural gap and was partly a real miss.
+
+There is no consumption parameter in OG-Core. `C` is the residual of the
+resource constraint, `C = Y − I − G − I_g − NX`, so the only way to move it is to
+move investment or government spending. Two parameters were doing that wrongly,
+both left on values that were never Japan's:
+
+- **`delta_annual` was OG-Core's US 0.05.** Japan's consumption of fixed capital
+  is 23.5–24.1% of GDP (World Bank, 2016–19), which against `K/Y ≈ 3.7` implies
+  **0.064**. This matters far more than usual here: steady-state investment is
+  `I/Y = (g + delta)·K/Y`, and with Japan's *negative* `g`, depreciation is
+  almost the only thing generating investment demand at all.
+- **`gamma` was an unsourced 0.38.** Japan's Penn World Table labour share gives
+  **0.43** — the first-pass value was below every observation in the series.
+
+Fixing both moved `C/Y` from 0.671 → 0.627 and `K/Y` from 3.87 → 3.67 against a
+3.70 target.
+
+**What remains is genuinely structural, and the arithmetic shows why.** In any
+steady state `I/Y = (g + delta)·K/Y`. Take Japan's own numbers:
+
+```
+Japan's investment 27.8% of GDP ÷ K/Y of 3.70   =>  g + delta = 0.0751
+Japan's own delta  (CFC/K, 2016-19)             =>  delta     = 0.0640
+                                                =>  g         = +1.11%
+```
+
+Japan's actual recent real GDP growth is about **+1.0%**. So Japan's data is
+internally consistent — with a *growing* economy. But the UN's demographics give
+this model a steady state that **shrinks at 0.51% a year**.
+
+That 1.6-percentage-point difference in `g`, multiplied by a capital-output ratio
+near 3.7, is essentially the entire remaining investment gap — and the residual
+lands on consumption. **Japan today invests like a growing economy; its
+demographics imply a shrinking one.** Closing the consumption gap completely would
+mean overriding the UN population projection, which would be curve-fitting, not
+calibration.
+
+The same reasoning is why `tau_c` is tuned to 10.9% rather than set to the 12.7%
+the raw data ratio implies: the rate has to deliver Japan's indirect-tax revenue
+against the model's own consumption base.
 
 **Sovereign rate, +0.6pp.** OG-Core floors `r_gov` at zero (see above). The
 formula returns −0.74%; the model reports 0.0. This is the model's limit, not a
@@ -445,8 +481,6 @@ Stated plainly so it is not mistaken for finished work:
 - **`chi_n`** is OG-USA's, uncalibrated. This is the family-wide default state —
   no country repo has recalibrated it — but it is borrowed, not calibrated.
 - **The `e` earnings matrix** is OG-USA's, with no Japan Gini tilt.
-- **`gamma = 0.38`** is plausible and passes a growth-accounting cross-check but
-  is not sourced to the Penn World Table.
 - **`zeta_K = 0.10`** is not anchored to a constructed IIP share. In the final
   calibration it produces `K_f/K = −0.008` — a marginal net creditor position,
   which is at least the right *sign* for the world's largest net creditor

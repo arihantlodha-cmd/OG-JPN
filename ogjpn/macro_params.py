@@ -107,12 +107,25 @@ def get_macro_params():
     # -----------------------------------------------------------------------
     # Capital share of income.
     #
-    # NEEDS SOURCING: 0.38 is retained from the first pass as a plausible value
-    # and is consistent with a growth-accounting cross-check -- gamma =
-    # (r + delta) * K/Y with K/Y ~ 3.7 and r + delta ~ 0.10 gives ~0.37 -- but
-    # it should be replaced with Penn World Table (1 - labsh) for Japan.
+    # gamma = 1 - labour share, from the Penn World Table's share of labour
+    # compensation in GDP at current national prices for Japan (PWT 10.01
+    # series `labsh`, via FRED LABSHPJPA156NRUG):
+    #
+    #     2000-2019 mean  labsh 0.557  ->  gamma 0.443
+    #     2015-2023 mean  labsh 0.571  ->  gamma 0.429
+    #     2023            labsh 0.588  ->  gamma 0.413
+    #
+    # 0.43 is taken from the 2015-2023 window. Japan's labour share stepped up
+    # after 2019 (profits fell faster than wages through COVID and the share has
+    # not returned), so the longer window would overstate the capital share for
+    # a forward-looking steady state, while 2023 alone would read one year of a
+    # still-unwinding shock as permanent.
+    #
+    # The first pass used 0.38, which is below every reading in the series.
+    # NOTE: the labour share implied here (0.57) is also the denominator for the
+    # effective payroll-tax rate in ogjpn.tax_params -- the two must agree.
     # -----------------------------------------------------------------------
-    macro_parameters["gamma"] = [0.38]
+    macro_parameters["gamma"] = [0.43]
 
     # -----------------------------------------------------------------------
     # Government debt: NET, not gross.

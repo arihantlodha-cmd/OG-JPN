@@ -32,7 +32,7 @@ converges in three to five iterations.
 # Denominators used to convert collections into effective rates. Kept as named
 # constants so the arithmetic in the comments below can be checked.
 GDP_2023_YEN_BN = 594490.0
-LABOR_SHARE = 0.62  # 1 - gamma, consistent with ogjpn.macro_params
+LABOR_SHARE = 0.57  # 1 - gamma, consistent with ogjpn.macro_params (PWT)
 CONSUMPTION_SHARE_OF_GDP = 0.536  # World Bank NE.CON.PRVT.ZS, Japan 2023
 
 
@@ -50,8 +50,12 @@ def get_tax_params():
     # Social insurance contributions -- the largest single instrument.
     #
     # Collections 13.18% of GDP; the model's labour share of income is
-    # 1 - gamma = 0.62. Effective rate on the wage bill:
-    #     0.1318 / 0.62 = 0.2126
+    # 1 - gamma = 0.57 (Penn World Table; see ogjpn.macro_params). Effective
+    # rate on the wage bill:
+    #     0.1318 / 0.57 = 0.2312
+    # This moved with gamma: the first pass used a labour share of 0.62 and so
+    # a rate of 0.2126. The two must stay consistent or the payroll take drifts
+    # off its target.
     #
     # This is below Japan's combined statutory rate of roughly 30% (employees'
     # pension 18.3%, health ~10%, long-term care ~1.8%, employment ~1%) because
@@ -63,7 +67,7 @@ def get_tax_params():
     # ogcore's tax.py (income_payroll_tax_liab = T_I + T_P), so the combined
     # household take must be audited, not just the income-tax line.
     # -----------------------------------------------------------------------
-    tax_parameters["tau_payroll"] = [0.2126]
+    tax_parameters["tau_payroll"] = [0.2312]
 
     # Split the reported take between the payroll and income-tax lines so the
     # model's reporting matches the data's: SSC / (SSC + PIT).
@@ -85,14 +89,15 @@ def get_tax_params():
     # (fuel, liquor, tobacco, motor vehicles) add 1.27% of GDP on top of VAT's
     # 4.94%. Using the statutory 10% would under-collect.
     #
-    # TUNED (round 3): the data ratio implies 12.7%, but the model's
-    # consumption share (0.647 of GDP) runs above Japan's actual (0.536),
-    # because a shrinking steady state needs far less investment than Japan
-    # currently undertakes. The rate that delivers Japan's INDIRECT-TAX REVENUE
-    # in the model is therefore 0.0682 / 0.647 = 0.1054. Revenue is the moment
-    # worth hitting -- it is what the government actually collects.
+    # TUNED (rounds 3, 6): the data ratio implies 12.7%, but the model's
+    # consumption share (0.63-0.65 of GDP) runs above Japan's actual (0.536) --
+    # see docs/CALIBRATION_AUDIT.md for why that is a property of a shrinking
+    # steady state rather than an error. The rate that delivers Japan's
+    # INDIRECT-TAX REVENUE against the model's own base is 0.0682 / 0.627 =
+    # 0.1087 (which lands at 0.0702 once the pension tier is added back). Revenue is the moment worth hitting: it is what the government
+    # actually collects.
     # -----------------------------------------------------------------------
-    tax_parameters["tau_c"] = [[0.1054]]
+    tax_parameters["tau_c"] = [[0.1087]]
 
     # -----------------------------------------------------------------------
     # Corporate income tax.
@@ -109,11 +114,12 @@ def get_tax_params():
     # actual collections (ogcore/parameters.py:339).
     #
     # TUNED (rounds 2-3): OG-Core's US default of 0.309 produced CIT revenue of
-    # 1.56% of GDP against a target of 4.70%. Scaled to 0.930, then to 1.038
-    # after the income-tax fix moved the capital-income base.
+    # 1.56% of GDP against a target of 4.70%. Scaled to 0.930, then 1.038
+    # after the income-tax fix, then 0.868 once gamma moved to the Penn World
+    # Table value and enlarged the capital-income base.
     # -----------------------------------------------------------------------
     tax_parameters["cit_rate"] = [[0.2974]]
-    tax_parameters["adjustment_factor_for_cit_receipts"] = [1.038]
+    tax_parameters["adjustment_factor_for_cit_receipts"] = [0.868]
 
     # -----------------------------------------------------------------------
     # Property taxes -> the wealth tax.

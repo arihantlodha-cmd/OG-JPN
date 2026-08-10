@@ -87,6 +87,30 @@ def test_foreign_debt_share_matches_mof():
     assert m["zeta_D"][0] == pytest.approx(0.137)
 
 
+def test_capital_share_matches_pwt():
+    """
+    gamma = 1 - PWT labour share for Japan (FRED LABSHPJPA156NRUG). The
+    2015-2023 window averages labsh 0.571. The first pass used 0.38, which is
+    below every observation in the series.
+    """
+    m = macro_params.get_macro_params()
+    assert m["gamma"][0] == pytest.approx(0.43, abs=1e-3)
+    # the payroll denominator in tax_params must track it
+    assert tax_params.LABOR_SHARE == pytest.approx(1 - m["gamma"][0], abs=1e-3)
+
+
+def test_depreciation_is_japans_not_the_us_default():
+    """
+    OG-Core's delta_annual default of 0.05 is a US value. Japan's consumption of
+    fixed capital is 23.5-24.1% of GDP (2016-19), which against K/Y ~3.7 implies
+    ~0.064. With Japan's NEGATIVE growth rate, delta is almost the only thing
+    generating steady-state investment demand.
+    """
+    m = macro_params.get_macro_params()
+    assert m["delta_annual"] == pytest.approx(0.062, abs=1e-3)
+    assert not isinstance(m["delta_annual"], list), "delta_annual is a scalar"
+
+
 def test_productivity_growth_window_is_named():
     """g_y is productivity growth, not GDP growth, over a stated window."""
     assert macro_params.PRODUCTIVITY_GROWTH_START_YEAR == 2000
@@ -103,10 +127,10 @@ def test_social_insurance_is_collected():
     """
     Japan's largest tax instrument is social insurance at 13.18% of GDP, 39.1%
     of all tax revenue. OG-Core's default tau_payroll is 0.0, which collects
-    none of it. Effective rate = 0.1318 / labour share 0.62.
+    none of it. Effective rate = 0.1318 / labour share 0.57 (PWT).
     """
     t = tax_params.get_tax_params()
-    assert t["tau_payroll"][0] == pytest.approx(0.2126, abs=1e-3)
+    assert t["tau_payroll"][0] == pytest.approx(0.2312, abs=1e-3)
     assert t["tau_payroll"][0] > 0.0
 
 
@@ -123,12 +147,12 @@ def test_consumption_tax_is_effective_not_statutory():
 
     Japan's statutory consumption tax is 10%. The data ratio (6.82% of GDP over
     consumption of 53.6%) implies 12.7%. But the model's consumption share runs
-    at 64.7% of GDP, because a shrinking steady state needs much less
+    at 62.7% of GDP, because a shrinking steady state needs much less
     investment than Japan currently undertakes -- so the rate that delivers
-    Japan's indirect-tax revenue in the model is 0.0682 / 0.647 = 10.5%.
+    Japan's indirect-tax revenue in the model is 0.0682 / 0.627 = 10.9%.
     """
     t = tax_params.get_tax_params()
-    assert t["tau_c"] == [[pytest.approx(0.1054)]]
+    assert t["tau_c"] == [[pytest.approx(0.1087)]]
     assert t["tau_c"][0][0] != 0.10, "statutory rate is not the model input"
 
 
@@ -141,6 +165,7 @@ def test_cit_adjustment_factor_is_set():
     t = tax_params.get_tax_params()
     assert "adjustment_factor_for_cit_receipts" in t
     assert t["adjustment_factor_for_cit_receipts"][0] > 0.309
+    assert t["adjustment_factor_for_cit_receipts"][0] == pytest.approx(0.868, abs=1e-3)
 
 
 def test_income_tax_is_not_the_us_functions():
@@ -188,11 +213,16 @@ def test_alpha_db_reproduces_the_oecd_replacement_rate():
 
     OG-Core's alpha_db default is 0.0 -- switching pension_system without
     setting it produces zero pensions.
+
+    The rate is a COMPOSITE standing in for both of Japan's pension tiers, so it
+    sits above the OECD's earnings-related gross figure (32.4%) and just above
+    its net figure (38.8%). See ogjpn/pension_params.py.
     """
     pp = pension_params.get_pension_params()
     assert pp["alpha_db"] > 0.0
     replacement = pp["yr_contrib"] * pp["alpha_db"]
-    assert replacement == pytest.approx(0.324, abs=1e-6)
+    assert replacement == pytest.approx(0.399, abs=1e-6)
+    assert replacement > pension_params.GROSS_REPLACEMENT_RATE_OECD
 
 
 def test_income_anchor_is_in_yen():

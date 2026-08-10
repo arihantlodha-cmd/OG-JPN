@@ -82,9 +82,12 @@ def _panel_a(ax, ss, Y):
     ax.set_yticklabels(labels, fontsize=9)
     ax.set_xlabel("percent of GDP", fontsize=9)
     ax.set_xlim(0, max(max(model), max(actual)) * 1.22)
+    # Computed, not hard-coded: a stale claim in a figure caption is exactly
+    # the doc/number drift the value-pinning tests exist to prevent.
+    worst = max(abs(m - a) for m, a in zip(model, actual))
     ax.set_title(
         "A   Revenue by instrument\n"
-        "every line within 0.35pp of GDP of its target",
+        f"every line within {worst:.2f}pp of GDP of its target",
         fontsize=10, loc="left", color=INK, pad=10,
     )
     ax.legend(

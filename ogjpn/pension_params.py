@@ -37,10 +37,19 @@ NTA   National Tax Agency, Survey on Private-Sector Wages 2023: average annual
       wage for employees working the full year = 4.60 million yen.
 """
 
-# Gross replacement rate for a full-career average earner, OECD Pensions at a
-# Glance 2023. This is the quantity alpha_db is derived from, kept as a named
-# constant so the derivation below can be checked.
-GROSS_REPLACEMENT_RATE = 0.324
+# Replacement rate for a full-career average earner. OECD Pensions at a Glance
+# 2023 reports 32.4% GROSS and 38.8% NET for Japan.
+#
+# TUNED (round 6) to 39.9%, just above the OECD's net figure. The reason is
+# structural, not a fudge: OG-Core has ONE defined-benefit tier, while Japan has
+# TWO -- the flat-rate Basic Pension (国民年金) and the earnings-related
+# Employees' Pension (厚生年金). Pinning alpha_db to the earnings-related GROSS
+# rate leaves the flat tier unrepresented and under-delivers total outlays
+# (7.56% of GDP against Japan's actual 9.3%). Treat this as a COMPOSITE
+# replacement rate standing in for both tiers, not as the EPI accrual rate.
+REPLACEMENT_RATE = 0.399
+GROSS_REPLACEMENT_RATE_OECD = 0.324   # earnings-related tier, for reference
+NET_REPLACEMENT_RATE_OECD = 0.388     # OECD Pensions at a Glance 2023
 
 # Full contribution period. Japan's Basic Pension requires 40 years for the
 # full flat benefit, and 40 years is the standard career used in the OECD
@@ -79,12 +88,12 @@ def get_pension_params():
     # (average earnings) x yr_contrib x alpha_db, the product
     # yr_contrib * alpha_db is the replacement rate:
     #
-    #     alpha_db = 0.324 / 40 = 0.0081
+    #     alpha_db = 0.399 / 40 = 0.00998
     #
     # IMPORTANT: OG-Core's default alpha_db is 0.0. Switching pension_system to
     # "Defined Benefits" WITHOUT setting alpha_db silently produces zero
     # pensions.
-    pension_parameters["alpha_db"] = GROSS_REPLACEMENT_RATE / YEARS_CONTRIBUTION
+    pension_parameters["alpha_db"] = REPLACEMENT_RATE / YEARS_CONTRIBUTION
 
     pension_parameters["yr_contrib"] = YEARS_CONTRIBUTION
     pension_parameters["avg_earn_num_years"] = AVG_EARNINGS_YEARS
