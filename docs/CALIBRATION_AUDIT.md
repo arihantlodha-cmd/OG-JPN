@@ -447,6 +447,73 @@ they are the same thing seen from different sides of the budget.
 **Net exports, −1.3pp.** A residual of the resource constraint, not a modelled
 trade sector.
 
+## Adversarial check
+
+Every load-bearing claim in this document was attacked deliberately, on the
+principle that a calibration which has only been checked by the person who built
+it has not been checked. **Two of the five attacks succeeded**, and both fixes
+are in the numbers above.
+
+**1. Are the revenue matches real, or offsetting errors? — MOSTLY SURVIVED.**
+Hitting a revenue total can hide a wrong rate on a wrong base. Testing each
+instrument's *base* rather than its yield: the payroll base is `wL/Y = 0.5700`
+against a labour share of 0.570 — exact, so `tau_payroll × wL/Y = 0.1318` is the
+target hit for the right reason. Wealth and bequest bases are the model's own
+`B/Y` and `BQ/Y` and were tuned against them.
+
+*But `tau_c` did not fully survive.* The model's consumption base is 14% larger
+than Japan's, so the calibrated 11.2% is delivering Japan's indirect-tax revenue
+on an oversized base; the rate that would do it on Japan's actual consumption
+share is 12.8%. **Consequence for reform work:** the revenue level is right, but
+a simulated consumption-tax *change* will over-deliver revenue relative to Japan
+by roughly the base error. That is a real caveat for anyone running the
+consumption-tax scenario, and it is the reason to prefer the reform's percentage
+changes over its levels.
+
+**2. Does `r_gov × D` reproduce Japan's actual interest bill? — SURVIVED.**
+The worry is that netting government assets out of debt while keeping the *net*
+interest rate double-counts the netting. It does not: the model's debt service is
+`0.0000 × 1.0 = 0.00% of GDP`, and Japan's general-government net interest in
+2024 was **−0.12% of GDP**. Both are approximately zero. The net-debt /
+net-interest pairing is internally consistent.
+
+**3. Does the fiscal identity actually hold in the solve? — SURVIVED.**
+Not assumed, measured from the solved steady state: revenue 0.3364 less primary
+spending 0.3312 gives an actual primary balance of +0.0051 against a required
+`pb*` of +0.0052 — a residual of **2.7 × 10⁻⁵**.
+
+**4. Is the investment gap as large as claimed? — FAILED, corrected.**
+An earlier version of this document compared the model's `I_total` (which is
+**private** investment) against Japan's gross fixed capital formation (which is
+**private plus public**). That overstated the gap by the whole 3pp of public
+investment. Corrected, the investment gap is 4.2pp rather than 6.9pp, and the
+implied growth-rate difference is 1.1pp rather than 1.6pp.
+
+**5. Is the pension replacement rate justified or rationalised? — FAILED,
+corrected.** The earlier justification for raising `alpha_db` above the OECD's
+32.4% was that OG-Core has one pension tier while Japan has two. That is wrong:
+the OECD country profile states its modelling covers the whole public system —
+*"The public pension system has two tiers: a basic, flat-rate scheme and an
+earnings-related plan"* — so 32.4% already includes both. The earlier text also
+cited the OECD's 38.8% *net* replacement rate as corroboration, which is a
+different concept (net of tax); its numerical closeness was coincidence.
+
+The real cause is that 32.4% is an **old-age** rate while Japan's 9.3% of GDP
+also funds survivors' and disability pensions, which OG-Core's single
+defined-benefit block cannot separate. That justifies roughly `0.324 × 1.15 =
+0.373`; the remaining ~2.6pp to the calibrated 0.399 is **fitted, and is now
+labelled as fitted** in `ogjpn/pension_params.py` rather than dressed up as a
+derivation.
+
+### What this check does not cover
+
+The steady state is verified; the **transition is not**. The family's experience
+is that a calibration can pass every steady-state check and still diverge on the
+time path — the steady-state closure silently forces spending to balance, while
+TPI holds `alpha_G` and `alpha_T` at their input values for `tG1` periods. A
+baseline TPI run is the next verification step, and `initial_wealth_ratio`
+(undiagnosed, see below) is the parameter most likely to distort it.
+
 ## What is still not calibrated
 
 Stated plainly so it is not mistaken for finished work:
