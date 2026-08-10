@@ -110,7 +110,7 @@ RETIREMENT_AGE = 65
 # OG-Core is currency-denominated -- the wealth tax takes savings in model units
 # and the defined-benefit pension is a pure rate -- so those two values are the
 # whole of it. See ogjpn/tax_params.py.
-MEAN_INCOME_MILLIONS_YEN = 4.60
+MEAN_INCOME_YEN = 4600000.0
 
 
 def get_pension_params():
@@ -144,7 +144,7 @@ def get_pension_params():
     # Currency anchor for `factor`. Without this the model scales Japanese
     # incomes to US dollars, which mis-prices every tax function as well as the
     # pension.
-    pension_parameters["mean_income_data"] = MEAN_INCOME_MILLIONS_YEN
+    pension_parameters["mean_income_data"] = MEAN_INCOME_YEN
 
     return pension_parameters
 

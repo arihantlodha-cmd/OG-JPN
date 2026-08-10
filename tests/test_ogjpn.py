@@ -7,6 +7,8 @@ ones the documentation says they are -- the family's "value-pinning" pattern,
 which is what stops documentation drifting away from shipped numbers.
 """
 
+import os
+
 import pytest
 
 from ogjpn import constants, income, macro_params, pension_params, tax_params
@@ -238,21 +240,6 @@ def test_alpha_db_reproduces_the_oecd_replacement_rate():
     assert abs(replacement - derived) < 0.06, "fitted residual must stay small"
 
 
-def test_income_anchor_is_japanese_and_in_millions():
-    """
-    mean_income_data sets the currency income at which the tax functions are
-    evaluated. OG-Core's default is US$58,644.92.
-
-    Japan's is expressed in MILLIONS of yen rather than yen, so that `factor`
-    solves to ~7.0 instead of ~7.0 million and fits under OG-Core's cap of
-    500,000 on initial_guess_factor_SS. The units are arbitrary and the
-    reinterpretation is exact, but it obliges the matching rescale of the
-    Gouveia-Strauss phi2 below.
-    """
-    pp = pension_params.get_pension_params()
-    assert pp["mean_income_data"] == pytest.approx(4.60)
-    assert pp["mean_income_data"] != pytest.approx(58644.924039576625)
-
 
 def test_pension_validation_target_is_japans_actual():
     """
@@ -446,49 +433,66 @@ def test_demographic_window_is_wide_enough_to_see_the_projection():
     )
 
 
+
+
+
+def test_warm_start_seed_is_shipped_and_coherent():
+    """
+    OG-Core cold-starts the household problem from a hardcoded savings level of
+    0.07, which puts Japan's bequest seed 134x low and starts domestic capital
+    negative. Without a warm start the steady state does not converge; with one
+    it solves in 22 evaluations.
+
+    The seed must ship with the repo, or a fresh checkout cannot solve.
+    """
+    import pickle
+
+    from ogjpn import warm_start
+
+    assert os.path.exists(warm_start.SEED_PATH), "warm-start seed is missing"
+    with open(warm_start.SEED_PATH, "rb") as fh:
+        seed = pickle.load(fh)
+    for key in ("b", "n", "r", "r_p", "TR", "factor", "BQ"):
+        assert key in seed, f"seed missing {key}"
+    assert seed["b"].shape == seed["n"].shape
+    # savings must be on the scale a wealthy ageing population implies, not 0.07
+    assert seed["b"].mean() > 1.0
+    # and the factor must be the true one, above ogcore's enterable maximum
+    assert seed["factor"] > 500000
+
+
+def test_income_anchor_is_japanese_and_in_yen():
+    """
+    mean_income_data sets the currency income at which the tax functions are
+    evaluated. OG-Core's default is US$58,644.92.
+
+    Income is in YEN. Expressing it in millions was tried, to bring `factor`
+    under ogcore's 500,000 seed cap, and it is not needed: the warm start
+    supplies `factor` directly and bypasses that cap entirely.
+    """
+    pp = pension_params.get_pension_params()
+    assert pp["mean_income_data"] == pytest.approx(4.6e6)
+    assert pp["mean_income_data"] != pytest.approx(58644.924039576625)
+
+
 def test_gs_scale_matches_the_income_units():
     """
-    phi2 carries units of income^(-phi1). With income in millions of yen it is
-    0.0221; in plain yen it would be 3.5e-10. Getting this out of step with
-    mean_income_data silently re-prices the whole income tax.
+    phi2 carries units of income^(-phi1), so it must track mean_income_data.
+    In yen it is 3.5e-10; in millions it would be 0.0221. Out of step with the
+    income units it silently re-prices the whole income tax.
     """
     t = tax_params.get_tax_params()
-    phi0, phi1, phi2 = t["etr_params"][0][0]
-    expected_in_yen = 3.5e-10
-    assert phi2 == pytest.approx(expected_in_yen * 1e6**phi1, rel=1e-2)
-
-    # the effective rate at Japan's mean wage must be unchanged by the units
-    mean_millions = pension_params.get_pension_params()["mean_income_data"]
-    etr = phi0 * (1 - (1 + phi2 * mean_millions**phi1) ** (-1 / phi1))
-    etr_yen = phi0 * (
-        1 - (1 + expected_in_yen * (mean_millions * 1e6) ** phi1) ** (-1 / phi1)
-    )
-    assert etr == pytest.approx(etr_yen, rel=1e-3)
+    assert t["etr_params"][0][0][2] == pytest.approx(3.5e-10, rel=1e-3)
 
 
-def test_solver_seed_now_fits_ogcores_cap():
+def test_solver_seeds_are_left_to_the_warm_start():
     """
-    Expressing income in millions makes Japan's factor ~7.0, so the seed can be
-    set to the right order of magnitude for the first time. In plain yen the
-    correct value (~7.0e6) exceeds OG-Core's maximum of 500,000 outright.
+    Retuning r and TR to their solved values was tried and stopped the steady
+    state solving; ogcore's stock seeds are kept. The factor seed is not set
+    either — ogcore caps it at 500,000, below Japan's ~7e6, so the warm start
+    supplies it directly instead.
     """
     m = macro_params.get_macro_params()
-    assert m["initial_guess_factor_SS"] == pytest.approx(7.0)
-    assert m["initial_guess_factor_SS"] < 500000
-
-
-def test_only_the_factor_seed_is_overridden():
-    """
-    ogcore derives its output guess from the transfer guess
-    (`Yguess = TRguess / alpha_T`, SS.py:1387), so it is tempting to retune r
-    and TR to their solved values. That was tried and it stopped the steady
-    state solving; the stock seeds solve it. Seeds are chosen by solve-path
-    robustness, not proximity.
-
-    Only the factor seed is overridden, because the millions-of-yen units make
-    ogcore's US-dollar default meaningless.
-    """
-    m = macro_params.get_macro_params()
-    assert m["initial_guess_factor_SS"] == pytest.approx(7.0)
-    for k in ("initial_guess_r_SS", "initial_guess_TR_SS"):
-        assert k not in m, f"{k} must stay at ogcore's default"
+    for k in ("initial_guess_r_SS", "initial_guess_TR_SS",
+              "initial_guess_factor_SS"):
+        assert k not in m, f"{k} should be left to ogcore / the warm start"

@@ -382,7 +382,6 @@ def get_macro_params():
     # demand it: ogcore's default is a US-dollar value and Japan's factor on the
     # millions-of-yen scale is ~7.0.
     # -----------------------------------------------------------------------
-    macro_parameters["initial_guess_factor_SS"] = 7.0
 
     # -----------------------------------------------------------------------
     # Solver settings.

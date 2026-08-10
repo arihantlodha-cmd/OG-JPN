@@ -22,7 +22,7 @@ from ogcore.parameters import Specifications
 from ogcore.execute import runner
 from ogcore import utils
 
-from ogjpn import calibrate
+from ogjpn import calibrate, warm_start
 from ogjpn.constants import START_YEAR
 
 
@@ -116,6 +116,7 @@ DASHBOARD = [
 
 
 def main(out="/tmp/ogjpn_validate"):
+    warm_start.enable()   # see ogjpn/warm_start.py
     p = Specifications(baseline=True, num_workers=1)
     p.update_specifications({"start_year": START_YEAR})
     p.update_specifications(

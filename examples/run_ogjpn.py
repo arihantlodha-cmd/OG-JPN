@@ -46,7 +46,7 @@ from ogcore import utils
 from ogcore.execute import runner
 from ogcore.parameters import Specifications
 
-from ogjpn import calibrate
+from ogjpn import calibrate, warm_start
 from ogjpn.constants import COUNTRY_NAME, START_YEAR
 
 CUR_PATH = os.path.abspath(os.path.dirname(__file__))
@@ -92,6 +92,15 @@ def run_scenario(calibrated, output_dir, num_workers, client,
 
 def main(baseline_only=False, ss_only=False):
     t0 = time.time()
+    # Seed the solver from a previously solved state. Without this OG-Core
+    # cold-starts from constants that are badly wrong for a wealthy, ageing
+    # population, and the steady state does not converge — see
+    # ogjpn/warm_start.py. Measured: 22 evaluations warm vs >175 cold.
+    if warm_start.enable():
+        print("Warm start enabled (ogjpn/data/ss_warm_start.pkl).")
+    else:
+        print("No warm-start seed found; the solve may not converge.")
+
     num_workers = min(multiprocessing.cpu_count(), 7)
     client = Client(n_workers=num_workers, threads_per_worker=1)
     print(f"Number of workers = {num_workers}")
