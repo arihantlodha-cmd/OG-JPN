@@ -192,10 +192,14 @@ from `mean_income_data` rather than shipping a US level.
 
 ---
 
-## 4. Japan is missing from the offline demographic mirror
+## 4. Japan is missing from the offline demographic mirror — ALREADY IN FLIGHT
 
 **Where:** `ogcore/demographics.py`, the `country_dict` fallback (11 countries,
 no `"392"`).
+
+**Status: PSLmodels/OG-Core#1196 is open**, paired with
+EAPD-DRB/Population-Data#14 which supplies the data. Nothing further needed
+here; recorded so the list is complete.
 
 Live UN data works for Japan; the offline mirror does not, so a run without a UN
 API token cannot reach Japanese demographics at all. Two paired changes:
@@ -256,8 +260,8 @@ mandatory retirement at 60 move peak earnings age from 61 to 57.
 
 ## Note on scope
 
-None of these block the calibration outright. Items 4 and 5 were already
-identified in the project README; items 1, 2, 3 and 6 were found by building and
-running this calibration. All are recorded here rather than quietly worked around, because a
+None of these block the calibration outright. Item 4 was already identified in
+the project README and is now an open PR; item 5 was identified there too. Items
+1, 2, 3 and 6 were found by building and running this calibration. All are recorded here rather than quietly worked around, because a
 country repo compensating for an upstream limitation is how a limitation becomes
 invisible.
