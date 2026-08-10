@@ -9,6 +9,25 @@ Live Japan demographics need a free UN Data Portal API token, saved as
 `un_api_token.txt` in the directory you run from (already gitignored).
 Register at https://population.un.org/dataportal/about/dataapi.
 
+## 0b. Make the warm start automatic  <- carries across projects
+
+`ogjpn/warm_start.py` currently needs a seed produced by hand
+(`examples/save_warm_start.py`) and `warm_start.enable()` called by each entry
+point. Without a seed the steady state does not converge at all, so this is a
+sharp edge for anyone picking the repo up.
+
+It should be automatic:
+
+- write the seed on **every** successful solve, so it is always fresh;
+- `enable()` by default, with a flag to force a cold start for testing;
+- factor the shim into something shareable — every country repo will hit this,
+  and this family has hit it before.
+
+The real fix is upstream (`docs/UPSTREAM_OGCORE.md` item 3): ogcore should derive
+its seeds from parameters it already has rather than hardcoding `0.07`, and
+accept a warm start. But the repo-side helper is worth having regardless, because
+it also makes reruns cheap.
+
 ## 1. Run the in-model tuning loop  <- the main remaining task
 
 Several parameters cannot be pinned down from published data alone. They are
