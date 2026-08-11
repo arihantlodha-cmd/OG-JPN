@@ -496,3 +496,39 @@ def test_solver_seeds_are_left_to_the_warm_start():
     for k in ("initial_guess_r_SS", "initial_guess_TR_SS",
               "initial_guess_factor_SS"):
         assert k not in m, f"{k} should be left to ogcore / the warm start"
+
+
+def test_no_unresolved_tuning_markers():
+    """A NEEDS TUNING marker is a debt with an exit criterion, not a note.
+
+    Every parameter must end in one of three states: sourced, tuned to a named
+    moment, or deliberately defaulted with a written reason. This test is the
+    release gate -- a marker that is not on the allowlist fails the build.
+
+    OG-JPN shipped zeta_K at a placeholder 0.10 while its own comment said to
+    tune it against the IIP foreign-owned capital share. The IIP value closed
+    79% of the K/Y gap and 85% of the consumption gap. Nothing failed when it
+    was skipped, so it was skipped.
+    """
+    import re
+    from pathlib import Path
+
+    # (file, parameter, what still has to happen). Empty this list, do not grow it.
+    ALLOWED = {
+        ("macro_params.py", "r_gov_shift"),
+        ("macro_params.py", "zeta_K"),
+        ("macro_params.py", "alpha_G"),
+    }
+
+    found = set()
+    for path in (Path(__file__).parent.parent / "ogjpn").glob("*.py"):
+        for line in path.read_text().splitlines():
+            m = re.search(r"NEEDS TUNING:\s*(\w+)", line)
+            if m:
+                found.add((path.name, m.group(1)))
+
+    unexpected = found - ALLOWED
+    assert not unexpected, (
+        f"unresolved NEEDS TUNING markers not on the allowlist: {sorted(unexpected)}. "
+        "Resolve the parameter against its named moment, or add it to ALLOWED with a reason."
+    )

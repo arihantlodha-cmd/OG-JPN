@@ -297,8 +297,8 @@ def get_macro_params():
     #   OG-Core's default is 0.0; leaving it there breaks the spending identity
     #   by the full 3 percentage points.
     #
-    # NEEDS TUNING: re-check all three against the identity after the first
-    # solve, once model revenue/Y and g_n_ss are known.
+    # NEEDS TUNING: alpha_G, alpha_T and alpha_I must be re-checked against the
+    # identity after the first solve, once model revenue/Y and g_n_ss are known.
     # -----------------------------------------------------------------------
     macro_parameters["alpha_G"] = [0.201]
     macro_parameters["alpha_T"] = [0.025]
