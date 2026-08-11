@@ -49,9 +49,13 @@ REVENUE_TARGETS = [
 
 STRUCTURAL_TARGETS = [
     ("Foreign-held debt  $D_f/D$", 0.137, "MOF, Mar 2026"),
-    ("Capital-output  $K/Y$", 3.70, "Penn World Table"),
+    ("Foreign-owned capital  $K_f/K$", 0.164, "MOF IIP end-2024"),
+    ("Labour share  $wL/Y$", 0.571, "PWT labsh"),
     ("Pension outlays / GDP", 0.093, "OECD PaG 2023"),
     ("Consumption / GDP", 0.536, "World Bank 2023"),
+    ("Government  $G/Y$", 0.201, "World Bank 2024"),
+    ("Capital-output  $K/Y$", 3.70, "Penn World Table"),
+    ("Investment  $(I+I_g)/Y$", 0.260, "World Bank GFCF"),
 ]
 
 
@@ -101,9 +105,13 @@ def _panel_b(ax, ss, Y):
     """Structural moments as model/target, so mixed units share one axis."""
     model_vals = [
         _s(ss["D_f"]) / _s(ss["D"]),
-        _s(ss["K"]) / Y,
+        _s(ss["K_f"]) / _s(ss["K"]),
+        _s(ss["w"]) * _s(ss["L"]) / Y,
         _s(ss["agg_pension_outlays"]) / Y,
         _s(ss["C"]) / Y,
+        _s(ss["G"]) / Y,
+        _s(ss["K"]) / Y,
+        (_s(ss["I_total"]) + _s(ss["I_g"])) / Y,
     ]
     labels = [lab for lab, _, _ in STRUCTURAL_TARGETS]
     targets = [t for _, t, _ in STRUCTURAL_TARGETS]
