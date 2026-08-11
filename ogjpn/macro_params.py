@@ -191,7 +191,7 @@ def get_macro_params():
     # revaluation as permanent. Japan's own fiscal target is to stabilise and
     # then reduce the debt ratio, which this represents.
     # -----------------------------------------------------------------------
-    macro_parameters["debt_ratio_ss"] = 1.0
+    macro_parameters["debt_ratio_ss"] = 1.148
 
     # -----------------------------------------------------------------------
     # Foreign-held share of government debt.
@@ -273,8 +273,12 @@ def get_macro_params():
     # (~1.4 for Japan) gives a lower bound near 12%. Conversely, foreign
     # holdings of CORPORATE debt are also claims on domestic capital in a
     # one-asset model, which pushes the upper bound to roughly 20%. The band is
-    # 12-20%; zeta_K = 0.70 solves to 16.7%, essentially on the central
-    # market-value estimate.
+    # 12-20%; zeta_K = 0.534 solves to 16.4%, on the central market-value
+    # estimate. (It was 0.70 when debt_ratio_ss was 1.0: a higher debt anchor
+    # raises domestically-held debt D_d, which squeezes K_d = B - D_d and lets
+    # foreign capital fill more, so the same K_f/K needs less openness. This is
+    # the family's "re-validate zeta_K after ANY change that moves domestic
+    # saving" rule -- a debt-anchor change counts.)
     #
     # zeta_K is IDENTIFIED by K_f/K, so it is set there and not pushed further
     # to chase K/Y. Openness of 0.78 would close more of the K/Y gap (73% vs
@@ -299,7 +303,7 @@ def get_macro_params():
     # zeta_K gives K/Y = 3.81 and K_f/K = 27%. Source it before using this
     # calibration for anything that turns on the level of r.
     # -----------------------------------------------------------------------
-    macro_parameters["zeta_K"] = [0.70]
+    macro_parameters["zeta_K"] = [0.534]
 
     # -----------------------------------------------------------------------
     # Government spending shares.
@@ -370,7 +374,15 @@ def get_macro_params():
     # and omitting them is why an earlier pass set alpha_G 0.63pp too high:
     #
     #   alpha_G + alpha_T + alpha_I + pensions/Y = revenue/Y - pb*
-    #   0.1947  + 0.025   + 0.03    + 0.0930     = 0.34270 = 0.3369 - (-0.00575)
+    #   0.2013  + 0.025   + 0.03    + 0.0930     = 0.34930 = 0.3369 - (-0.0124)
+    #
+    # Note what this says. With the sovereign rate at its TRUE -0.51% (the
+    # ogcore floor removed, see ogjpn/rgov_floor.py) and the debt anchor at
+    # Japan's MEASURED 1.148 rather than a chosen 1.0, the identity-consistent
+    # government consumption is 0.2013 -- against a World Bank observed 0.2010.
+    # The "embedded consolidation gap" closes to essentially zero. Under the
+    # floored rate and the 1.0 anchor it was 0.63pp of GDP. That is a strong
+    # out-of-sample check: nothing in the calibration targets G/Y.
     #
     # The SS closure hides the error -- it forces G to the consistent level, so
     # the steady state solved fine at alpha_G = 0.201 and simply reported
@@ -378,7 +390,7 @@ def get_macro_params():
     # the first tG1 periods, so the old value over-spent 0.63pp of GDP a year
     # before the closure corrected it.
     # -----------------------------------------------------------------------
-    macro_parameters["alpha_G"] = [0.1947]
+    macro_parameters["alpha_G"] = [0.2013]
     macro_parameters["alpha_T"] = [0.025]
     macro_parameters["alpha_I"] = [0.03]
 

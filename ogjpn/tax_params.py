@@ -97,7 +97,7 @@ def get_tax_params():
     # 0.1087 (which lands at 0.0702 once the pension tier is added back). Revenue is the moment worth hitting: it is what the government
     # actually collects.
     # -----------------------------------------------------------------------
-    tax_parameters["tau_c"] = [[0.12814]]
+    tax_parameters["tau_c"] = [[0.12763]]
 
     # -----------------------------------------------------------------------
     # Corporate income tax.
@@ -119,7 +119,7 @@ def get_tax_params():
     # Table value and enlarged the capital-income base.
     # -----------------------------------------------------------------------
     tax_parameters["cit_rate"] = [[0.2974]]
-    tax_parameters["adjustment_factor_for_cit_receipts"] = [0.869]
+    tax_parameters["adjustment_factor_for_cit_receipts"] = [0.856]
 
     # -----------------------------------------------------------------------
     # Property taxes -> the wealth tax.
@@ -208,7 +208,7 @@ def get_tax_params():
     # ogjpn.pension_params.MEAN_INCOME_MILLIONS_YEN). In plain yen this value
     # would be 3.5e-10; rescaled by 1e6^1.30 it is 0.0221. The effective rate at
     # every income is identical either way -- only the units change.
-    _gs_params = [[[0.55, 1.30, 3.675e-10]]]
+    _gs_params = [[[0.55, 1.30, 3.668e-10]]]
     tax_parameters["etr_params"] = _gs_params
     tax_parameters["mtrx_params"] = _gs_params
     tax_parameters["mtry_params"] = _gs_params

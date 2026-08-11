@@ -80,7 +80,7 @@ def test_debt_is_calibrated_net_not_gross():
 def test_ss_debt_target_is_chosen_not_inherited():
     """OG-Core's default debt_ratio_ss is 2.0; leaving it is a silent choice."""
     m = macro_params.get_macro_params()
-    assert m["debt_ratio_ss"] == pytest.approx(1.0)
+    assert m["debt_ratio_ss"] == pytest.approx(1.148)
     assert m["debt_ratio_ss"] != 2.0
 
 
@@ -167,7 +167,7 @@ def test_consumption_tax_is_effective_not_statutory():
     Japan's indirect-tax revenue in the model is 0.0682 / 0.627 = 10.9%.
     """
     t = tax_params.get_tax_params()
-    assert t["tau_c"] == [[pytest.approx(0.12814)]]
+    assert t["tau_c"] == [[pytest.approx(0.12763)]]
     assert t["tau_c"][0][0] != 0.10, "statutory rate is not the model input"
 
 
@@ -180,7 +180,7 @@ def test_cit_adjustment_factor_is_set():
     t = tax_params.get_tax_params()
     assert "adjustment_factor_for_cit_receipts" in t
     assert t["adjustment_factor_for_cit_receipts"][0] > 0.309
-    assert t["adjustment_factor_for_cit_receipts"][0] == pytest.approx(0.869, abs=1e-3)
+    assert t["adjustment_factor_for_cit_receipts"][0] == pytest.approx(0.856, abs=1e-3)
 
 
 def test_income_tax_is_not_the_us_functions():
@@ -487,7 +487,7 @@ def test_gs_scale_matches_the_income_units():
     income units it silently re-prices the whole income tax.
     """
     t = tax_params.get_tax_params()
-    assert t["etr_params"][0][0][2] == pytest.approx(3.675e-10, rel=1e-3)
+    assert t["etr_params"][0][0][2] == pytest.approx(3.668e-10, rel=1e-3)
 
 
 def test_solver_seeds_are_left_to_the_warm_start():

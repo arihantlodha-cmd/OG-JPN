@@ -46,7 +46,7 @@ from ogcore import utils
 from ogcore.execute import runner
 from ogcore.parameters import Specifications
 
-from ogjpn import calibrate, warm_start
+from ogjpn import calibrate, rgov_floor, warm_start
 from ogjpn.constants import COUNTRY_NAME, START_YEAR
 
 CUR_PATH = os.path.abspath(os.path.dirname(__file__))
@@ -96,6 +96,10 @@ def main(baseline_only=False, ss_only=False):
     # cold-starts from constants that are badly wrong for a wealthy, ageing
     # population, and the steady state does not converge — see
     # ogjpn/warm_start.py. Measured: 22 evaluations warm vs >175 cold.
+    # Japan's sovereign real rate is negative and ogcore clips it at zero;
+    # removing the clip is what puts the model's fiscal stance on Japan's.
+    # See ogjpn/rgov_floor.py for why it is arithmetically safe.
+    rgov_floor.enable()
     if warm_start.enable():
         print("Warm start enabled (ogjpn/data/ss_warm_start.pkl).")
     else:
