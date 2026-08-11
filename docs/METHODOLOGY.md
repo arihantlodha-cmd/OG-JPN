@@ -72,7 +72,13 @@ reflection of it being the developed world's fiscal outlier.
 
 - Macro parameters other than debt are first-pass; the income/payroll tax
   side is still OG-Core defaults, not fitted to Japanese effective rates.
-- Results are steady-state only so far; the transition path is future work.
+- Results are steady-state only so far. The transition path (`examples/
+  run_ogjpn_tpi.py`) has been attempted and does not yet converge: it
+  plateaus at a ~0.16% resource-constraint imbalance, and switching to
+  Anderson acceleration lands on the same value, so it is a
+  calibration-consistency issue rather than solver tuning. A converged
+  transition needs the same preference/production/fiscal calibration the
+  steady-state validation points to.
 - `K/Y` and `C/Y` need preference/production calibration (see above).
 - Demographics are common across lifetime-income groups; adding Japan's
   income-mortality gradient is a natural next step, though the standard
