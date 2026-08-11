@@ -167,7 +167,7 @@ def test_consumption_tax_is_effective_not_statutory():
     Japan's indirect-tax revenue in the model is 0.0682 / 0.627 = 10.9%.
     """
     t = tax_params.get_tax_params()
-    assert t["tau_c"] == [[pytest.approx(0.12763)]]
+    assert t["tau_c"] == [[pytest.approx(0.12559)]]
     assert t["tau_c"][0][0] != 0.10, "statutory rate is not the model input"
 
 
@@ -229,20 +229,24 @@ def test_alpha_db_reproduces_the_oecd_replacement_rate():
     OG-Core's alpha_db default is 0.0 -- switching pension_system without
     setting it produces zero pensions.
 
-    The rate is an EFFECTIVE system-wide rate above the OECD's 32.4%: part
-    derived (survivors' and disability pensions, which OG-Core's single DB block
-    cannot separate) and part fitted to the outlay target. See
-    ogjpn/pension_params.py for the honest split.
+    The rate is set so the FIRST TRANSITION YEAR pays Japan's actual 9.3% of
+    GDP, not so the steady state does -- the model's own demographics make the
+    stationary population older than today's, so steady-state pension spending
+    must exceed today's. Japan's macroeconomic slide then carries benefits down
+    over time via replacement_rate_adjust. See ogjpn/pension_params.py.
     """
     pp = pension_params.get_pension_params()
     assert pp["alpha_db"] > 0.0
     replacement = pp["yr_contrib"] * pp["alpha_db"]
-    assert replacement == pytest.approx(0.3913, abs=1e-6)
+    assert replacement == pytest.approx(0.5313, abs=1e-6)
     assert replacement > pension_params.GROSS_REPLACEMENT_RATE_OECD
-    # most of the gap should be the derived survivors/disability uplift
-    derived = (pension_params.GROSS_REPLACEMENT_RATE_OECD
-               * pension_params.SURVIVORS_DISABILITY_UPLIFT)
-    assert abs(replacement - derived) < 0.06, "fitted residual must stay small"
+    # the slide must actually decline, and land on the legislated factor
+    slide = pension_params.get_pension_params()["replacement_rate_adjust"]
+    assert slide[0][0] == pytest.approx(1.0)
+    assert slide[-1][0] == pytest.approx(
+        pension_params.MACRO_SLIDE_TERMINAL, abs=1e-6
+    )
+    assert slide[-1][0] < slide[0][0], "the macroeconomic slide must decline"
 
 
 

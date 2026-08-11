@@ -270,7 +270,39 @@ def get_macro_params():
     #  solve, read the solved r and reset the shift so r_gov lands at -0.006.
     # -----------------------------------------------------------------------
     macro_parameters["r_gov_scale"] = [0.25]
-    macro_parameters["r_gov_shift"] = [0.017]
+    # r_gov_shift is a PATH, not a scalar.
+    #
+    # The long-run value of 0.017 delivers the -0.60% real sovereign rate that
+    # a ten-year average of Japan's net interest over net debt implies. But
+    # Japan's rate is far more negative RIGHT NOW, because inflation returned
+    # (2.5-3%) while the effective rate on the debt stock is still near zero.
+    # A steady-state-only calibration cannot see this; the transition path can,
+    # and it is what decides whether the model reproduces Japan's actual debt
+    # trajectory over the next few years.
+    #
+    # From the debt identity dD/Y = (D/Y)(r-g)/(1+g) - pb, the OECD's own
+    # figures imply Japan is eroding its debt stock at (r-g)/(1+g) of -2.88%
+    # in 2025 and -2.01% in 2026, against the model's -0.79% at the long-run
+    # rate. Inverting for the r_gov that reproduces those, given the model's
+    # own r on the path and r_gov_scale = 0.25:
+    #
+    #     2025  r 0.0593  needs r_gov -2.32%  ->  shift 0.0380
+    #     2026  r 0.0581  needs r_gov -1.44%  ->  shift 0.0289
+    #     long run                     -0.60%  ->  shift 0.0170
+    #
+    # The two observed years are anchored and the rest glides linearly to the
+    # long-run value by 2035, which is roughly the horizon over which the BOJ's
+    # own projections have policy rates and inflation normalising. ogcore reads
+    # r_gov_shift at [t] and carries the last value forward.
+    _RGOV_SHIFT_PATH = [0.0380, 0.0289]
+    _RGOV_SHIFT_LR = 0.017
+    _GLIDE_YEARS = 10
+    _RGOV_SHIFT_PATH += [
+        _RGOV_SHIFT_PATH[-1]
+        + (_RGOV_SHIFT_LR - _RGOV_SHIFT_PATH[-1]) * k / _GLIDE_YEARS
+        for k in range(1, _GLIDE_YEARS + 1)
+    ]
+    macro_parameters["r_gov_shift"] = _RGOV_SHIFT_PATH
 
     # -----------------------------------------------------------------------
     # Openness of the capital account.
