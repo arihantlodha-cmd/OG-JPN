@@ -78,7 +78,37 @@ NTA   National Tax Agency, Survey on Private-Sector Wages 2023: average annual
 # corroborated by the OECD's net replacement rate of 38.8% -- that figure is net
 # of tax and is a different concept; its numerical closeness is a coincidence
 # and was cited as corroboration in an earlier version of this file in error.
-REPLACEMENT_RATE = 0.3913
+# Set so the model's FIRST TRANSITION YEAR pays Japan's actual 9.3% of GDP, not
+# so the STEADY STATE does. Matching a current-year observation to a
+# steady-state quantity was an error: the model's own demographics say Japan's
+# stationary population is older than today's, so its steady-state pension bill
+# must be HIGHER than today's, not equal to it. At the old 0.3913 the model paid
+# 6.85% of GDP in 2025 against an actual 9.3% -- a 2.45pp shortfall that was
+# essentially the whole primary-balance miss on the transition path.
+#
+#     0.3913 x (0.0930 / 0.0685) = 0.5313
+REPLACEMENT_RATE = 0.5313
+
+# Japan's MACROECONOMIC SLIDE (macro-economy slide, macro slide).
+#
+# Japan does not hold the replacement rate fixed as it ages -- it automatically
+# reduces benefits to hold the system solvent. OG-Core's Defined Benefits block
+# pays a fixed replacement rate, so without this the pension bill would rise
+# mechanically with the old-age ratio to 12.6% of GDP, which is a policy Japan
+# does not have. `replacement_rate_adjust` is a (T+S, J) multiplier on the
+# replacement rate and is the natural home for it.
+#
+# Magnitude from the Ministry of Health, Labour and Welfare 2024 actuarial
+# review (five-yearly pension fiscal verification), low-growth scenario: the
+# income replacement rate falls from 61.2% in FY2024 to 50.4% in FY2057.
+#
+#     50.4 / 61.2 = 0.8235 over 32 years from the 2025 start
+#
+# Applied as a linear glide to 2057 and flat thereafter, which leaves the model
+# paying 9.3% of GDP today and about 10.4% in the steady state -- aging, net of
+# the slide -- instead of 12.6% with no slide at all.
+MACRO_SLIDE_TERMINAL = 0.8235
+MACRO_SLIDE_YEARS = 32
 GROSS_REPLACEMENT_RATE_OECD = 0.324   # OLD-AGE, whole public system, full career
 SURVIVORS_DISABILITY_UPLIFT = 1.15    # benefits OG-Core's DB block cannot separate
 
@@ -138,6 +168,18 @@ def get_pension_params():
     pension_parameters["alpha_db"] = REPLACEMENT_RATE / YEARS_CONTRIBUTION
 
     pension_parameters["yr_contrib"] = YEARS_CONTRIBUTION
+
+    # The macroeconomic slide: a linear glide on the replacement rate, held flat
+    # after 2057. ogcore carries the last value forward for all later years.
+    slide = [
+        [
+            1.0 - (1.0 - MACRO_SLIDE_TERMINAL) * min(t, MACRO_SLIDE_YEARS)
+            / MACRO_SLIDE_YEARS
+        ]
+        * 7
+        for t in range(MACRO_SLIDE_YEARS + 1)
+    ]
+    pension_parameters["replacement_rate_adjust"] = slide
     pension_parameters["avg_earn_num_years"] = AVG_EARNINGS_YEARS
     pension_parameters["retirement_age"] = [RETIREMENT_AGE]
 

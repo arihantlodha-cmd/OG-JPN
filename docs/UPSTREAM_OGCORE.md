@@ -10,6 +10,53 @@ whose currency is not the US dollar.
 
 ---
 
+## replacement_rate_adjust ignored outside US-Style Social Security
+
+**Reported: PSLmodels/OG-Core#1200.** `replacement_rate_adjust` is read only in
+`pensions.SS_amount()`. `DB_amount`, `NDC_amount` and `PS_amount` ignore it.
+Verified directly: US-Style scales exactly 0.50x when the adjustment is halved,
+Defined Benefits does not move at all (0.92659 both ways).
+
+Blocks modelling Japan's macroeconomic slide, which is the reason the DB block
+would otherwise pay 12.6% of GDP in pensions against an actual 9.3%.
+
+Worked around locally by `ogjpn/pension_slide.py`, which wraps
+`pensions.pension_amount` (the one function that receives both `t` and `method`)
+and applies the adjustment for non-US systems.
+
+## r_gov clipped at zero
+
+`fiscal.get_r_gov` wraps the wedge in `np.maximum(..., 0.00)`. Japan's sovereign
+real rate is genuinely negative (-0.60% measured; the calibrated wedge returns
+-0.6023%), and the clip discards it. It raises the debt-stabilising primary
+balance by 0.68pp of GDP, which is the difference between a model whose fiscal
+stance matches Japan's and one demanding a primary surplus Japan has never run.
+
+`r_gov` enters the model **linearly everywhere** -- no division by it, no powers,
+no logs -- with exactly two consumers, `debt_service = r_gov * D` and
+`r_p = (r_gov*D + r_K*K)/(D + K)`, whose denominator is strictly positive. So
+removing the floor is arithmetically safe. Worked around by
+`ogjpn/rgov_floor.py`.
+
+**TODO: offer this as a PR upstream once verified further.** Not yet reported --
+the floor may be deliberate for sovereigns where a negative wedge is implausible,
+so the right change is likely to make it opt-out rather than delete it.
+
+## Payroll tax counted twice in v0.19.1 (not ours, but blocking)
+
+**PSLmodels/OG-Core#1199** (not ours). PR #1184 adds
+`iit_payroll_tax_revenue += payroll_tax_revenue`, double-counting the payroll
+take, and any model with a nonzero `tau_payroll` then fails with
+`Steady state aggregate resource constraint not satisfied`.
+
+This repo pins **v0.19.0 + PR #1189 only**, which predates #1184, so it is not
+affected. But `tau_payroll = 0.2312` here, so OG-JPN **will** break the moment
+#1189 merges into a master carrying #1184. This cost several solves before it
+was identified: installing the #1189 branch directly pulls in its merge commits
+from upstream/master and therefore the bug. Build the base as v0.19.0 plus the
+single PR diff instead.
+
+
 ## 1. `get_pop_objs` freezes the vital rates at `final_data_year`
 
 **Where:** `ogcore/demographics.py`, `get_pop_objs()`.

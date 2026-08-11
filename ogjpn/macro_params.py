@@ -182,6 +182,29 @@ def get_macro_params():
     macro_parameters["initial_debt_ratio"] = 1.148
 
     # -----------------------------------------------------------------------
+    # Aggregate household wealth at t=0 (OG-Core #1189).
+    #
+    # Without it OG-Core forces B(0) = B_ss regardless of the initial
+    # population, which for Japan hands every initial household a 20.6%
+    # windfall (B_ss/Y 3.923 against 3.253 for the steady-state wealth profile
+    # applied to the ACTUAL 2025 population). Short-horizon retirees consume
+    # it, and the fingerprint is unmistakable in the transition: consumption
+    # +13pp of GDP in one year, investment collapsing 12.6pp, a consumption-tax
+    # revenue pulse, and a spurious debt paydown -- while income-tax revenue
+    # stays flat, ruling out an income effect.
+    #
+    # Constructed from the capital side, which is the model-consistent measure
+    # because OG-Core forces B(0) = K_d(0) + D_d(0):
+    #
+    #   (K/Y_PWT - K_g/Y) x (1 - K_f/K) + D_d/Y
+    #   = (3.70 - 1.164) x (1 - 0.161) + 0.991 = 3.119
+    #
+    # The model's own natural value (3.253) sits 4% above it -- a reassuring
+    # cross-check, and far inside the 20.6% the unanchored run imposes.
+    # -----------------------------------------------------------------------
+    macro_parameters["initial_wealth_ratio"] = 3.119
+
+    # -----------------------------------------------------------------------
     # Steady-state debt target. A POLICY anchor, not a measurement, and a
     # deliberate choice rather than an inherited default (OG-Core's default of
     # 2.0 was silently in force before this).
@@ -303,7 +326,7 @@ def get_macro_params():
     # zeta_K gives K/Y = 3.81 and K_f/K = 27%. Source it before using this
     # calibration for anything that turns on the level of r.
     # -----------------------------------------------------------------------
-    macro_parameters["zeta_K"] = [0.534]
+    macro_parameters["zeta_K"] = [0.543]
 
     # -----------------------------------------------------------------------
     # Government spending shares.
@@ -374,7 +397,9 @@ def get_macro_params():
     # and omitting them is why an earlier pass set alpha_G 0.63pp too high:
     #
     #   alpha_G + alpha_T + alpha_I + pensions/Y = revenue/Y - pb*
-    #   0.2013  + 0.025   + 0.03    + 0.0930     = 0.34930 = 0.3369 - (-0.0124)
+    #   0.1915  + 0.025   + 0.03    + 0.1043     = 0.35080 = 0.3384 - (-0.0124)
+    #   (pensions are 10.43% of GDP once the macroeconomic slide is modelled --
+    #    aging net of the legislated benefit glide; see ogjpn/pension_params.py)
     #
     # Note what this says. With the sovereign rate at its TRUE -0.51% (the
     # ogcore floor removed, see ogjpn/rgov_floor.py) and the debt anchor at
@@ -390,7 +415,7 @@ def get_macro_params():
     # the first tG1 periods, so the old value over-spent 0.63pp of GDP a year
     # before the closure corrected it.
     # -----------------------------------------------------------------------
-    macro_parameters["alpha_G"] = [0.2013]
+    macro_parameters["alpha_G"] = [0.1915]
     macro_parameters["alpha_T"] = [0.025]
     macro_parameters["alpha_I"] = [0.03]
 

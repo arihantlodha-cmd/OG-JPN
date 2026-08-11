@@ -46,7 +46,7 @@ from ogcore import utils
 from ogcore.execute import runner
 from ogcore.parameters import Specifications
 
-from ogjpn import calibrate, rgov_floor, warm_start
+from ogjpn import calibrate, pension_slide, rgov_floor, warm_start
 from ogjpn.constants import COUNTRY_NAME, START_YEAR
 
 CUR_PATH = os.path.abspath(os.path.dirname(__file__))
@@ -100,6 +100,7 @@ def main(baseline_only=False, ss_only=False):
     # removing the clip is what puts the model's fiscal stance on Japan's.
     # See ogjpn/rgov_floor.py for why it is arithmetically safe.
     rgov_floor.enable()
+    pension_slide.enable()
     if warm_start.enable():
         print("Warm start enabled (ogjpn/data/ss_warm_start.pkl).")
     else:
