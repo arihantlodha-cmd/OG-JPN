@@ -16,6 +16,10 @@ The model runs on this real UN population data. Solved on Japan's actual
 age structure, its steady state reproduces Japan's public pension burden
 (~11-12% of GDP) directly from the demographics.
 
+**See [docs/METHODOLOGY.md](docs/METHODOLOGY.md)** for how it's built, the
+data sources, and an honest validation of the steady state against Japan's
+actual ratios (what matches, what's still first-pass, and why).
+
 ## Status
 
 A country model is a thin calibration layer on top of OG-Core that
