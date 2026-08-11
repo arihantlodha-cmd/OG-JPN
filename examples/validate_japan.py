@@ -66,10 +66,17 @@ DASHBOARD = [
         "OECD RevStats 2025: 78,335 yen bn",
     ),
     (
-        "Pension outlays / Y",
+        # NOT scored here. 9.3% of GDP is what Japan spends TODAY, and the
+        # model's stationary population is older than today's, so its
+        # steady-state pension bill must be higher. Matching 9.3% here was an
+        # error: it forced the FIRST transition year down to 6.85%. The 9.3%
+        # is scored on the transition path instead -- see
+        # examples/validate_fiscal_path.py. The steady-state value is aging,
+        # net of Japan's legislated macroeconomic slide.
+        "Pension outlays / Y  (SS > today)",
         lambda ss, Y: _s(ss["agg_pension_outlays"]) / Y,
-        0.093,
-        "OECD Pensions at a Glance 2023 (2022)",
+        None,
+        "aging net of the macro slide; 9.3% today is scored on the path",
     ),
     (
         # NOT a data target: D/Y in the steady state IS debt_ratio_ss, a policy
@@ -80,7 +87,7 @@ DASHBOARD = [
         "Debt / Y  (= SS anchor)",
         lambda ss, Y: _s(ss["D"]) / Y,
         None,
-        "policy anchor debt_ratio_ss=1.0; measured start 1.148",
+        "debt_ratio_ss = 1.148, set to the measured net debt",
     ),
     (
         "Foreign-held debt  D_f/D",

@@ -22,6 +22,7 @@ STAGES = [
     ("Sourced macro\ndelta, gamma, alpha_T", "S1", 0.5651, 3.50, 0.3364, 0.015),
     ("Warm start +\ntax dials tuned", "S2", 0.5586, 3.503, 0.3337, 0.0149),
     ("Capital openness\nfrom the IIP", "S3", 0.5309, 3.614, 0.3369, 0.1654),
+    ("Fiscal path:\nrate, debt, pensions", "S4", 0.5437, 3.498, 0.3372, 0.1637),
 ]
 TARGETS = {"C/Y": 0.536, "K/Y": 3.70, "revenue/Y": 0.337, "K_f/K": 0.164}
 

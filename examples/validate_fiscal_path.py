@@ -89,6 +89,7 @@ def model_paths(tpi_dir="examples/OG-JPN-Example/OUTPUT_BASELINE"):
         return a / Y
 
     rev = ratio("total_tax_revenue")
+    pension = ratio("agg_pension_outlays")
     # primary spending = G + TR + I_g + pensions (all primary outlays)
     prim_spend = (
         ratio("G") + ratio("TR") + ratio("I_g") + ratio("agg_pension_outlays")
@@ -98,6 +99,7 @@ def model_paths(tpi_dir="examples/OG-JPN-Example/OUTPUT_BASELINE"):
         "primary balance": rev - prim_spend,
         "revenue/Y": rev,
         "G/Y": ratio("G"),
+        "pension/Y": pension,
     }
 
 
@@ -125,11 +127,15 @@ def main():
         "D/Y": shifted("GNFLQ"),
         "primary balance": {y: oecd["NLGXQ"].get(y, np.nan) / 100 for y in years},
         "revenue/Y": {y: 0.337 if y in ("2025", "2026") else np.nan for y in years},
+        # what Japan actually spends on public pensions now (OECD PaG 2023).
+        # This is the RIGHT place for it: the steady state is older than today
+        # and must spend more, so scoring 9.3% there distorts the near term.
+        "pension/Y": {y: 0.093 if y in ("2025", "2026") else np.nan for y in years},
     }
 
     print("\n=== OG-Japan fiscal PATH vs Japan's actual accounts ===")
     print("(OECD Economic Outlook; blank = beyond the projection horizon)\n")
-    for key in ("D/Y", "primary balance", "revenue/Y"):
+    for key in ("D/Y", "primary balance", "revenue/Y", "pension/Y"):
         print(f"{key}")
         print(f"  {'year':6s}{'model':>10s}{'OECD':>10s}{'gap':>10s}")
         for t, y in enumerate(years):
@@ -145,7 +151,7 @@ def main():
         ("D/Y", "Net debt / GDP  (timing-aligned)", "GNFLQ"),
         ("primary balance", "Primary balance / GDP", "NLGXQ"),
         ("revenue/Y", "Tax revenue / GDP", "OECD RevStats"),
-        ("G/Y", "Government consumption / GDP", None),
+        ("pension/Y", "Public pensions / GDP", "OECD PaG"),
     ]
     fig, axes = plt.subplots(1, 4, figsize=(19, 4.6))
     fig.suptitle(
