@@ -7,3 +7,16 @@ dist/
 un_api_token.txt
 OUTPUT*/
 *.pkl
+
+# local venv
+.venv/
+
+# model run output
+examples/OUTPUT_BASELINE/
+examples/OUTPUT_REFORM/
+
+# cached demographic arrays
+ogjpn/data/demographic_cache/
+
+# the warm-start seed is required for the model to solve; it ships
+!ogjpn/data/ss_warm_start.pkl

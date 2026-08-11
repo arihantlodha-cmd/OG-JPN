@@ -1,0 +1,198 @@
+"""
+OG-Japan pension calibration.
+
+This module exists because the pension system is the whole point of an
+overlapping-generations model of Japan, and it was previously the block running
+furthest from Japanese reality.
+
+Without these settings OG-Core defaults to ``pension_system = "US-Style Social
+Security"``, which applies the United States benefit formula -- AIME bend points
+of $749 and $4,517, PIA replacement rates of 90/32/15 percent, a maximum payment
+of $3,501 a month -- to earnings scaled by ``mean_income_data``, which also
+defaults to a US figure ($58,644.92). Japanese demographics were being run
+through an American pension system priced in dollars.
+
+Japan's public pension is a two-tier arrangement:
+
+  * the Basic Pension (国民年金 / 基礎年金), a flat benefit earned by years of
+    contribution; and
+  * Employees' Pension Insurance (厚生年金), an earnings-related tier accruing at
+    5.481/1000 of revalued monthly remuneration per month of contribution.
+
+Both are earnings-history-based defined benefits, so OG-Core's ``"Defined
+Benefits"`` system is the structurally correct representation. OG-Core computes
+
+    pension = (average earnings over ``avg_earn_num_years``)
+              x ``yr_contrib`` x ``alpha_db``
+
+(``ogcore/pensions.py:DB_amount``), so ``yr_contrib * alpha_db`` IS the gross
+replacement rate, which makes the parameter directly observable.
+
+Sources
+-------
+OECD  *Pensions at a Glance 2023*, Japan country profile: gross replacement rate
+      for an average earner at age 65 = 32.4%; public pension expenditure =
+      9.3% of GDP (2022).
+NTA   National Tax Agency, Survey on Private-Sector Wages 2023: average annual
+      wage for employees working the full year = 4.60 million yen.
+"""
+
+# Replacement rate for a full-career average earner. OECD Pensions at a Glance
+# 2023 reports 32.4% GROSS and 38.8% NET for Japan.
+#
+# CALIBRATED to 39.9%, above the OECD's 32.4%. Part derived, part fitted -- and
+# the honest split matters, so it is written out here.
+#
+# An earlier version of this file justified the gap by claiming OG-Core has one
+# pension tier while Japan has two. That reasoning was WRONG: the OECD country
+# profile states plainly that its modelling covers the whole public system --
+# "The public pension system has two tiers: a basic, flat-rate scheme and an
+# earnings-related plan" -- so 32.4% already includes both.
+#
+# The actual reason the derived rate under-delivers:
+#
+#   DERIVED PART. The OECD's 32.4% is an OLD-AGE replacement rate for a
+#   full-career average earner. Japan's 9.3%-of-GDP pension spending also covers
+#   SURVIVORS' pensions (遺族年金) and DISABILITY pensions (障害年金), which
+#   OG-Core's single defined-benefit block has no separate home for. Those are
+#   roughly 15% of benefits, so the block must carry about
+#       0.324 x 1.15 ~= 0.373
+#   to reproduce total public pension outlays.
+#
+#   FITTED PART. The remainder was tuned in-model to land outlays on 9.3% of
+#   GDP. It reflects differences between the model's old-age dependency ratio
+#   and Japan's, and OG-Core's use of an average of the last
+#   `avg_earn_num_years` of earnings rather than the OECD's lifetime basis.
+#
+#   The fitted rate is sensitive to the assumed productivity growth, because
+#   OG-Core's DB benefit averages earnings over the last `avg_earn_num_years`
+#   and faster growth lowers that average relative to contemporaneous wages.
+#   At g_y = 0.56%/yr the rate fitted to 0.358; at the corrected per-hour
+#   g_y = 1.04%/yr it fits to 0.416. Worth noting that the OECD's own pension
+#   modelling assumes real earnings growth of 1.25%/yr, so the corrected g_y is
+#   much closer to the assumption under which the 32.4% was produced than the
+#   per-worker figure was.
+#
+# So: treat this as an EFFECTIVE system-wide replacement rate, not as an accrual
+# rate you could read off Japanese pension law. It is NOT independently
+# corroborated by the OECD's net replacement rate of 38.8% -- that figure is net
+# of tax and is a different concept; its numerical closeness is a coincidence
+# and was cited as corroboration in an earlier version of this file in error.
+# Set so the model's FIRST TRANSITION YEAR pays Japan's actual 9.3% of GDP, not
+# so the STEADY STATE does. Matching a current-year observation to a
+# steady-state quantity was an error: the model's own demographics say Japan's
+# stationary population is older than today's, so its steady-state pension bill
+# must be HIGHER than today's, not equal to it. At the old 0.3913 the model paid
+# 6.85% of GDP in 2025 against an actual 9.3% -- a 2.45pp shortfall that was
+# essentially the whole primary-balance miss on the transition path.
+#
+#     0.3913 x (0.0930 / 0.0685) = 0.5313
+REPLACEMENT_RATE = 0.5313
+
+# Japan's MACROECONOMIC SLIDE (macro-economy slide, macro slide).
+#
+# Japan does not hold the replacement rate fixed as it ages -- it automatically
+# reduces benefits to hold the system solvent. OG-Core's Defined Benefits block
+# pays a fixed replacement rate, so without this the pension bill would rise
+# mechanically with the old-age ratio to 12.6% of GDP, which is a policy Japan
+# does not have. `replacement_rate_adjust` is a (T+S, J) multiplier on the
+# replacement rate and is the natural home for it.
+#
+# Magnitude from the Ministry of Health, Labour and Welfare 2024 actuarial
+# review (five-yearly pension fiscal verification), low-growth scenario: the
+# income replacement rate falls from 61.2% in FY2024 to 50.4% in FY2057.
+#
+#     50.4 / 61.2 = 0.8235 over 32 years from the 2025 start
+#
+# Applied as a linear glide to 2057 and flat thereafter, which leaves the model
+# paying 9.3% of GDP today and about 10.4% in the steady state -- aging, net of
+# the slide -- instead of 12.6% with no slide at all.
+MACRO_SLIDE_TERMINAL = 0.8235
+MACRO_SLIDE_YEARS = 32
+GROSS_REPLACEMENT_RATE_OECD = 0.324   # OLD-AGE, whole public system, full career
+SURVIVORS_DISABILITY_UPLIFT = 1.15    # benefits OG-Core's DB block cannot separate
+
+# Full contribution period. Japan's Basic Pension requires 40 years for the
+# full flat benefit, and 40 years is the standard career used in the OECD
+# replacement-rate calculation, so the two are consistent.
+YEARS_CONTRIBUTION = 40
+
+# Japan's Employees' Pension Insurance revalues and averages earnings over the
+# ENTIRE career, not a final-salary window. OG-Core's default of 35 is a US
+# convention; 40 matches Japan and matches YEARS_CONTRIBUTION.
+AVG_EARNINGS_YEARS = 40
+
+# Pensionable age for both tiers. The Employees' Pension supplementary portion
+# finished phasing up from 60 to 65 in 2025.
+RETIREMENT_AGE = 65
+
+# National Tax Agency Survey on Private-Sector Wages, 2023: 4.60 million yen.
+#
+# UNITS: expressed in MILLIONS of yen, not yen. `factor` converts model units to
+# whatever unit this is in, and OG-Core validates `initial_guess_factor_SS` to a
+# maximum of 500,000 -- in plain yen Japan's factor is about 7.0 million, so the
+# solver seed could not be set at all (docs/UPSTREAM_OGCORE.md item 3). In
+# millions the factor is about 7.0 and the seed becomes settable.
+#
+# The choice of income unit is arbitrary and the reinterpretation is exact, but
+# it is not free: the Gouveia-Strauss scale parameter phi2 carries units of
+# income^(-phi1) and must be rescaled by 1e6^phi1 to match. Nothing else in
+# OG-Core is currency-denominated -- the wealth tax takes savings in model units
+# and the defined-benefit pension is a pure rate -- so those two values are the
+# whole of it. See ogjpn/tax_params.py.
+MEAN_INCOME_YEN = 4600000.0
+
+
+def get_pension_params():
+    """
+    Return Japan pension parameters for
+    ``Specifications.update_specifications``.
+
+    Returns:
+        pension_parameters (dict): Japan pension parameters
+    """
+    pension_parameters = {}
+
+    # Structural choice: an earnings-related defined-benefit system.
+    pension_parameters["pension_system"] = "Defined Benefits"
+
+    # Accrual rate per year of contribution. Because OG-Core's DB benefit is
+    # (average earnings) x yr_contrib x alpha_db, the product
+    # yr_contrib * alpha_db is the replacement rate:
+    #
+    #     alpha_db = 0.416 / 40 = 0.01040
+    #
+    # IMPORTANT: OG-Core's default alpha_db is 0.0. Switching pension_system to
+    # "Defined Benefits" WITHOUT setting alpha_db silently produces zero
+    # pensions.
+    pension_parameters["alpha_db"] = REPLACEMENT_RATE / YEARS_CONTRIBUTION
+
+    pension_parameters["yr_contrib"] = YEARS_CONTRIBUTION
+
+    # The macroeconomic slide: a linear glide on the replacement rate, held flat
+    # after 2057. ogcore carries the last value forward for all later years.
+    slide = [
+        [
+            1.0 - (1.0 - MACRO_SLIDE_TERMINAL) * min(t, MACRO_SLIDE_YEARS)
+            / MACRO_SLIDE_YEARS
+        ]
+        * 7
+        for t in range(MACRO_SLIDE_YEARS + 1)
+    ]
+    pension_parameters["replacement_rate_adjust"] = slide
+    pension_parameters["avg_earn_num_years"] = AVG_EARNINGS_YEARS
+    pension_parameters["retirement_age"] = [RETIREMENT_AGE]
+
+    # Currency anchor for `factor`. Without this the model scales Japanese
+    # incomes to US dollars, which mis-prices every tax function as well as the
+    # pension.
+    pension_parameters["mean_income_data"] = MEAN_INCOME_YEN
+
+    return pension_parameters
+
+
+# Validation target, not a model input: what the calibrated system should
+# produce. Japan's public pension expenditure is 9.3% of GDP (OECD Pensions at
+# a Glance 2023, 2022 data) -- NOT the 11-12% the repository previously claimed
+# as a validated result.
+PENSION_EXPENDITURE_TARGET_SHARE_OF_GDP = 0.093
