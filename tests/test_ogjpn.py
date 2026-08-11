@@ -514,9 +514,10 @@ def test_no_unresolved_tuning_markers():
     from pathlib import Path
 
     # (file, parameter, what still has to happen). Empty this list, do not grow it.
-    ALLOWED = {
-        # zeta_K resolved: tuned to the IIP foreign-owned capital share (16.4%).
-    }
+    # Empty, and it should stay that way. Every marker has been resolved:
+    # zeta_K to the IIP foreign-owned capital share, r_gov_shift verified exact
+    # at the solved r, alpha_G to the identity once pensions were counted in it.
+    ALLOWED = set()
 
     found = set()
     for path in (Path(__file__).parent.parent / "ogjpn").glob("*.py"):
