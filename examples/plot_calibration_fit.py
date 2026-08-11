@@ -51,7 +51,6 @@ STRUCTURAL_TARGETS = [
     ("Foreign-held debt  $D_f/D$", 0.137, "MOF, Mar 2026"),
     ("Foreign-owned capital  $K_f/K$", 0.164, "MOF IIP end-2024"),
     ("Labour share  $wL/Y$", 0.571, "PWT labsh"),
-    ("Pension outlays / GDP", 0.093, "OECD PaG 2023"),
     ("Consumption / GDP", 0.536, "World Bank 2023"),
     ("Government  $G/Y$", 0.201, "World Bank 2024"),
     ("Capital-output  $K/Y$", 3.70, "Penn World Table"),
@@ -107,7 +106,6 @@ def _panel_b(ax, ss, Y):
         _s(ss["D_f"]) / _s(ss["D"]),
         _s(ss["K_f"]) / _s(ss["K"]),
         _s(ss["w"]) * _s(ss["L"]) / Y,
-        _s(ss["agg_pension_outlays"]) / Y,
         _s(ss["C"]) / Y,
         _s(ss["G"]) / Y,
         _s(ss["K"]) / Y,
@@ -157,15 +155,15 @@ def _panel_c(ax, ss, p):
     """The r - g arithmetic: why the interest assumption decides Japan."""
     g = float(np.exp(np.asarray(p.g_y).flat[0])
               * (1 + np.asarray(p.g_n_ss).flat[0]) - 1)
-    D = 1.0  # debt_ratio_ss
+    D_Y = _s(ss["D"]) / _s(ss["Y"])   # the solved debt ratio
 
     cases = [
         ("OG-Core default\nwedge", 0.025, MODEL),
-        ("OG-JPN\n(model floor)", _s(ss["r_gov"]), MODEL),
+        ("OG-JPN\n(floor removed)", _s(ss["r_gov"]), MODEL),
         ("Japan actual\neffective rate", -0.006, ACTUAL),
     ]
     names = [c[0] for c in cases]
-    pbstar = [100 * (r - g) / (1 + g) * D for _, r, _ in cases]
+    pbstar = [100 * (r - g) / (1 + g) * D_Y for _, r, _ in cases]
     colors = [c[2] for c in cases]
 
     x = np.arange(len(cases))
@@ -192,7 +190,7 @@ def _panel_c(ax, ss, p):
     ax.set_ylim(-3.6, 3.6)
     ax.set_title(
         f"C   Why the rate decides Japan\n"
-        f"at g = {100*g:+.2f}%, debt 1.0×GDP",
+        f"at g = {100*g:+.2f}%, debt {D_Y:.2f}×GDP",
         fontsize=10, loc="left", color=INK, pad=10,
     )
 
