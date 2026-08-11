@@ -105,7 +105,18 @@ def get_macro_params():
     #
     #     0.237 / 3.7 = 0.064        (0.061 at the model's own K/Y of 3.87)
     #
-    # 0.062 is taken as the midpoint of that range. Japan's high depreciation
+    # 0.062 is taken as the midpoint of that range and NOT fitted further.
+    #
+    # delta is jointly identified by K/Y and I/Y -- it appears in both
+    # (K/Y = (1-tau_b)*gamma/(r + delta - tau_b*delta_tau); I/Y = (g+delta)*K/Y
+    # + alpha_I) -- and 0.060 would improve both (K/Y -0.007, I/Y +0.013 against
+    # 0.062's -0.086 and +0.015). It is left alone anyway, because 0.060 is below
+    # the sourced range and the fixed point runs the other way: solving
+    # delta = (CFC/Y)/(K/Y) simultaneously with the firm FOC gives delta = 0.072,
+    # K/Y = 3.31. Japan's measured CFC/Y, K/Y and labour share are simply not
+    # mutually consistent under Cobb-Douglas at r = 4.4%; one of the three has to
+    # give, and fitting delta to hide that would be curve-fitting a sourced
+    # parameter. The residual gaps are reported instead. Japan's high depreciation
     # reflects a short-lived, earthquake-resilient building stock and heavy
     # machinery intensity.
     #

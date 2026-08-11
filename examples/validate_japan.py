@@ -125,14 +125,16 @@ DASHBOARD = [
         "  Government G / Y",
         lambda ss, Y: _s(ss["G"]) / Y,
         0.201,
-        "World Bank NE.CON.GOVT.ZS (= alpha_G input; SS forces consistency)",
+        "World Bank NE.CON.GOVT.ZS; gap = the embedded consolidation",
     ),
     (
-        # NX is the TRADE balance. Japan's ~3.8% current-account surplus is
-        # almost entirely primary income on its net foreign assets, which
-        # OG-Core cannot represent -- domestic households hold no foreign
-        # assets in this model. Japan's goods-and-services balance is near
-        # zero, and that is what this row scores.
+        # NX is the TRADE balance, and Japan's is near zero -- that is what
+        # this row scores. Japan's ~3.8% current-account surplus is almost
+        # entirely PRIMARY INCOME on its net foreign assets, which this model
+        # has no room for: households hold domestic capital and domestic debt
+        # only, so the 1,659tn yen Japan holds abroad is absent from B and the
+        # income it earns is absent from the resource constraint. See
+        # docs/NEXT_STEPS.md section 0c.
         "  Net exports NX / Y",
         lambda ss, Y: 1.0
         - (_s(ss["C"]) + _s(ss["I_total"]) + _s(ss["I_g"]) + _s(ss["G"])) / Y,
