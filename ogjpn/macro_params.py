@@ -154,9 +154,22 @@ def get_macro_params():
     # -----------------------------------------------------------------------
     # Government debt: NET, not gross.
     #
-    # OECD general government net financial liabilities, Japan (GNFLQ):
-    #     2020 125.6 | 2022 117.2 | 2023 98.6 | 2024 86.4 | 2025 78.5
-    # Gross for comparison (GGFLQ): 2024 205.4, 2025 197.5.
+    # OECD general government net financial liabilities, Japan (GNFLQ),
+    # re-pulled 2026-08-11 with the series metadata confirmed as "General
+    # government net financial liabilities as a percentage of GDP":
+    #     2010 101.7 | 2015 121.0 | 2020 126.5 | 2022 117.6
+    #     2023 115.3 | 2024 114.8 | 2025 113.4 | 2026 112.2
+    # Gross for comparison (GGFLQ): 2024 237.9. IMF WEO gross (GGXWDG_NGDP,
+    # a different definition) reads 214.5 for 2024 -- quote the concept.
+    #
+    # CORRECTION: an earlier pass recorded this series as falling to 86.4 by
+    # 2024 and 78.5 by 2025, and rationalised the drop as an equity valuation
+    # effect. No such fall exists; the series is flat. The mis-read survived
+    # because D/Y in the STEADY STATE is the policy anchor we choose, not a
+    # measurement, so the steady-state dashboard structurally cannot score it.
+    # Only the transition path can. The same file's r_gov derivation below
+    # already used the correct 114.8% average -- the two sat inconsistent for
+    # a full day. See docs/CALIBRATION_JOURNEY.md.
     #
     # initial_debt_ratio is the MEASURED ratio at the start of the start year,
     # i.e. end-2024 for a 2025 start: 0.864.
@@ -166,7 +179,7 @@ def get_macro_params():
     # -- not a fiscal consolidation. That is a reason not to anchor the
     # steady state on the latest reading alone.
     # -----------------------------------------------------------------------
-    macro_parameters["initial_debt_ratio"] = 0.864
+    macro_parameters["initial_debt_ratio"] = 1.148
 
     # -----------------------------------------------------------------------
     # Steady-state debt target. A POLICY anchor, not a measurement, and a

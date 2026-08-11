@@ -73,14 +73,14 @@ DASHBOARD = [
     ),
     (
         # NOT a data target: D/Y in the steady state IS debt_ratio_ss, a policy
-        # anchor we chose. Japan's measured net debt (0.864 at end-2024, OECD
+        # anchor we chose. Japan's measured net debt (1.148 at end-2024, OECD
         # GNFLQ) is the INITIAL condition, which the transition starts from.
         # Scoring the SS against it would be scoring a choice against a
         # measurement.
         "Debt / Y  (= SS anchor)",
         lambda ss, Y: _s(ss["D"]) / Y,
         None,
-        "policy anchor debt_ratio_ss=1.0; measured start 0.864",
+        "policy anchor debt_ratio_ss=1.0; measured start 1.148",
     ),
     (
         "Foreign-held debt  D_f/D",

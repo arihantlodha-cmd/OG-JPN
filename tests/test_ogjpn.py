@@ -62,13 +62,18 @@ def test_macro_params_keys_present():
 
 def test_debt_is_calibrated_net_not_gross():
     """
-    OECD general government NET financial liabilities for Japan were 86.4% of
-    GDP at end-2024 (GNFLQ). Gross was 205.4%. OG-Core's government holds no
-    financial assets, so the net concept is the one its accounting implies --
-    and unlike gross it is not truncated by OG-Core's 2.0 ceiling.
+    OECD general government NET financial liabilities for Japan were 114.8% of
+    GDP at end-2024 (GNFLQ); gross (GGFLQ) was 237.9%. OG-Core's government
+    holds no financial assets, so the net concept is the one its accounting
+    implies -- and unlike gross it is not truncated by OG-Core's 2.0 ceiling.
+
+    This value was wrong (0.864) for a full day. The steady-state dashboard
+    cannot catch it: SS D/Y is `debt_ratio_ss`, a policy anchor we choose, so
+    scoring it there compares a choice against a measurement. Only the
+    transition path starts from this number. See examples/validate_fiscal_path.py.
     """
     m = macro_params.get_macro_params()
-    assert m["initial_debt_ratio"] == pytest.approx(0.864)
+    assert m["initial_debt_ratio"] == pytest.approx(1.148)
     assert m["initial_debt_ratio"] < 2.0, "must not sit at OG-Core's cap"
 
 
