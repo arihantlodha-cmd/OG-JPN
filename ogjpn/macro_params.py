@@ -246,8 +246,14 @@ def get_macro_params():
     # (~1.4 for Japan) gives a lower bound near 12%. Conversely, foreign
     # holdings of CORPORATE debt are also claims on domestic capital in a
     # one-asset model, which pushes the upper bound to roughly 20%. The band is
-    # 12-20%; zeta_K = 0.78 solves to 16.9%, inside it and close to the central
+    # 12-20%; zeta_K = 0.70 solves to 16.7%, essentially on the central
     # market-value estimate.
+    #
+    # zeta_K is IDENTIFIED by K_f/K, so it is set there and not pushed further
+    # to chase K/Y. Openness of 0.78 would close more of the K/Y gap (73% vs
+    # 54%) but overshoots K_f/K to 19.1%. K_f/K is published in the IIP to the
+    # yen; K/Y comes from PWT, is PPP-converted and includes dwellings. Anchor
+    # the parameter on the moment that identifies it.
     #
     # Japan being the world's largest net creditor says nothing about this: it
     # is a fact about the NET position, and gross foreign ownership of Japanese
@@ -256,7 +262,7 @@ def get_macro_params():
     # foreign ownership by a factor of ten.
     #
     # This parameter is a lever on K/Y and hence on consumption: moving it from
-    # 0.10 to 0.78 closed 79% of the K/Y gap and 85% of the consumption gap.
+    # 0.10 to 0.70 closed over half the K/Y gap and most of the consumption gap.
     #
     # THE EXPOSURE THIS CREATES: at high openness the interest rate is pinned by
     # world_int_rate, not by Japanese households' preferences. At zeta_K = 1.0
@@ -266,7 +272,7 @@ def get_macro_params():
     # zeta_K gives K/Y = 3.81 and K_f/K = 27%. Source it before using this
     # calibration for anything that turns on the level of r.
     # -----------------------------------------------------------------------
-    macro_parameters["zeta_K"] = [0.78]
+    macro_parameters["zeta_K"] = [0.70]
 
     # -----------------------------------------------------------------------
     # Government spending shares.

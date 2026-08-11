@@ -28,6 +28,52 @@ its seeds from parameters it already has rather than hardcoding `0.07`, and
 accept a warm start. But the repo-side helper is worth having regardless, because
 it also makes reruns cheap.
 
+## 0c. Resolve the K_f concept: gross vs net  <- blocks the zeta_K value
+
+`zeta_K` is currently 0.70, calibrated so the solved `K_f/K` matches Japan's
+**gross** foreign equity claims (16.4% of the capital stock: MOF IIP end-2024,
+direct-investment equity 34.5 + portfolio equity 334.8 = 369.3 trillion yen, on
+GDP 609, divided by K/Y 3.70).
+
+That may be the wrong concept, and the error is a sign error, not a magnitude
+one. OG-Core has a single `K_f`, not gross assets and gross liabilities:
+
+```
+K_f = zeta_K * (K_demand_open - B + D_d)          # unclamped, may go negative
+net outflows = (r + delta)*K_f - new_borrowing_f + debt_service_f
+```
+
+Nothing clamps `K_f`, and the outflow term reverses cleanly, so a net-creditor
+position is representable. Japan IS a net creditor -- 1,659 trillion yen of
+assets against 1,126 of liabilities, +533 net, **+87.5% of GDP**. On the net
+reading the target is `K_f/K = -23.7%`, not +16.4%.
+
+Two things follow:
+
+1. On the net reading, `zeta_K = 0.70` makes the model pay `(r+delta)*K_f`
+   abroad every period for a country that is a net receiver of foreign income.
+2. The net target is **structurally unreachable**. `K_f` takes the sign of
+   `K_demand_open - K_d`, and the model's `r` (4.39%) is above `world_int_rate`
+   (4.0%), so `K_f > 0` for every `zeta_K >= 0`.
+
+What it buys, so the trade is explicit: 0.10 -> 0.70 closed 56% of the `K/Y` gap
+and 77% of the consumption gap, and took total revenue from -0.0033 to -0.0001.
+Those are real improvements resting on a concept that may be wrong.
+
+To resolve:
+
+- Decide which concept OG-Core's `K_f` is meant to be. The identity
+  `K = K_d + K_f` reads gross; the residual determination from a financing gap
+  reads net. Ask upstream -- this is not a Japan question.
+- If net: revert `zeta_K` toward 0, document that Japan's external position is
+  not representable, and reopen the `K/Y` gap.
+- If the answer is "the model cannot express a two-sided external balance
+  sheet", that is an ogcore feature request: let households hold a foreign
+  asset, so gross positions and the primary income they generate both exist.
+  Japan is the extreme test case but every net creditor has it.
+- Either way `world_int_rate` (OG-Core default 0.04, unsourced here) has to be
+  sourced, because at high `zeta_K` it sets `r` outright.
+
 ## 1. Run the in-model tuning loop  <- the main remaining task
 
 Several parameters cannot be pinned down from published data alone. They are

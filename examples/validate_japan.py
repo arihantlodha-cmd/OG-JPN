@@ -114,6 +114,39 @@ DASHBOARD = [
         "World Bank NE.CON.PRVT.ZS, Japan 2023",
     ),
     (
+        # Every component of the resource constraint, so a consumption gap can
+        # be attributed instead of guessed at. C = Y - I - I_g - G - NX.
+        "  Investment (I+I_g) / Y",
+        lambda ss, Y: (_s(ss["I_total"]) + _s(ss["I_g"])) / Y,
+        0.260,
+        "World Bank NE.GDI.FTOT.ZS: GFCF, private AND public",
+    ),
+    (
+        "  Government G / Y",
+        lambda ss, Y: _s(ss["G"]) / Y,
+        0.201,
+        "World Bank NE.CON.GOVT.ZS (= alpha_G input; SS forces consistency)",
+    ),
+    (
+        # NX is the TRADE balance. Japan's ~3.8% current-account surplus is
+        # almost entirely primary income on its net foreign assets, which
+        # OG-Core cannot represent -- domestic households hold no foreign
+        # assets in this model. Japan's goods-and-services balance is near
+        # zero, and that is what this row scores.
+        "  Net exports NX / Y",
+        lambda ss, Y: 1.0
+        - (_s(ss["C"]) + _s(ss["I_total"]) + _s(ss["I_g"]) + _s(ss["G"])) / Y,
+        0.000,
+        "BOP goods+services balance ~0 (the 3.8% CA is primary income)",
+    ),
+    (
+        # Not forced when epsilon != 1, so this is a genuine free check on gamma.
+        "Labour share w*L / Y",
+        lambda ss, Y: _s(ss["w"]) * _s(ss["L"]) / Y,
+        0.571,
+        "PWT labsh via FRED LABSHPJPA156NRUG (= 1 - gamma)",
+    ),
+    (
         "Capital-output K / Y",
         lambda ss, Y: _s(ss["K"]) / Y,
         3.7,
