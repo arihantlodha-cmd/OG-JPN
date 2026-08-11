@@ -338,10 +338,20 @@ def get_macro_params():
     #   OG-Core's default is 0.0; leaving it there breaks the spending identity
     #   by the full 3 percentage points.
     #
-    # NEEDS TUNING: alpha_G, alpha_T and alpha_I must be re-checked against the
-    # identity after the first solve, once model revenue/Y and g_n_ss are known.
+    # Re-checked against the identity at the solved steady state. The identity
+    # must include PENSION OUTLAYS -- they are a primary outlay like any other,
+    # and omitting them is why an earlier pass set alpha_G 0.63pp too high:
+    #
+    #   alpha_G + alpha_T + alpha_I + pensions/Y = revenue/Y - pb*
+    #   0.1947  + 0.025   + 0.03    + 0.0930     = 0.34270 = 0.3369 - (-0.00575)
+    #
+    # The SS closure hides the error -- it forces G to the consistent level, so
+    # the steady state solved fine at alpha_G = 0.201 and simply reported
+    # G/Y = 0.1947. The TRANSITION does not: it holds alpha_G at its input for
+    # the first tG1 periods, so the old value over-spent 0.63pp of GDP a year
+    # before the closure corrected it.
     # -----------------------------------------------------------------------
-    macro_parameters["alpha_G"] = [0.201]
+    macro_parameters["alpha_G"] = [0.1947]
     macro_parameters["alpha_T"] = [0.025]
     macro_parameters["alpha_I"] = [0.03]
 

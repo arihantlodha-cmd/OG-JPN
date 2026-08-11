@@ -144,20 +144,35 @@ Watch the concept trap: the target Gini and the US reference Gini must be the
 same welfare concept. Japan's World Bank income Gini is 32.3 (2020) against the
 World Bank US anchor of 41.5.
 
-## 4. Diagnose `initial_wealth_ratio`
+## 4. `initial_wealth_ratio` -- DIAGNOSED; set it when OG-Core #1189 lands
 
-Japan has the oldest population of any large economy, which is exactly the case
-where this bites. Without the parameter, the transition imposes the steady-state
-wealth profile rescaled so aggregate B(0) = B_ss, which hands initial households
-a uniform windfall or confiscation.
+Run, with the solved steady state:
 
-Compute the implied scale `B_ss / get_B(b_sp1, p, "SS", True)`. Anything far from
-1 is a problem. The fingerprint is a violent year-1-or-2 consumption spike
-concentrated in ages 60+, an investment collapse, and a spurious debt paydown.
+```
+scale = B_ss / get_B(b_sp1, p, "SS", True)
+```
 
-It is invisible in reform-minus-baseline tables, because both paths share the
-initial condition — so it survives every reform validation. Diagnose it before
-trusting any level exercise.
+Japan measures **1.198** -- a **20% windfall** handed to every initial
+household. Not the 1.625 that did visible damage on OG-PHL, but far enough from
+1 to matter, and in the direction the demographics predict: Japan's *initial*
+population is younger than its stationary one, so applying the steady-state
+wealth profile to it yields less aggregate wealth than `B_ss`, and the model
+scales everyone up 20% to force `B(0) = B_ss`.
+
+The data-side construction and the model agree closely, which is the good news:
+
+```
+(K/Y_PWT - K_g/Y) x (1 - K_f/K) + D_d/Y
+  = (3.70 - 1.16) x (1 - 0.165) + 0.863  =  2.980
+get_B(b_sp1, p, "SS", True)              =  2.954
+```
+
+So **set `initial_wealth_ratio = 2.98`** once OG-Core #1189 is available in the
+resolved ogcore (it is absent from 0.19.0 -- `Specifications` has no such
+attribute). Until then the 20% windfall is present in every transition this
+repo produces. It is invisible in reform-minus-baseline tables because both
+paths share the initial condition, so it survives reform validation; check it
+before trusting any level exercise.
 
 ## 5. Consider adopting the family's packaged-JSON layout
 

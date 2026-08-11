@@ -203,11 +203,23 @@ def main(out="/tmp/ogjpn_validate"):
     pb_star = (r_gov - g) / (1 + g) * D_Y
     revenue = _s(ss["total_tax_revenue"]) / Y
     primary_spending = revenue - pb_star
+    # Pensions are a primary outlay. Leaving them out of the identity is how
+    # alpha_G ended up 0.63pp too high: the SS closure absorbs the error into
+    # G, so the steady state looks fine and only the transition over-spends.
+    pensions = _s(ss["agg_pension_outlays"]) / Y
+    alphas = (
+        float(np.asarray(p.alpha_G).flat[-1])
+        + float(np.asarray(p.alpha_T).flat[-1])
+        + float(np.asarray(p.alpha_I).flat[-1])
+    )
     print(f"  model growth g            = {g:+.5f}")
     print(f"  sovereign rate r_gov      = {r_gov:+.5f}")
     print(f"  r_gov - g                 = {r_gov - g:+.5f}")
     print(f"  debt-stabilising pb*      = {pb_star:+.5f} of GDP")
     print(f"  implied primary spending  = {primary_spending:.5f} of GDP")
+    print(f"  alpha_G+alpha_T+alpha_I    = {alphas:.5f}")
+    print(f"    + pension outlays        = {alphas + pensions:.5f}"
+          f"   residual {alphas + pensions - primary_spending:+.5f}")
     print("  Japan actual primary balance: -0.0179 (2024), -0.0102 (2025)")
     print("    [OECD Economic Outlook NLGXQ]")
 
