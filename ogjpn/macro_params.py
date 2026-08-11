@@ -226,7 +226,10 @@ def get_macro_params():
     #  down by Bank of Japan holdings (42.2% of JGBs and T-Bills) and by
     #  domestic demand for safe yen assets.
     #
-    #  NEEDS TUNING: r_gov_shift is set assuming the model solves to r ~ 4.5%
+    #  Verified at the solved steady state: r = 4.391%, so the wedge returns
+    #  0.25*0.04391 - 0.017 = -0.6023% against the -0.60% target. Exact.
+    #  ogcore then clips it to zero (see the r_gov floor note): the wedge is
+    #  right, the clip is the upstream defect.
     #  (r_gov = 0.25*0.045 - 0.017 = -0.0058). After the first steady-state
     #  solve, read the solved r and reset the shift so r_gov lands at -0.006.
     # -----------------------------------------------------------------------

@@ -399,17 +399,40 @@ Solved on real UN demographics, ogcore 0.19.0, fourteen tuning rounds.
 
 | Moment | Model | Target | Gap | Source |
 |---|---:|---:|---:|---|
-| **Income tax (PIT) / Y** | **0.0617** | **0.0617** | **0.0000** | OECD RevStats 2025 |
-| **Corporate tax / Y** | **0.0470** | **0.0470** | **0.0000** | OECD RevStats 2025 |
-| **Payroll / social insurance / Y** | **0.1318** | **0.1318** | **0.0000** | OECD RevStats 2025 |
-| **Foreign-held debt `D_f/D`** | **0.1370** | **0.1370** | **0.0000** | MOF, Mar 2026 |
-| Pension outlays / Y | 0.0928 | 0.0930 | −0.0002 | OECD PaG 2023 |
-| Consumption + indirect / Y | 0.0674 | 0.0682 | −0.0008 | OECD RevStats 2025 |
-| Total tax revenue / Y | 0.3337 | 0.3370 | −0.0033 | OECD RevStats 2025 |
-| Capital-output `K/Y` | 3.503 | 3.70 | −0.197 | Penn World Table |
-| Consumption / Y | 0.5586 | 0.5360 | +0.0226 | World Bank |
-| Sovereign real rate `r_gov` | 0.0000 | −0.0060 | +0.0060 | OECD EO (model floor) |
-| Interest rate `r` | 0.0473 | — | — | no data target |
+| Total tax revenue / Y | 0.3369 | 0.3370 | -0.0001 | OECD RevStats 2025 |
+| Pension outlays / Y | 0.0930 | 0.0930 | -0.0000 | OECD PaG 2023 |
+| Foreign-held debt `D_f/D` | 0.1370 | 0.1370 | +0.0000 | MOF, Mar 2026 |
+| Wealth / property tax / Y | 0.0222 | 0.0221 | +0.0001 | OECD RevStats 2025 |
+| Income tax (PIT) / Y | 0.0619 | 0.0617 | +0.0002 | OECD RevStats 2025 |
+| Consumption + indirect / Y | 0.0680 | 0.0682 | -0.0002 | OECD RevStats 2025 |
+| Bequest tax / Y | 0.0053 | 0.0055 | -0.0002 | OECD RevStats 2025 |
+| Corporate tax / Y | 0.0473 | 0.0470 | +0.0003 | OECD RevStats 2025 |
+| Payroll / social insurance / Y | 0.1322 | 0.1318 | +0.0004 | OECD RevStats 2025 |
+| Net exports `NX/Y` | -0.0006 | 0.0000 | -0.0006 | BOP goods+services balance |
+| Labour share `w*L/Y` | 0.5700 | 0.5710 | -0.0010 | PWT `labsh` |
+| Foreign-owned capital `K_f/K` | 0.1654 | 0.1640 | +0.0014 | MOF IIP end-2024 |
+| Consumption / Y | 0.5309 | 0.5360 | -0.0051 | World Bank |
+| Government `G/Y` | 0.1947 | 0.2010 | -0.0063 | World Bank (embedded consolidation) |
+| Investment `(I+I_g)/Y` | 0.2750 | 0.2600 | +0.0150 | World Bank GFCF |
+| Capital-output `K/Y` | 3.614 | 3.700 | -0.086 | Penn World Table |
+| Sovereign real rate `r_gov` | 0.0000 | -0.0060 | +0.0060 | OECD EO (clipped by ogcore) |
+
+**The government budget identity closes exactly.** `alpha_G + alpha_T + alpha_I +
+pensions = 0.2497 + 0.0930 = 0.34268`, against `revenue - pb* = 0.34268`. Residual
+`0.00000`.
+
+Total revenue is within 0.01pp of GDP and every individual instrument within
+0.04pp. Two gaps remain, both reported rather than tuned away:
+
+`K/Y` is 0.086 light and investment 1.5pp heavy. `delta` moves both, and 0.060
+would improve both -- but it sits below the sourced range, and solving
+`delta = (CFC/Y)/(K/Y)` jointly with the firm FOC gives `delta = 0.072`,
+`K/Y = 3.31`. Japan's measured CFC/Y, `K/Y` and labour share are not mutually
+consistent under Cobb-Douglas at `r = 4.4%`. Fitting `delta` would hide that.
+
+`G/Y` sits 0.63pp below observed government consumption. That is not an error --
+it is the consolidation Japan has not yet done, which a stable-debt steady state
+necessarily embeds.
 
 Every fiscal moment lands within **0.11 percentage points of GDP**. The
 capital-output ratio, the consumption tax and the foreign debt share are exact

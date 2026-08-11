@@ -515,9 +515,7 @@ def test_no_unresolved_tuning_markers():
 
     # (file, parameter, what still has to happen). Empty this list, do not grow it.
     ALLOWED = {
-        ("macro_params.py", "r_gov_shift"),
         # zeta_K resolved: tuned to the IIP foreign-owned capital share (16.4%).
-        ("macro_params.py", "alpha_G"),
     }
 
     found = set()
