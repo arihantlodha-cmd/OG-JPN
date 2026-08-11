@@ -89,6 +89,19 @@ DASHBOARD = [
         "MOF JGB/T-Bill holders, Mar 2026 preliminary",
     ),
     (
+        # This row is why zeta_K sat at a placeholder through fourteen tuning
+        # rounds: the moment was not scored, so nothing pulled the parameter.
+        # The IIP publishes it -- foreign equity claims on Japanese capital
+        # (DI equity 25.040 + reinvested 9.460 + portfolio equity 334.799
+        # = 369.3 trillion yen) over GDP 609, divided by K/Y 3.70 = 16.4%.
+        # Band is 12% (market value deflated by Tobin's q) to 20% (including
+        # foreign holdings of corporate debt).
+        "Foreign-owned capital K_f/K",
+        lambda ss, Y: _s(ss["K_f"]) / _s(ss["K"]),
+        0.164,
+        "MOF IIP end-2024: DI + portfolio equity, 60.6% of GDP",
+    ),
+    (
         "Sovereign real rate r_gov",
         lambda ss, Y: _s(ss["r_gov"]),
         -0.006,

@@ -225,13 +225,48 @@ def get_macro_params():
     # -----------------------------------------------------------------------
     # Openness of the capital account.
     #
-    # NEEDS TUNING: zeta_K is a marginal fill-share no dataset measures. It must
-    # be tuned until the solved steady-state K_f/K matches Japan's IIP
-    # foreign-owned share of the capital stock. Japan is the world's largest net
-    # creditor, so the foreign-owned share of its DOMESTIC capital stock is
-    # small; 0.10 is a low starting value pending the IIP anchor.
+    # zeta_K is the share of excess capital demand that foreign capital fills.
+    # No dataset measures the fill-share itself, but the OUTCOME it produces --
+    # the foreign-owned share of the domestic capital stock -- is published, so
+    # zeta_K is tuned until the solved K_f/K matches it.
+    #
+    # Japan's IIP liabilities, end-2024 (MOF, trillion yen):
+    #
+    #     direct investment equity                      25.040
+    #     + reinvested earnings (53.299 - 25.040 - 18.799)  9.460
+    #     + portfolio equity and investment fund shares 334.799
+    #     ------------------------------------------------------
+    #     foreign equity claims on Japanese capital     369.299
+    #
+    # On 2024 nominal GDP of 609 trillion yen that is 60.6% of GDP, and at the
+    # target K/Y of 3.70:  0.606 / 3.70 = 16.4% of the capital stock.
+    #
+    # Two concept caveats bracket that number. Portfolio equity is at MARKET
+    # value while the model's K is replacement cost, so dividing by Tobin's q
+    # (~1.4 for Japan) gives a lower bound near 12%. Conversely, foreign
+    # holdings of CORPORATE debt are also claims on domestic capital in a
+    # one-asset model, which pushes the upper bound to roughly 20%. The band is
+    # 12-20%; zeta_K = 0.78 solves to 16.9%, inside it and close to the central
+    # market-value estimate.
+    #
+    # Japan being the world's largest net creditor says nothing about this: it
+    # is a fact about the NET position, and gross foreign ownership of Japanese
+    # equity is large in both directions. The previous value of 0.10 solved to
+    # K_f/K = 1.5%, roughly the inward-FDI-only share, which understates
+    # foreign ownership by a factor of ten.
+    #
+    # This parameter is a lever on K/Y and hence on consumption: moving it from
+    # 0.10 to 0.78 closed 79% of the K/Y gap and 85% of the consumption gap.
+    #
+    # THE EXPOSURE THIS CREATES: at high openness the interest rate is pinned by
+    # world_int_rate, not by Japanese households' preferences. At zeta_K = 1.0
+    # the model's r equals the world rate exactly. OG-Core's default of 4.0% is
+    # a global real return on capital and is not sourced for Japan here; it is
+    # an explicit assumption. It matters -- at a 3.5% world rate the same
+    # zeta_K gives K/Y = 3.81 and K_f/K = 27%. Source it before using this
+    # calibration for anything that turns on the level of r.
     # -----------------------------------------------------------------------
-    macro_parameters["zeta_K"] = [0.10]
+    macro_parameters["zeta_K"] = [0.78]
 
     # -----------------------------------------------------------------------
     # Government spending shares.

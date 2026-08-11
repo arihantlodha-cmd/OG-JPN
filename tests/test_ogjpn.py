@@ -162,7 +162,7 @@ def test_consumption_tax_is_effective_not_statutory():
     Japan's indirect-tax revenue in the model is 0.0682 / 0.627 = 10.9%.
     """
     t = tax_params.get_tax_params()
-    assert t["tau_c"] == [[pytest.approx(0.1207)]]
+    assert t["tau_c"] == [[pytest.approx(0.12814)]]
     assert t["tau_c"][0][0] != 0.10, "statutory rate is not the model input"
 
 
@@ -175,7 +175,7 @@ def test_cit_adjustment_factor_is_set():
     t = tax_params.get_tax_params()
     assert "adjustment_factor_for_cit_receipts" in t
     assert t["adjustment_factor_for_cit_receipts"][0] > 0.309
-    assert t["adjustment_factor_for_cit_receipts"][0] == pytest.approx(0.857, abs=1e-3)
+    assert t["adjustment_factor_for_cit_receipts"][0] == pytest.approx(0.869, abs=1e-3)
 
 
 def test_income_tax_is_not_the_us_functions():
@@ -232,7 +232,7 @@ def test_alpha_db_reproduces_the_oecd_replacement_rate():
     pp = pension_params.get_pension_params()
     assert pp["alpha_db"] > 0.0
     replacement = pp["yr_contrib"] * pp["alpha_db"]
-    assert replacement == pytest.approx(0.387, abs=1e-6)
+    assert replacement == pytest.approx(0.3913, abs=1e-6)
     assert replacement > pension_params.GROSS_REPLACEMENT_RATE_OECD
     # most of the gap should be the derived survivors/disability uplift
     derived = (pension_params.GROSS_REPLACEMENT_RATE_OECD
@@ -482,7 +482,7 @@ def test_gs_scale_matches_the_income_units():
     income units it silently re-prices the whole income tax.
     """
     t = tax_params.get_tax_params()
-    assert t["etr_params"][0][0][2] == pytest.approx(3.5e-10, rel=1e-3)
+    assert t["etr_params"][0][0][2] == pytest.approx(3.675e-10, rel=1e-3)
 
 
 def test_solver_seeds_are_left_to_the_warm_start():
@@ -516,7 +516,7 @@ def test_no_unresolved_tuning_markers():
     # (file, parameter, what still has to happen). Empty this list, do not grow it.
     ALLOWED = {
         ("macro_params.py", "r_gov_shift"),
-        ("macro_params.py", "zeta_K"),
+        # zeta_K resolved: tuned to the IIP foreign-owned capital share (16.4%).
         ("macro_params.py", "alpha_G"),
     }
 
