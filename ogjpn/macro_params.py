@@ -1,17 +1,21 @@
 """
 OG-Japan macro calibration.
 
-Sourced values (IMF World Economic Outlook via the IMF DataMapper API,
-retrieved 2026-08-09):
-  - initial_debt_ratio: Japan gross general government debt, 214.5% of GDP
-    (2024), indicator GGXWDG_NGDP.
-  - g_y_annual: consistent with Japan real GDP growth of ~0.7% (2023,
-    indicator NGDP_RPCH); a conservative proxy for labor-productivity
-    growth given Japan's shrinking workforce.
+Sourced from the IMF World Economic Outlook via the IMF DataMapper API
+(retrieved 2026-08-18). Japan's general government, share of GDP:
+  - gross debt 214.5% (2024, GGXWDG_NGDP)
+  - total revenue 37.6% (2024, indicator "rev")
+  - total expenditure 39.1% (2024, indicator "exp")
+  - net lending/borrowing -1.7% (2024, GGXCNL_NGDP)
+  - real GDP growth ~0.7% (2023, NGDP_RPCH)
 
-Still first-pass / to verify (no clean open API pull yet):
-  - gamma (capital share), alpha_G (govt consumption/GDP),
-    alpha_T (non-pension transfers/GDP).
+These pin the debt ratio, the growth rate, and the overall size of
+government. The split of total expenditure (39.1%) into its OG-Core
+pieces -- government consumption (alpha_G), pensions (a separate model
+outlay), non-pension transfers (alpha_T), interest, and investment -- is
+estimated from the standard composition, since the aggregate API series
+do not break it out. gamma (capital share) is still a standard value to
+verify against the Penn World Table.
 """
 
 
@@ -43,12 +47,17 @@ def get_macro_params():
     # used here to reflect Japan's headline debt burden.)
     macro_parameters["initial_debt_ratio"] = 2.0
 
-    # Government consumption spending as a share of GDP. Japan ~0.20.
-    # First pass -- verify against OECD govt final consumption / GDP.
+    # Government consumption spending as a share of GDP. Japan's general
+    # government final consumption is ~20% of GDP -- about half of the
+    # 39.1% total expenditure (IMF), the rest being pensions, other
+    # transfers, interest, and investment.
     macro_parameters["alpha_G"] = [0.20]
 
-    # Government non-pension transfers as a share of GDP. First pass --
-    # verify against OECD social spending less public pensions / GDP.
+    # Government non-pension transfers as a share of GDP. Estimated from
+    # the composition of the 39.1% total (consumption ~20, public pensions
+    # ~10 handled as a separate model outlay, leaving ~9 for other
+    # transfers, interest, and investment). Verify against OECD social
+    # spending less public pensions.
     macro_parameters["alpha_T"] = [0.10]
 
     return macro_parameters

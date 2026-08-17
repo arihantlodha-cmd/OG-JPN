@@ -22,10 +22,11 @@ The calibration is a thin layer over OG-Core, assembled by
 | Layer | Source | Status |
 |---|---|---|
 | Demographics | UN World Population Prospects, country code 392, via `ogcore.demographics` | **real data** |
-| Government debt | IMF WEO, gross general govt debt (`GGXWDG_NGDP`) | **real data** |
+| Government debt | IMF WEO, gross general govt debt 214.5% of GDP (`GGXWDG_NGDP`) | **real data** |
+| Government size | IMF WEO, revenue 37.6% / expenditure 39.1% of GDP | **real data** (composition into `alpha_G`/`alpha_T` estimated) |
 | Consumption tax | Japan's 10% rate (since Oct 2019) | **real** |
-| Productivity growth | ~0.8%/yr, consistent with IMF real GDP growth | first-pass |
-| Capital share, spending shares | standard values | first-pass |
+| Productivity growth | ~0.8%/yr, consistent with IMF real GDP growth | grounded |
+| Capital share (`gamma`) | standard value ~0.38 | first-pass |
 | Income / payroll taxes | OG-Core defaults | **not yet calibrated to Japan** |
 
 Live UN demographics require a free UN Data Portal API token (see the main
