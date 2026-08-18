@@ -66,10 +66,16 @@ acceleration. This is the same class of problem as OG-Core PR #1178
 
 ## 5. After Phases 1 and 2: the payoff (Phase 3)
 
-Pick one real Japanese policy question and run baseline vs reform:
-a consumption-tax change, a higher retirement age, or a pension reform.
-Then use the `npv_table` you added to OG-Core (#1195) to report the NPV
-of the change in GDP, and write it up. That writeup is the artifact.
+Done (steady-state version): `examples/analysis_consumption_tax.py` runs
+Japan's consumption tax at 10% (actual), 12%, and 15% (the IMF's
+recommendation) and compares the steady states on real demographics. The
+writeup is `docs/results_consumption_tax.md`.
+
+Still to do: run the same reform on the transition path (once it
+converges, see item 4 and the K/Y and C/Y calibration) and use the
+`npv_table` added to OG-Core (#1195) to report the NPV of the change in
+GDP. Other reforms worth the same treatment: a higher retirement age or a
+pension-replacement-rate change.
 
 ## How to run
 

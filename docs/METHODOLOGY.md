@@ -86,9 +86,25 @@ reflection of it being the developed world's fiscal outlier.
   developing-country gradient rule extrapolates poorly to a rich,
   egalitarian country like Japan and would need Japan-specific data.
 
+## First policy result
+
+A first steady-state policy experiment is done and written up in
+[`results_consumption_tax.md`](results_consumption_tax.md): raising Japan's
+consumption tax from its actual 10% to 12% and to the 15% the IMF has
+recommended, solved on real Japanese demographics. It reproduces the
+standard consumption-tax pattern (consumption down, labor slightly up,
+output roughly flat) and shows each two-point rise adding about 1.5 points
+of GDP in revenue. This is a comparison of two steady states, which is
+robust to the `K/Y` and `C/Y` level miss because both sides carry it; the
+tax side is still first-pass, so it is a direction-and-rough-size result.
+Regenerate it with `examples/analysis_consumption_tax.py`.
+
 ## Roadmap
 
 1. Calibrate preferences/production to Japan's `K/Y` and `C/Y`.
 2. Fit the income/payroll tax functions to Japanese data.
-3. Turn on the transition path and run a real policy experiment.
+3. Run the same policy experiment on the transition path (needs the
+   transition to converge, which follows from 1 and 2) and report the NPV
+   of the change with the `npv_table` added upstream in OG-Core #1195. The
+   steady-state version above is the first half of this.
 4. Add income-group demographic gradients from Japanese data.
