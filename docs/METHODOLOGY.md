@@ -26,7 +26,7 @@ The calibration is a thin layer over OG-Core, assembled by
 | Government size | IMF WEO, revenue 37.6% / expenditure 39.1% of GDP | **real data** (composition into `alpha_G`/`alpha_T` estimated) |
 | Consumption tax | Japan's 10% rate (since Oct 2019) | **real** |
 | Productivity growth | ~0.8%/yr, consistent with IMF real GDP growth | grounded |
-| Capital share (`gamma`) | standard value ~0.38 | first-pass |
+| Capital share (`gamma`) | Penn World Table labor share for Japan, `gamma = 1 - 0.568 = 0.43` (FRED `LABSHPJPA156NRUG`, 2013-2023 mean) | **real data** |
 | Income / payroll taxes | OG-Core defaults | **not yet calibrated to Japan** |
 
 Live UN demographics require a free UN Data Portal API token (see the main
@@ -39,11 +39,11 @@ Solving the steady state and comparing to Japan's actual ratios:
 
 | Ratio | Model | Japan | |
 |---|---|---|---|
-| Interest rate `r` | 0.034 | ~0.01-0.04 | matches |
-| Pension outlays / GDP | 0.118 | ~0.10-0.11 | matches |
+| Interest rate `r` | 0.040 | ~0.01-0.04 | matches |
+| Pension outlays / GDP | 0.112 | ~0.10-0.11 | matches |
 | Debt / GDP | 2.00 | ~2.1 | matches (at cap) |
-| Tax revenue / GDP | 0.252 | ~0.20-0.30 | matches |
-| Capital-output `K/Y` | 4.42 | ~3.0-3.5 | too high |
+| Tax revenue / GDP | 0.248 | ~0.20-0.30 | matches |
+| Capital-output `K/Y` | 4.68 | ~3.0-3.5 | too high |
 | Consumption / GDP `C/Y` | 0.80 | ~0.53-0.55 | too high |
 
 **The fiscal and demographic side matches Japan.** These are the
@@ -55,12 +55,18 @@ actual figure.
 **The real-side ratios are too high, for understandable reasons.** In the
 model's steady state, `K/Y = gamma / (r + delta)` exactly, so the
 capital-output ratio is pinned by the capital share, the return on
-capital, and depreciation. Japan genuinely has a high capital share, low
-interest rates, and a shrinking workforce (all of which raise `K/Y`), so a
-high value is expected; the remaining gap is a preference/production
-calibration target, not a bug. The high `C/Y` partly reflects that the
-model is closed while Japan runs large current-account surpluses with low
-domestic investment.
+capital, and depreciation. Grounding `gamma` in the Penn World Table
+raised it from the earlier 0.38 first-pass to the actual 0.43, which
+pushed `K/Y` from 4.42 up to 4.68. That is worth stating plainly: the
+correctly sourced, higher capital share widens the `K/Y` overshoot rather
+than closing it, which localizes the miss. The overshoot is not a `gamma`
+artifact (the earlier lower value was partly masking it); it is structural,
+the closed-economy over-accumulation of capital given Japan's high saving
+and low return, so the fix belongs in `delta` and the open-economy margin,
+not in understating the capital share. Every well-identified target (`r`,
+pension outlays, revenue, debt) still matches after the change. The high
+`C/Y` partly reflects the same closed-economy structure, since Japan runs
+large current-account surpluses with low domestic investment.
 
 ## A finding along the way
 

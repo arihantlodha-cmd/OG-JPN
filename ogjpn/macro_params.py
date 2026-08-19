@@ -35,9 +35,13 @@ def get_macro_params():
     # growth given the shrinking workforce.
     macro_parameters["g_y_annual"] = 0.008
 
-    # Capital share of income. ~0.38 is a standard value for Japan.
-    # First pass -- verify against Penn World Table (1 - labor share).
-    macro_parameters["gamma"] = [0.38]
+    # Capital share of income, gamma = 1 - labor share. Grounded in the
+    # Penn World Table share of labor compensation for Japan (FRED series
+    # LABSHPJPA156NRUG): the 2013-2023 mean labor share is 0.568, so the
+    # capital share is about 0.43. The pre-COVID 2010s average gives ~0.44
+    # (2020-2023 are mildly elevated), so 0.43 sits in a tight, well-
+    # identified band, above the 0.38 first-pass value used previously.
+    macro_parameters["gamma"] = [0.43]
 
     # Initial government-debt-to-GDP ratio. Japan's gross general
     # government debt is 214.5% of GDP in 2024 (IMF WEO, GGXWDG_NGDP) --
