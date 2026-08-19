@@ -43,12 +43,19 @@ def get_macro_params():
     # identified band, above the 0.38 first-pass value used previously.
     macro_parameters["gamma"] = [0.43]
 
-    # Initial government-debt-to-GDP ratio. Japan's gross general
-    # government debt is 214.5% of GDP in 2024 (IMF WEO, GGXWDG_NGDP) --
-    # so extreme that it exceeds OG-Core's built-in maximum for this
-    # parameter (200%). We use the cap, 2.0. (Japan's NET debt, ~1.5-1.6x
-    # GDP, would sit comfortably inside the range; gross-at-the-cap is
-    # used here to reflect Japan's headline debt burden.)
+    # Government-debt-to-GDP ratio. Japan's gross general government debt is
+    # 214.5% of GDP in 2024 (IMF WEO, GGXWDG_NGDP) -- so extreme that it
+    # exceeds OG-Core's built-in maximum for this parameter (200%), so we
+    # use the cap, 2.0. (Japan's NET debt, ~1.3-1.6x GDP, would sit inside
+    # the range; gross-at-the-cap reflects Japan's headline burden.)
+    #
+    # Two separate parameters matter here and both must be set. debt_ratio_ss
+    # is the ratio the STEADY STATE holds; initial_debt_ratio is the ratio
+    # the transition STARTS from. OG-Core's default debt_ratio_ss is also
+    # 2.0, so leaving it unset happens to give the same steady state, but we
+    # set it explicitly so the calibration says what it means (Japan's debt
+    # stabilized at its current high level) rather than relying on a default.
+    macro_parameters["debt_ratio_ss"] = 2.0
     macro_parameters["initial_debt_ratio"] = 2.0
 
     # Government consumption spending as a share of GDP. Japan's general

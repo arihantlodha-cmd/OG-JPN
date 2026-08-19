@@ -68,13 +68,26 @@ slightly low, not too high, and lowering `delta` toward a realistic value
 would only raise `K/Y` further, another way of seeing that this ratio is
 not the problem.
 
-**The consumption share is the ratio that genuinely runs high.** `C/Y`
-(0.79 against ~0.53-0.55) reflects the closed-economy structure: with a
-shrinking workforce, less gross investment is needed to sustain the high
-capital stock, so more output flows to consumption than in an open economy
-where Japan's surplus savings go abroad. Bringing this down is the
-open-economy calibration on the roadmap. Every well-identified target
-(`r`, pension outlays, revenue, debt) matches.
+**The consumption share runs high because government consumption
+collapses, and that traces to the revenue side.** `C/Y` (0.79 against
+~0.53-0.55) is the one real-side miss, and reading the steady-state
+accounts shows exactly why. Investment is realistic (`I/Y` about 0.22), so
+the model is not over-saving. What is missing is government consumption:
+`G` is the residual that closes the budget, and it is squeezed to almost
+zero (`G/Y` about 0.001 against Japan's ~0.20). The output the government
+should be buying instead shows up as household consumption, inflating
+`C/Y` by almost exactly the missing `G` share. The cause is revenue, not
+the current account: the model collects 25.9% of GDP while Japan's general
+government takes 37.6% (IMF), and that 12-point gap is almost exactly the
+non-pension social insurance (health, long-term care, employment) the
+first-pass tax calibration leaves out. Pensions (11.3%), other transfers
+(10%), and debt service (4%) then consume nearly all of the undersized
+revenue, leaving nothing for `G`. Lowering the steady-state debt ratio from
+2.0 to 1.3 frees only about two points for `G`, so the debt basis is a
+minor lever; completing the revenue side is the fix, and it is the top
+calibration item. This is the same fiscal bind Japan resolves by
+borrowing, which a fixed-debt steady state cannot do. Every well-identified
+target (`r`, pension outlays, revenue, debt) matches.
 
 ## Findings along the way
 
