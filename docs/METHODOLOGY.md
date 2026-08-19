@@ -27,7 +27,7 @@ The calibration is a thin layer over OG-Core, assembled by
 | Consumption tax | Japan's 10% rate (since Oct 2019) | **real** |
 | Productivity growth | ~0.8%/yr, consistent with IMF real GDP growth | grounded |
 | Capital share (`gamma`) | Penn World Table labor share for Japan, `gamma = 1 - 0.568 = 0.43` (FRED `LABSHPJPA156NRUG`, 2013-2023 mean) | **real data** |
-| Income / payroll taxes | OG-Core defaults | **not yet calibrated to Japan** |
+| Income / payroll / capital / corporate taxes | Linear (constant-rate) tax functions from published rates: income tax ~8% average with a 30% marginal (NTA schedule, OECD Taxing Wages), pension payroll 18.3%, capital 20.315%, corporate ~30% | **real data** (first-pass linear form) |
 
 Live UN demographics require a free UN Data Portal API token (see the main
 README); the model then pulls Japan's fertility, mortality, and population
@@ -40,11 +40,11 @@ Solving the steady state and comparing to Japan's actual ratios:
 | Ratio | Model | Japan | |
 |---|---|---|---|
 | Interest rate `r` | 0.040 | ~0.01-0.04 | matches |
-| Pension outlays / GDP | 0.112 | ~0.10-0.11 | matches |
+| Pension outlays / GDP | 0.113 | ~0.10-0.11 | matches |
 | Debt / GDP | 2.00 | ~2.1 | matches (at cap) |
-| Tax revenue / GDP | 0.248 | ~0.20-0.30 | matches |
-| Capital-output `K/Y` | 4.68 | ~3.0-3.5 | too high |
-| Consumption / GDP `C/Y` | 0.80 | ~0.53-0.55 | too high |
+| Tax revenue / GDP | 0.259 | ~0.20-0.30 | matches |
+| Capital-output `K/Y` | 4.60 | ~3.0-3.5 | too high |
+| Consumption / GDP `C/Y` | 0.79 | ~0.53-0.55 | too high |
 
 **The fiscal and demographic side matches Japan.** These are the
 quantities driven by the real data in the calibration, and the closest
@@ -68,17 +68,30 @@ pension outlays, revenue, debt) still matches after the change. The high
 `C/Y` partly reflects the same closed-economy structure, since Japan runs
 large current-account surpluses with low domestic investment.
 
-## A finding along the way
+## Findings along the way
 
 Japan's real gross debt (214.5% of GDP, 2024) is so extreme it exceeds
 OG-Core's built-in maximum for the debt parameter (200%). Japan is
 literally beyond what the model's defaults anticipated, which is a fair
 reflection of it being the developed world's fiscal outlier.
 
+Calibrating the income, payroll, capital, and corporate taxes to Japan's
+actual rates fixed a budget infeasibility. With OG-Core's US-default tax
+functions and Japan's debt target, the government budget only closed with
+*negative* government spending (the solver warned that `G < 0`). Replacing
+those with the Japanese rates makes the budget close with positive `G` and
+no warning, while every target still matches and `K/Y` and `C/Y` both edge
+down slightly. In other words, the US tax structure could not fund a
+Japanese government at Japanese debt; the Japanese one can. This is a real
+check that the tax side, not just the demographics, now belongs to Japan.
+
 ## Known limitations
 
-- Macro parameters other than debt are first-pass; the income/payroll tax
-  side is still OG-Core defaults, not fitted to Japanese effective rates.
+- The income tax uses a single average effective rate with a separate
+  constant marginal rate (a linear tax function), not Japan's full
+  progressive schedule; the non-pension social insurance and the
+  `frac_tax_payroll` split are not yet modeled. Sharpening this needs the
+  income distribution behind the published effective rates.
 - Results are steady-state only so far. The transition path (`examples/
   run_ogjpn_tpi.py`) has been attempted and does not yet converge: it
   plateaus at a ~0.16% resource-constraint imbalance, and switching to

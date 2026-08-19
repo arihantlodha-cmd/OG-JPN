@@ -35,16 +35,20 @@ Follow OG-THA's `macro_params.py` if you want to pull these from an API
 
 ## 2. Finish the tax calibration (`ogjpn/tax_params.py`)
 
-- Done: consumption tax `tau_c = 0.10` (Japan since Oct 2019). Adding it
-  is what made the steady-state budget close with positive G.
-- To do: income and payroll effective/marginal tax rate functions. Japan
-  has no open tax microsimulator (the US models use Tax-Calculator), so
-  fit OG-Core's simpler tax functions to **published Japanese effective
-  tax rates** by age/income. Start with OG-Core's `tax_func_type="linear"`
-  or a low-order polynomial and target Japan's income-tax and social-
-  insurance revenue as a share of GDP (NTA / MOF / OECD Revenue
-  Statistics). Set `frac_tax_payroll` or `tau_payroll` for social
-  insurance contributions.
+- Done (first-pass): linear (constant-rate) tax functions from published
+  Japanese rates. Income tax ~8% average with a 30% marginal (NTA schedule
+  plus 10% local, OECD Taxing Wages effective rates), pension payroll
+  18.3%, capital income 20.315%, corporate ~30%, consumption 10%. This is
+  what makes the budget close with positive `G` at Japan's debt target,
+  where the US-default tax functions did not (see METHODOLOGY).
+- To do: replace the single average income-tax rate with Japan's actual
+  progression, using a low-order polynomial or `GS`/`mono` tax function
+  fit to effective rates across the income distribution (the piece a
+  microsimulator would give, so it needs the distribution behind the
+  OECD/NTA rates). Model the non-pension social insurance (health,
+  long-term care, employment) and set `frac_tax_payroll` accordingly.
+  Validate against Japan's income-tax and social-insurance revenue shares
+  of GDP (OECD Revenue Statistics).
 
 ## 3. Give back upstream (helps every future Japan run)
 

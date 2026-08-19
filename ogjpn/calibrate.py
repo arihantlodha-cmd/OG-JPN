@@ -9,8 +9,9 @@ other country models (OG-USA, OG-THA, OG-BRA).
 
 Phase status:
   - macro parameters: provisional first pass (ogjpn.macro_params)
-  - tax parameters: consumption tax set; income/payroll deferred
-    (ogjpn.tax_params)
+  - tax parameters: first-pass linear calibration of income, payroll,
+    capital, corporate, and consumption taxes from published Japanese
+    rates (ogjpn.tax_params)
   - demographics: live UN data by country code 392, requires a UN API
     token (see README); optional so the pipeline still runs without it
 """
@@ -37,7 +38,8 @@ class Calibration:
                 downloaded demographic data
         """
         self.macro_params = macro_params.get_macro_params()
-        self.tax_params = tax_params.get_tax_params()
+        # Size the linear income-tax arrays to the model's S age groups.
+        self.tax_params = tax_params.get_tax_params(p.S)
 
         self.demographic_params = None
         if use_demographics:
