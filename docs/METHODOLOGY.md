@@ -39,12 +39,12 @@ Solving the steady state and comparing to Japan's actual ratios:
 
 | Ratio | Model | Japan | |
 |---|---|---|---|
-| Interest rate `r` | 0.040 | ~0.01-0.04 | matches |
-| Pension outlays / GDP | 0.113 | ~0.10-0.11 | matches |
+| Interest rate `r` | 0.044 | ~0.01-0.04 | matches (top edge) |
+| Pension outlays / GDP | 0.114 | ~0.10-0.11 | matches |
 | Debt / GDP | 2.00 | ~2.1 | matches (at cap) |
-| Tax revenue / GDP | 0.259 | ~0.20-0.30 | matches |
-| Capital-output `K/Y` | 4.60 | ~3.0-3.5 (net) / ~5.4 (PWT) | consistent with PWT |
-| Consumption / GDP `C/Y` | 0.79 | ~0.53-0.55 | too high |
+| Revenue / GDP (incl. social) | 0.322 | ~0.376 (IMF total) | short by the property/other-tax gap |
+| Capital-output `K/Y` | 4.40 | ~3.0-3.5 (net) / ~5.4 (PWT) | consistent with PWT |
+| Consumption / GDP `C/Y` | 0.74 | ~0.53-0.55 | high, improving |
 
 **The fiscal and demographic side matches Japan.** These are the
 quantities driven by the real data in the calibration, and the closest
@@ -68,26 +68,28 @@ slightly low, not too high, and lowering `delta` toward a realistic value
 would only raise `K/Y` further, another way of seeing that this ratio is
 not the problem.
 
-**The consumption share runs high because government consumption
-collapses, and that traces to the revenue side.** `C/Y` (0.79 against
+**The consumption share runs high because government consumption is
+starved, and that traces to the revenue side.** `C/Y` (0.74 against
 ~0.53-0.55) is the one real-side miss, and reading the steady-state
 accounts shows exactly why. Investment is realistic (`I/Y` about 0.22), so
 the model is not over-saving. What is missing is government consumption:
-`G` is the residual that closes the budget, and it is squeezed to almost
-zero (`G/Y` about 0.001 against Japan's ~0.20). The output the government
-should be buying instead shows up as household consumption, inflating
-`C/Y` by almost exactly the missing `G` share. The cause is revenue, not
-the current account: the model collects 25.9% of GDP while Japan's general
-government takes 37.6% (IMF), and that 12-point gap is almost exactly the
-non-pension social insurance (health, long-term care, employment) the
-first-pass tax calibration leaves out. Pensions (11.3%), other transfers
-(10%), and debt service (4%) then consume nearly all of the undersized
-revenue, leaving nothing for `G`. Lowering the steady-state debt ratio from
-2.0 to 1.3 frees only about two points for `G`, so the debt basis is a
-minor lever; completing the revenue side is the fix, and it is the top
-calibration item. This is the same fiscal bind Japan resolves by
-borrowing, which a fixed-debt steady state cannot do. Every well-identified
-target (`r`, pension outlays, revenue, debt) matches.
+`G` is the residual that closes the budget, so when revenue falls short it
+is `G` that gets squeezed, and the output the government should be buying
+shows up as household consumption instead, inflating `C/Y`. The cause is
+revenue, not the current account. This was sharpest before the social
+insurance was added: with only the pension payroll tax, the model collected
+25.9% of GDP, `G` collapsed to almost zero (`G/Y` ~0.001), and `C/Y` was
+0.79. Adding the full social insurance (see the tax calibration) lifts
+revenue to 32.2%, restores `G` to about 5% of GDP, and brings `C/Y` down to
+0.74. The remaining gap is the rest of Japan's revenue: its general
+government takes 37.6% of GDP (IMF), and the last five points are property
+and other taxes that OG-Core does not represent, so `G` cannot reach
+Japan's ~0.20 and `C/Y` cannot fully close. A separate check confirmed the
+debt basis is a minor lever: lowering the steady-state debt ratio from 2.0
+to 1.3 frees only about two points for `G`. This is the same fiscal bind
+Japan resolves by borrowing, which a fixed-debt steady state cannot do.
+Every well-identified target (`r`, pension outlays, debt) matches, and
+revenue is now short only by the tax bases the model lacks.
 
 ## Findings along the way
 

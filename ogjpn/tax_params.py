@@ -18,11 +18,12 @@ Sources (all real, retrieved 2026-08):
     deductions: OECD Taxing Wages 2025 puts the net average tax rate for a
     single worker at the average wage at 22.0%, of which roughly 15 points
     are employee social insurance, leaving income tax alone near 7-8%.
-  - Employee social insurance (payroll): employees' pension insurance is
-    18.30% of remuneration (Japan Pension Service), the piece OG-Core's
-    payroll tax funds; health, long-term care, and employment insurance
-    add roughly another 11 points combined and are left aside in this
-    first pass.
+  - Social insurance (payroll on labor): the full combined contribution is
+    about 30% of remuneration (Japan Pension Service / MHLW): pension 18.3%,
+    health ~10%, long-term care ~1.6% (age 40+), employment ~0.9%, with
+    employer and employee sides both borne by labor. OG-Core's payroll tax
+    revenue funds general government rather than an earmarked pension pot,
+    so all of it correctly finances spending.
   - Capital income: listed dividends, interest, and share capital gains
     are taxed at a flat 20.315% (15% national + 5% local + 0.315%
     reconstruction surtax) (PwC Worldwide Tax Summaries: Japan).
@@ -30,17 +31,27 @@ Sources (all real, retrieved 2026-08):
     plus local corporate, inhabitant, and enterprise taxes) (PwC / JETRO).
 
 What is still first-pass: the income tax is treated as a single average
-effective rate with a separate constant marginal rate, rather than the
-full progressive schedule, and the non-pension social insurance and
-frac_tax_payroll split are not yet modeled. Refining these needs the
-income distribution behind the effective rates, the natural next step.
+effective rate with a separate constant marginal rate, rather than the full
+progressive schedule (refining it needs the income distribution behind the
+published effective rates). The social insurance contribution cap and the
+frac_tax_payroll split are not modeled. Even with the full social insurance
+in place, model revenue reaches about 32% of GDP against Japan's 37.6%,
+because Japan raises roughly ten points of GDP in property and other taxes
+that OG-Core does not represent.
 """
 
 # Japan effective/marginal tax rates as constant (linear) tax functions.
 ETR_INCOME = 0.08  # average effective personal income tax on total income
 MTR_LABOR = 0.30  # marginal on labor income (20% national + 10% local band)
 MTR_CAPITAL = 0.20315  # flat tax on listed financial income (real)
-TAU_PAYROLL = 0.183  # employees' pension insurance rate (real)
+# Combined social insurance on labor, ~30%: employees' pension 18.3% +
+# health ~10.0% + long-term care ~0.8% (age 40+, blended) + employment
+# ~0.9% (Japan Pension Service / MHLW, employer+employee, labor bears both).
+# Payroll-tax revenue in OG-Core funds general government, not an earmarked
+# pension pot, so the non-pension pieces correctly finance government
+# spending. The contribution cap is not modeled, which overstates the rate
+# for high earners.
+TAU_PAYROLL = 0.30
 CIT_RATE = 0.30  # effective combined corporate income tax rate (real)
 TAU_C = 0.10  # consumption tax since October 2019 (real)
 
