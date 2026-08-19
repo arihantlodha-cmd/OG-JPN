@@ -34,10 +34,13 @@ What is still first-pass: the income tax is treated as a single average
 effective rate with a separate constant marginal rate, rather than the full
 progressive schedule (refining it needs the income distribution behind the
 published effective rates). The social insurance contribution cap and the
-frac_tax_payroll split are not modeled. Even with the full social insurance
-in place, model revenue reaches about 32% of GDP against Japan's 37.6%,
-because Japan raises roughly ten points of GDP in property and other taxes
-that OG-Core does not represent.
+frac_tax_payroll split are not modeled. Model revenue reaches about 32% of
+GDP against Japan's 37.6%. Japan's property tax (Fixed Asset plus City
+Planning Tax, ~2% of GDP) could be added through OG-Core's wealth tax
+(p_wealth), and doing so raises revenue to ~34% and trims C/Y, but it makes
+the consumption-tax reform experiment fail to converge, so it is deferred
+until that solver interaction is understood. The rest of the gap is
+inheritance and other minor taxes not modeled here.
 """
 
 # Japan effective/marginal tax rates as constant (linear) tax functions.
@@ -93,7 +96,7 @@ def get_tax_params(num_ages=80):
         "etr_params": _linear_params(ETR_INCOME, num_ages),
         "mtrx_params": _linear_params(MTR_LABOR, num_ages),
         "mtry_params": _linear_params(MTR_CAPITAL, num_ages),
-        # Payroll (pension) tax and corporate income tax.
+        # Payroll (social insurance) tax and corporate income tax.
         "tau_payroll": [TAU_PAYROLL],
         "cit_rate": [[CIT_RATE]],
         # Consumption tax: 10% since October 2019.

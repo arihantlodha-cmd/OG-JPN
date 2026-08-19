@@ -27,7 +27,7 @@ The calibration is a thin layer over OG-Core, assembled by
 | Consumption tax | Japan's 10% rate (since Oct 2019) | **real** |
 | Productivity growth | ~0.8%/yr, consistent with IMF real GDP growth | grounded |
 | Capital share (`gamma`) | Penn World Table labor share for Japan, `gamma = 1 - 0.568 = 0.43` (FRED `LABSHPJPA156NRUG`, 2013-2023 mean) | **real data** |
-| Income / payroll / capital / corporate taxes | Linear (constant-rate) tax functions from published rates: income tax ~8% average with a 30% marginal (NTA schedule, OECD Taxing Wages), pension payroll 18.3%, capital 20.315%, corporate ~30% | **real data** (first-pass linear form) |
+| Income / payroll / capital / corporate taxes | Linear tax functions from published rates: income ~8% average with 30% marginal (NTA, OECD Taxing Wages), social insurance 30% (pension + health + care + employment), capital 20.315%, corporate ~30% | **real data** (first-pass linear form) |
 
 Live UN demographics require a free UN Data Portal API token (see the main
 README); the model then pulls Japan's fertility, mortality, and population
@@ -44,7 +44,7 @@ Solving the steady state and comparing to Japan's actual ratios:
 | Debt / GDP | 2.00 | ~2.1 | matches (at cap) |
 | Revenue / GDP (incl. social) | 0.322 | ~0.376 (IMF total) | short by the property/other-tax gap |
 | Capital-output `K/Y` | 4.40 | ~3.0-3.5 (net) / ~5.4 (PWT) | consistent with PWT |
-| Consumption / GDP `C/Y` | 0.74 | ~0.53-0.55 | high, improving |
+| Consumption / GDP `C/Y` | 0.74 | ~0.53-0.55 | high; ceiling set by Japan's deficit |
 
 **The fiscal and demographic side matches Japan.** These are the
 quantities driven by the real data in the calibration, and the closest
@@ -79,17 +79,24 @@ shows up as household consumption instead, inflating `C/Y`. The cause is
 revenue, not the current account. This was sharpest before the social
 insurance was added: with only the pension payroll tax, the model collected
 25.9% of GDP, `G` collapsed to almost zero (`G/Y` ~0.001), and `C/Y` was
-0.79. Adding the full social insurance (see the tax calibration) lifts
-revenue to 32.2%, restores `G` to about 5% of GDP, and brings `C/Y` down to
-0.74. The remaining gap is the rest of Japan's revenue: its general
-government takes 37.6% of GDP (IMF), and the last five points are property
-and other taxes that OG-Core does not represent, so `G` cannot reach
-Japan's ~0.20 and `C/Y` cannot fully close. A separate check confirmed the
-debt basis is a minor lever: lowering the steady-state debt ratio from 2.0
-to 1.3 frees only about two points for `G`. This is the same fiscal bind
-Japan resolves by borrowing, which a fixed-debt steady state cannot do.
-Every well-identified target (`r`, pension outlays, debt) matches, and
-revenue is now short only by the tax bases the model lacks.
+0.79. Adding the full social insurance lifted revenue to 32.2%, restored `G`
+to about 5% of GDP, and brought `C/Y` down to 0.74. Adding Japan's property
+tax through OG-Core's wealth tax closes a couple more points of revenue, but
+it makes the consumption-tax reform experiment fail to converge, so it is
+deferred (see the tax calibration) rather than shipped at the cost of the
+policy result.
+
+There is a real ceiling, though, and it is not the model's fault: it is
+Japan's deficit. Japan's general government spends about 39.1% of GDP and
+takes in 37.6% (IMF), funding the ~1.5-point gap by borrowing. A fixed-debt
+steady state has to balance, so it cannot reproduce a government that spends
+more than it collects. Even with the revenue side essentially complete, `G`
+therefore stays below Japan's ~0.20 and `C/Y` stays above ~0.55; the
+residual gap is Japan's structural deficit, which a balanced steady state
+cannot represent by construction. A separate check confirmed the debt basis
+is only a minor lever (lowering the steady-state debt ratio 2.0 to 1.3 frees
+about two points for `G`). Every well-identified target (`r`, pension
+outlays, debt) matches.
 
 ## Findings along the way
 
