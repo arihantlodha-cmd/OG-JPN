@@ -104,10 +104,11 @@ def main():
         "against a fiscal gap where pension outlays alone are already "
         f"{b_pen:.1%} of GDP.\n\n"
         "The magnitudes are indicative, not final. This is a comparison of "
-        "two steady states, which is robust to the level miss in K/Y and "
-        "C/Y (see docs/METHODOLOGY.md) because both sides carry the same "
-        "miss, but the tax side is still first-pass, so the honest reading "
-        "is the direction and rough size, not the last digit."
+        "two steady states, which is robust to the level miss in C/Y (see "
+        "docs/METHODOLOGY.md; K/Y is roughly consistent with the Penn World "
+        "Table benchmark) because both sides carry the same calibration, "
+        "but the tax side is still first-pass, so the honest reading is the "
+        "direction and rough size, not the last digit."
     )
     table = "\n".join(
         [f"# {title}", "", caption, "", header, sep, *rows, "", interpretation, ""]

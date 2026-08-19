@@ -43,7 +43,7 @@ Solving the steady state and comparing to Japan's actual ratios:
 | Pension outlays / GDP | 0.113 | ~0.10-0.11 | matches |
 | Debt / GDP | 2.00 | ~2.1 | matches (at cap) |
 | Tax revenue / GDP | 0.259 | ~0.20-0.30 | matches |
-| Capital-output `K/Y` | 4.60 | ~3.0-3.5 | too high |
+| Capital-output `K/Y` | 4.60 | ~3.0-3.5 (net) / ~5.4 (PWT) | consistent with PWT |
 | Consumption / GDP `C/Y` | 0.79 | ~0.53-0.55 | too high |
 
 **The fiscal and demographic side matches Japan.** These are the
@@ -52,21 +52,29 @@ result is the one nobody told the model: fed only Japan's age structure,
 it reproduces a public pension burden of ~11-12% of GDP, close to Japan's
 actual figure.
 
-**The real-side ratios are too high, for understandable reasons.** In the
-model's steady state, `K/Y = gamma / (r + delta)` exactly, so the
-capital-output ratio is pinned by the capital share, the return on
-capital, and depreciation. Grounding `gamma` in the Penn World Table
-raised it from the earlier 0.38 first-pass to the actual 0.43, which
-pushed `K/Y` from 4.42 up to 4.68. That is worth stating plainly: the
-correctly sourced, higher capital share widens the `K/Y` overshoot rather
-than closing it, which localizes the miss. The overshoot is not a `gamma`
-artifact (the earlier lower value was partly masking it); it is structural,
-the closed-economy over-accumulation of capital given Japan's high saving
-and low return, so the fix belongs in `delta` and the open-economy margin,
-not in understating the capital share. Every well-identified target (`r`,
-pension outlays, revenue, debt) still matches after the change. The high
-`C/Y` partly reflects the same closed-economy structure, since Japan runs
-large current-account surpluses with low domestic investment.
+**The capital-output ratio is not the miss it first looks like.** In the
+model's steady state, `K/Y = gamma / (r + delta)` exactly, an identity
+from the firm's optimization, so a low return and a high capital share
+together force a high `K/Y`. Japan has exactly that combination, and both
+inputs here are real: the model's `r` (0.040) sits in Japan's actual range
+and `gamma` (0.43) is the Penn World Table capital share. So `K/Y` near 4.6
+is not a free parameter to tune down; it is what the identity requires.
+The `~3.0-3.5` figure often quoted for Japan uses a narrow net-capital
+concept. Measured the same way `gamma` was, from the Penn World Table
+(capital stock `rnna` over real GDP `rgdpna`, FRED `RKNANPJPA666NRUG` and
+`RGDPNAJPA666NRUG`), Japan's capital-output ratio is about 5.4 in recent
+years. Against that source-consistent benchmark the model's 4.6 is
+slightly low, not too high, and lowering `delta` toward a realistic value
+would only raise `K/Y` further, another way of seeing that this ratio is
+not the problem.
+
+**The consumption share is the ratio that genuinely runs high.** `C/Y`
+(0.79 against ~0.53-0.55) reflects the closed-economy structure: with a
+shrinking workforce, less gross investment is needed to sustain the high
+capital stock, so more output flows to consumption than in an open economy
+where Japan's surplus savings go abroad. Bringing this down is the
+open-economy calibration on the roadmap. Every well-identified target
+(`r`, pension outlays, revenue, debt) matches.
 
 ## Findings along the way
 
@@ -99,7 +107,9 @@ check that the tax side, not just the demographics, now belongs to Japan.
   calibration-consistency issue rather than solver tuning. A converged
   transition needs the same preference/production/fiscal calibration the
   steady-state validation points to.
-- `K/Y` and `C/Y` need preference/production calibration (see above).
+- `C/Y` runs high and needs the open-economy calibration (see above);
+  `K/Y` is roughly consistent with the source-matched PWT benchmark and is
+  not a target for tuning.
 - Demographics are common across lifetime-income groups; adding Japan's
   income-mortality gradient is a natural next step, though the standard
   developing-country gradient rule extrapolates poorly to a rich,
