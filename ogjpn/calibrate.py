@@ -16,10 +16,11 @@ Phase status:
 """
 
 import numpy as np
-
 from ogcore import demographics
+
 from ogjpn import macro_params, tax_params
 from ogjpn.constants import UN_COUNTRY_CODE
+
 
 class Calibration:
     """OG-Japan calibration built on top of an OG-Core Specifications."""

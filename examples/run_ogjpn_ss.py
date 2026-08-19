@@ -13,14 +13,14 @@ demographics and clearly says so.
 """
 
 import os
-import numpy as np
 
-from ogcore.parameters import Specifications
-from ogcore.execute import runner
+import numpy as np
 from ogcore import utils
+from ogcore.execute import runner
+from ogcore.parameters import Specifications
 
 from ogjpn import calibrate
-from ogjpn.constants import START_YEAR, COUNTRY_NAME
+from ogjpn.constants import COUNTRY_NAME, START_YEAR
 
 
 def main(output_base="/tmp/ogjpn_phase0"):

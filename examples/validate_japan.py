@@ -5,11 +5,11 @@ values. This is a sanity check on the calibration, not a policy run.
 """
 
 import os
-import numpy as np
 
-from ogcore.parameters import Specifications
-from ogcore.execute import runner
+import numpy as np
 from ogcore import utils
+from ogcore.execute import runner
+from ogcore.parameters import Specifications
 
 from ogjpn import calibrate
 from ogjpn.constants import START_YEAR
