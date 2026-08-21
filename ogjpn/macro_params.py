@@ -58,11 +58,26 @@ def get_macro_params():
     macro_parameters["debt_ratio_ss"] = 2.0
     macro_parameters["initial_debt_ratio"] = 2.0
 
-    # Government consumption spending as a share of GDP. Japan's general
-    # government final consumption is ~20% of GDP -- about half of the
-    # 39.1% total expenditure (IMF), the rest being pensions, other
-    # transfers, interest, and investment.
-    macro_parameters["alpha_G"] = [0.20]
+    # Government consumption spending as a share of GDP. Japan's headline
+    # general government final consumption is ~20% of GDP, but that national-
+    # accounts figure is not the right number for this parameter, and using
+    # it breaks the transition. OG-Core books public pensions
+    # (agg_pension_outlays, ~11% here) and other transfers (alpha_T, 10%)
+    # separately, so alpha_G is only the residual government PURCHASES of
+    # goods after those, and much of Japan's measured "government consumption"
+    # is in-kind health and long-term care that overlaps the social-insurance
+    # transfers already modeled. The value that closes the government budget
+    # at debt_ratio_ss, given the model's revenue (~32% of GDP) and the
+    # separately-modeled pensions and transfers, is about 5.4% of GDP -- and
+    # that is exactly the G/Y the steady state produces as a residual. The
+    # transition must run the SAME fiscal policy as the steady state it
+    # converges to: before the debt-closure rule engages (t < tG1) the
+    # transition sets G = alpha_G * Y directly, so an alpha_G of 0.20 would
+    # make the economy spend ~4x the sustainable level for 20 periods,
+    # exploding debt and forcing the closure rule to demand negative G later.
+    # That inconsistency, not solver tuning, is why the transition would not
+    # converge. Setting alpha_G to the steady-state residual share removes it.
+    macro_parameters["alpha_G"] = [0.054]
 
     # Government non-pension transfers as a share of GDP. Estimated from
     # the composition of the 39.1% total (consumption ~20, public pensions
