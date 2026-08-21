@@ -122,13 +122,27 @@ check that the tax side, not just the demographics, now belongs to Japan.
   progressive schedule; the non-pension social insurance and the
   `frac_tax_payroll` split are not yet modeled. Sharpening this needs the
   income distribution behind the published effective rates.
-- Results are steady-state only so far. The transition path (`examples/
-  run_ogjpn_tpi.py`) has been attempted and does not yet converge: it
-  plateaus at a ~0.16% resource-constraint imbalance, and switching to
-  Anderson acceleration lands on the same value, so it is a
-  calibration-consistency issue rather than solver tuning. A converged
-  transition needs the same preference/production/fiscal calibration the
-  steady-state validation points to.
+- The transition path (`examples/run_ogjpn_tpi.py`) now converges. It had
+  not, and the cause turned out to be a fiscal-block inconsistency rather
+  than solver tuning. Government consumption `alpha_G` had been set to
+  Japan's headline national-accounts share (~20% of GDP), but before the
+  debt-closure rule engages the transition sets `G = alpha_G * Y` directly,
+  and that is about four times what the government budget can sustain at the
+  model's revenue and Japan's debt target -- so debt exploded in the first
+  twenty periods and the closure rule could not pull it back. Setting
+  `alpha_G` to the steady-state residual share (~5.4% of GDP, exactly the
+  `G/Y` the steady state produces) makes the transition run the same fiscal
+  policy as the steady state it converges to. With that, the outer loop
+  reaches its 1e-5 tolerance in about thirteen iterations and the debt ratio
+  holds at ~2.004 across the whole path. The steady-state validation above
+  is unchanged, because steady-state `G` is a residual and never used
+  `alpha_G`. One residual remains: the resource constraint holds to ~1e-7 at
+  every period except the second, where a single localized ~1.8e-3 spike
+  survives -- an initial-condition artifact of starting from the terminal
+  steady state's wealth distribution scaled to the initial population rather
+  than Japan's observed one. It does not propagate and cancels in policy
+  differencing; closing it is the open item before the transition policy
+  experiment ships.
 - `C/Y` runs high and needs the open-economy calibration (see above);
   `K/Y` is roughly consistent with the source-matched PWT benchmark and is
   not a target for tuning.
