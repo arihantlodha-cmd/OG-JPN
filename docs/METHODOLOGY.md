@@ -164,12 +164,28 @@ robust to the `K/Y` and `C/Y` level miss because both sides carry it; the
 tax side is still first-pass, so it is a direction-and-rough-size result.
 Regenerate it with `examples/analysis_consumption_tax.py`.
 
+The transition-path version of the same experiment is now done as well
+([`results_consumption_tax_tpi.md`](results_consumption_tax_tpi.md),
+`examples/analysis_consumption_tax_tpi.py`): it solves Japan's baseline and
+reform transitions on real demographics, traces the aggregates year by year
+as the reform phases in, and reports the net present value of the revenue
+gain over the first decade. The transition adds what the steady-state
+comparison cannot: it shows the capital stock accumulating over the horizon
+as the higher consumption tax tilts households toward saving.
+
 ## Roadmap
 
 1. Calibrate preferences/production to Japan's `K/Y` and `C/Y`.
 2. Fit the income/payroll tax functions to Japanese data.
-3. Run the same policy experiment on the transition path (needs the
-   transition to converge, which follows from 1 and 2) and report the NPV
-   of the change with the `npv_table` added upstream in OG-Core #1195. The
-   steady-state version above is the first half of this.
-4. Add income-group demographic gradients from Japanese data.
+3. Done: the same policy experiment now runs on the transition path
+   (`examples/analysis_consumption_tax_tpi.py`, written up in
+   [`results_consumption_tax_tpi.md`](results_consumption_tax_tpi.md)),
+   reporting the year-by-year paths and the NPV of the revenue change with
+   the `npv_table` from OG-Core #1195. It shows what the steady-state
+   comparison could not: the capital stock building up over the horizon as
+   the consumption tax shifts households toward saving.
+4. Sharpen the transition's initial condition (see Known limitations): give
+   OG-Core a hook for a custom initial wealth distribution and feed it
+   Japan's observed wealth-by-age data, which removes the one residual t=2
+   resource-constraint artifact.
+5. Add income-group demographic gradients from Japanese data.
