@@ -27,7 +27,7 @@ sourced figure. Mapping of OG-Core parameter -> what to look up -> source:
 | `g_y_annual` | long-run real GDP-per-worker growth | OECD productivity, or World Bank GDP-per-capita growth trend |
 | `gamma` | capital share of income | Penn World Table (1 - labor share) for Japan |
 | `initial_debt_ratio` | govt debt / GDP at start | IMF WEO (net general govt debt ~1.5; gross ~2.5) |
-| `alpha_G` | govt consumption / GDP | OECD govt final consumption / GDP (~0.20) |
+| `alpha_G` | govt purchases / GDP | NOT the ~0.20 national-accounts figure: this is residual purchases after pensions and transfers, and must equal the steady-state `G/Y` (~0.054) or the transition breaks (see item 4) |
 | `alpha_T` | non-pension transfers / GDP | OECD social spending less public pensions, / GDP |
 
 Follow OG-THA's `macro_params.py` if you want to pull these from an API
@@ -60,13 +60,48 @@ Follow OG-THA's `macro_params.py` if you want to pull these from an API
    countries, so Japan works offline like they do. You can generate these
    from the UN API once you have the token.
 
-## 4. Known issue: slow convergence
+## 4. Transition path: converges, with one open refinement
 
-With the current parameters the steady state converges but sits in a long
-outer-loop plateau first (it can look hung for minutes). If that bites,
-try a lower `nu` (more damping) or `SS_root_method` / Anderson
-acceleration. This is the same class of problem as OG-Core PR #1178
-(TPI stall detection).
+The baseline transition converges (`examples/run_ogjpn_tpi.py`). The
+blocker was a fiscal-block inconsistency, not solver tuning: `alpha_G` was
+set to Japan's ~20% national-accounts government consumption, but before
+the debt-closure rule engages the transition spends `G = alpha_G * Y`
+directly, about four times what the budget can sustain, so debt exploded.
+Setting `alpha_G` to the steady-state residual share (~0.054) fixed it (see
+METHODOLOGY and item 1). The outer loop now reaches its 1e-5 tolerance in
+about thirteen iterations and debt holds near 2.0 across the path.
+
+Open refinement (the initial wealth distribution). The resource constraint
+holds to ~1e-7 at every period except the second, where a single localized
+~1.8e-3 spike survives. It is Japan-specific: a plain OG-Core baseline is
+clean there. The cause is the initial condition. OG-Core seeds a baseline
+transition from the terminal steady state's wealth-by-age profile scaled to
+the initial population (`TPI.get_initial_SS_values`, the `initial_b` line),
+and Japan's terminal stable population differs so sharply from today's that
+the proxy is a poor starting distribution, surfacing as one seam at the
+start. It does not propagate and cancels in reform-minus-baseline
+differences, so policy results are unaffected.
+
+Eliminating it properly is a two-part contribution, scoped here as a
+follow-up:
+
+1. **Upstream OG-Core feature.** Add a way to inject a custom initial
+   wealth distribution into a baseline transition. Today there is no hook:
+   `initial_b` is always derived from the SS inside
+   `get_initial_SS_values`, and the only `initial_*` parameters are for
+   debt, foreign debt, and solver guesses. A clean design is an optional
+   `initial_b_distribution` parameter (S x J, defaulting to the current
+   SS-derived behavior when unset) so every country model can pass an
+   observed distribution. This is a self-contained PR in the same spirit as
+   the earlier OG-Core contributions.
+2. **Japan wealth-by-age data.** Feed that hook Japan's observed household
+   net worth by age of head, published in the National Survey of Family
+   Income and Expenditure (全国家計構造調査, formerly 全国消費実態調査,
+   Statistics Bureau). Map it onto the model's S ages and J lifetime-income
+   groups.
+
+Until then the transition is used as-is for policy (item 5), which is
+valid because the artifact differences out.
 
 ## 5. After Phases 1 and 2: the payoff (Phase 3)
 
@@ -75,11 +110,16 @@ Japan's consumption tax at 10% (actual), 12%, and 15% (the IMF's
 recommendation) and compares the steady states on real demographics. The
 writeup is `docs/results_consumption_tax.md`.
 
-Still to do: run the same reform on the transition path (once it
-converges, see item 4 and the K/Y and C/Y calibration) and use the
-`npv_table` added to OG-Core (#1195) to report the NPV of the change in
-GDP. Other reforms worth the same treatment: a higher retirement age or a
-pension-replacement-rate change.
+Done (transition version): `examples/analysis_consumption_tax_tpi.py` runs
+the same reform on the transition path and reports the year-by-year paths
+plus the NPV of the revenue change via OG-Core's `npv_table` (#1195). The
+writeup is `docs/results_consumption_tax_tpi.md`. It shows the capital stock
+building up over the horizon as the consumption tax tilts households toward
+saving, which the steady-state comparison could not.
+
+Still to do: the initial-condition refinement in item 4 (removes the one
+residual t=2 artifact), and other reforms worth the same treatment, such as
+a higher retirement age or a pension-replacement-rate change.
 
 ## How to run
 
