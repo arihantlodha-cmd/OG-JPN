@@ -117,9 +117,16 @@ writeup is `docs/results_consumption_tax_tpi.md`. It shows the capital stock
 building up over the horizon as the consumption tax tilts households toward
 saving, which the steady-state comparison could not.
 
+Done (second reform, steady-state): `examples/analysis_retirement_age.py`
+raises Japan's pension eligibility age from 65 to 68 and 70 and compares the
+steady states. The writeup is `docs/results_retirement_age.md`. It takes
+almost two points of GDP off the public pension burden at age 70 (11.4% to
+9.5%), with labor up and output roughly flat.
+
 Still to do: the initial-condition refinement in item 4 (removes the one
-residual t=2 artifact), and other reforms worth the same treatment, such as
-a higher retirement age or a pension-replacement-rate change.
+residual t=2 artifact); the transition-path version of the retirement-age
+reform; and a pension-replacement-rate change (Japan's macro-economic slide,
+マクロ経済スライド).
 
 ## How to run
 
