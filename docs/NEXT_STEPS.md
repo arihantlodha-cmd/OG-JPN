@@ -128,16 +128,20 @@ year and the NPV of the saving; it also shows capital building up over the
 horizon, the same transition feature the consumption-tax reform showed and
 the opposite of what the steady-state end-point comparison suggested.
 
-Done (third reform, steady-state): `examples/analysis_replacement_rate.py`
+Done (third reform, both versions): `examples/analysis_replacement_rate.py`
 cuts the pension replacement rate by 10% and 20% (Japan's macro-economic
-slide, マクロ経済スライド), in `docs/results_replacement_rate.md`. It is the
-benefit-cut counterpart to the retirement-age reform and produces the same
-signature: the pension bill falls (11.4% of GDP to 10.3% and 9.1%), labor
-rises, and capital edges down in the steady-state comparison.
+slide, マクロ経済スライド), in `docs/results_replacement_rate.md`; the pension
+bill falls (11.4% of GDP to 10.3% and 9.1%), labor rises, and capital edges
+down in the steady-state comparison. The transition version
+(`examples/analysis_replacement_rate_tpi.py`,
+`docs/results_replacement_rate_tpi.md`) traces the pension saving year by
+year with its NPV and, like the other two transitions, shows capital building
+up over the horizon rather than down. All three reforms (consumption tax,
+retirement age, replacement rate) now have both a steady-state and a
+transition writeup.
 
 Still to do: the initial-condition refinement in item 4 (removes the one
-residual t=2 artifact); and the transition-path versions of the
-replacement-rate reform. OG-Core now has the hook for item 4 on the
+residual t=2 artifact). OG-Core now has the hook for item 4 on the
 `custom-initial-wealth-dist` branch (a supplied initial wealth distribution);
 pairing it with Japan's observed wealth-by-age data is what closes the
 artifact.
