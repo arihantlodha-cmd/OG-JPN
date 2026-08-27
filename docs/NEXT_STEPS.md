@@ -85,20 +85,17 @@ differences, so policy results are unaffected.
 Eliminating it properly is a two-part contribution, scoped here as a
 follow-up:
 
-1. **Upstream OG-Core feature.** Add a way to inject a custom initial
-   wealth distribution into a baseline transition. Today there is no hook:
-   `initial_b` is always derived from the SS inside
-   `get_initial_SS_values`, and the only `initial_*` parameters are for
-   debt, foreign debt, and solver guesses. A clean design is an optional
-   `initial_b_distribution` parameter (S x J, defaulting to the current
-   SS-derived behavior when unset) so every country model can pass an
-   observed distribution. This is a self-contained PR in the same spirit as
-   the earlier OG-Core contributions.
+1. **Upstream OG-Core feature.** Done and submitted: OG-Core PR #1209 adds
+   a `use_initial_b_dist` flag and an `initial_b_dist` (S x J) array so a
+   country model can supply an observed initial wealth distribution. When
+   the flag is off (default) `get_initial_SS_values` reproduces the old
+   SS-derived `initial_b` exactly; when on it takes the shape from
+   `initial_b_dist` and still rescales the aggregate to the steady-state B.
 2. **Japan wealth-by-age data.** Feed that hook Japan's observed household
    net worth by age of head, published in the National Survey of Family
    Income and Expenditure (全国家計構造調査, formerly 全国消費実態調査,
    Statistics Bureau). Map it onto the model's S ages and J lifetime-income
-   groups.
+   groups. This is the remaining piece once #1209 lands.
 
 Until then the transition is used as-is for policy (item 5), which is
 valid because the artifact differences out.
@@ -141,10 +138,32 @@ retirement age, replacement rate) now have both a steady-state and a
 transition writeup.
 
 Still to do: the initial-condition refinement in item 4 (removes the one
-residual t=2 artifact). OG-Core now has the hook for item 4 on the
-`custom-initial-wealth-dist` branch (a supplied initial wealth distribution);
-pairing it with Japan's observed wealth-by-age data is what closes the
-artifact.
+residual t=2 artifact). OG-Core now has the hook for item 4 submitted as
+PR #1209 (a supplied initial wealth distribution); pairing it with Japan's
+observed wealth-by-age data is what closes the artifact.
+
+## 6. The income anchor is still US-based (needed for currency output)
+
+Found while wiring up OG-Core's `npv_table` currency option: OG-JPN never
+sets `mean_income_data`, so it inherits OG-Core's US default (about
+$58,645). `factor = mean_income_data / average_income_model` therefore
+anchors the model to US dollars, not yen, so NPVs and any other
+currency-denominated output cannot simply be relabeled as yen. Two
+consequences:
+
+- To report results in yen, set `mean_income_data` to Japan's mean income
+  from a published source (for example the National Tax Agency 民間給与実態
+  統計調査 average annual salary, or the MHLW 国民生活基礎調査 mean household
+  income), with the year and figure documented.
+- `factor` feeds the pension replacement rate `theta`, and the default
+  pension benefit formula (US Social Security bend points) is dollar-
+  denominated, so changing the anchor by the roughly 78x dollar-to-yen
+  scale would flow into the pension block. The current pension result
+  (outlays about 11.4% of GDP, which matches Japan) is produced with the
+  US anchor and the US benefit formula, so switching to a yen anchor
+  requires calibrating Japan's actual pension formula and re-validating,
+  not just changing one number. Treat the currency output as a real
+  calibration task, not a relabel.
 
 ## How to run
 
