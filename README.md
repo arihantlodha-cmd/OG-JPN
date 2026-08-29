@@ -44,6 +44,8 @@ Japanese demographics:
 | [Pension age 65 to 70](docs/results_retirement_age.md) | pension bill from 11.4 to 9.5 percent of GDP, labor up |
 | [Replacement-rate cut 10 and 20 percent](docs/results_replacement_rate.md) | pension bill from 11.4 to 9.1 percent, labor up |
 
+![Long-run effects of three fiscal reforms](docs/policy_results.png)
+
 The transition versions (the `*_tpi.md` docs) add what a steady-state
 comparison cannot: the year-by-year path and the net present value of the
 change. Across all three, one result is consistent and was invisible to the
