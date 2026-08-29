@@ -1,11 +1,17 @@
 """
-Basic tests for the OG-JPN calibration scaffolding.
+Tests for the OG-JPN calibration.
 
-These do not require network access or a model solve; they check that the
-calibration modules are wired correctly and return sane parameter values.
+Most of these do not require network access or a model solve; they check
+that the calibration modules are wired correctly and return the sourced
+parameter values. A couple guard specific values whose being wrong has
+broken the model before, so they are regression tests as much as sanity
+checks.
 """
 
-from ogjpn import constants, macro_params, tax_params
+import numpy as np
+import pytest
+
+from ogjpn import calibrate, constants, macro_params, tax_params
 
 
 def test_country_code_is_japan():
@@ -13,22 +19,116 @@ def test_country_code_is_japan():
     assert constants.COUNTRY_ABBR == "JPN"
 
 
+# ---------------------------------------------------------------- macro ----
+
+
 def test_macro_params_keys_and_ranges():
     m = macro_params.get_macro_params()
     for key in [
         "g_y_annual",
         "gamma",
+        "debt_ratio_ss",
         "initial_debt_ratio",
         "alpha_G",
         "alpha_T",
     ]:
         assert key in m
-    # sanity ranges (provisional values must at least be plausible)
     assert 0.0 < m["g_y_annual"] < 0.05
     assert 0.0 < m["initial_debt_ratio"] < 3.0
     assert 0.0 < m["gamma"][0] < 1.0
 
 
+def test_capital_share_matches_penn_world_table():
+    # gamma = 1 - labor share (0.568) from the Penn World Table for Japan.
+    assert macro_params.get_macro_params()["gamma"] == [0.43]
+
+
+def test_debt_ratios_set_explicitly_and_equal():
+    # Both the steady-state and initial debt ratios must be set (the SS one
+    # governs the steady state; the initial one only sets where the
+    # transition starts), and Japan's debt is stable at its high level, so
+    # they are both the 2.0 cap.
+    m = macro_params.get_macro_params()
+    assert m["debt_ratio_ss"] == 2.0
+    assert m["initial_debt_ratio"] == 2.0
+
+
+def test_alpha_G_is_the_steady_state_residual_not_national_accounts():
+    """Regression guard. alpha_G is government PURCHASES as a share of GDP,
+    which in this model is the residual after the separately-modeled
+    pensions and transfers, about 5.4% of GDP. It is NOT Japan's ~20%
+    national-accounts government-consumption figure: before the debt-closure
+    rule engages the transition spends G = alpha_G * Y directly, so 0.20
+    makes the economy spend roughly four times the sustainable level for
+    twenty periods, debt explodes, and the transition fails to converge.
+    """
+    alpha_G = macro_params.get_macro_params()["alpha_G"][0]
+    assert alpha_G == pytest.approx(0.054, abs=0.005)
+    assert alpha_G < 0.10  # must not be the ~0.20 national-accounts value
+
+
+# ------------------------------------------------------------------ tax ----
+
+
 def test_consumption_tax_is_ten_percent():
     # Japan's consumption tax has been 10% since October 2019.
     assert tax_params.get_tax_params()["tau_c"] == [[0.10]]
+
+
+def test_tax_rates_match_sourced_values():
+    assert tax_params.ETR_INCOME == 0.08  # avg effective personal income tax
+    assert tax_params.MTR_LABOR == 0.30  # 20% national + 10% local band
+    assert tax_params.MTR_CAPITAL == 0.20315  # flat tax on financial income
+    assert tax_params.TAU_PAYROLL == 0.30  # full social insurance on labor
+    assert tax_params.CIT_RATE == 0.30  # effective combined corporate rate
+
+
+def test_tax_functions_are_linear_with_correct_shapes():
+    S = 80
+    t = tax_params.get_tax_params(S)
+    assert t["tax_func_type"] == "linear"
+    assert t["tau_payroll"] == [0.30]
+    assert t["cit_rate"] == [[0.30]]
+    for key, rate in [
+        ("etr_params", 0.08),
+        ("mtrx_params", 0.30),
+        ("mtry_params", 0.20315),
+    ]:
+        arr = np.array(t[key])
+        # linear tax functions are one coefficient per age and one year
+        assert arr.shape == (1, S, 1)
+        assert np.all(arr == rate)
+
+
+def test_tax_params_size_to_number_of_ages():
+    # the income-tax arrays must resize to the model's S age groups
+    assert np.array(tax_params.get_tax_params(50)["etr_params"]).shape == (
+        1,
+        50,
+        1,
+    )
+
+
+def test_linear_params_helper_shape():
+    out = np.array(tax_params._linear_params(0.25, 40))
+    assert out.shape == (1, 40, 1)
+    assert np.all(out == 0.25)
+
+
+# -------------------------------------------------------- calibration ------
+
+
+def test_calibration_assembles_macro_and_tax_without_network():
+    """Calibration with use_demographics=False must assemble the macro and
+    tax blocks into one dict for Specifications.update_specifications,
+    sizing the tax arrays to the model's S, with no network call."""
+    from ogcore.parameters import Specifications
+
+    p = Specifications()
+    calibrated = calibrate.Calibration(p, use_demographics=False).get_dict()
+    # macro keys present
+    for key in ["gamma", "alpha_G", "debt_ratio_ss"]:
+        assert key in calibrated
+    # tax keys present and sized to S
+    assert calibrated["tau_c"] == [[0.10]]
+    assert np.array(calibrated["etr_params"]).shape == (1, p.S, 1)
