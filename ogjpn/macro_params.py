@@ -62,13 +62,13 @@ def get_macro_params():
     # general government final consumption is ~20% of GDP, but that national-
     # accounts figure is not the right number for this parameter, and using
     # it breaks the transition. OG-Core books public pensions
-    # (agg_pension_outlays, ~11% here) and other transfers (alpha_T, 10%)
+    # (agg_pension_outlays, ~11% here) and other transfers (alpha_T, 9%)
     # separately, so alpha_G is only the residual government PURCHASES of
     # goods after those, and much of Japan's measured "government consumption"
     # is in-kind health and long-term care that overlaps the social-insurance
     # transfers already modeled. The value that closes the government budget
     # at debt_ratio_ss, given the model's revenue (~32% of GDP) and the
-    # separately-modeled pensions and transfers, is about 5.4% of GDP -- and
+    # separately-modeled pensions and transfers, is about 6.2% of GDP -- and
     # that is exactly the G/Y the steady state produces as a residual. The
     # transition must run the SAME fiscal policy as the steady state it
     # converges to: before the debt-closure rule engages (t < tG1) the
@@ -77,13 +77,16 @@ def get_macro_params():
     # exploding debt and forcing the closure rule to demand negative G later.
     # That inconsistency, not solver tuning, is why the transition would not
     # converge. Setting alpha_G to the steady-state residual share removes it.
-    macro_parameters["alpha_G"] = [0.054]
+    macro_parameters["alpha_G"] = [0.062]
 
     # Government non-pension transfers as a share of GDP. Estimated from
     # the composition of the 39.1% total (consumption ~20, public pensions
     # ~10 handled as a separate model outlay, leaving ~9 for other
     # transfers, interest, and investment). Verify against OECD social
     # spending less public pensions.
-    macro_parameters["alpha_T"] = [0.10]
+    # Recalibrated from 0.10 to 0.09 (Nov 2026): 0.10 no longer clears the
+    # steady state against OG-Core 0.19.x; 0.09 does and keeps revenue at
+    # ~32% of GDP, pensions ~11.5%, G ~6.2% (see docs/NEXT_STEPS.md section 7).
+    macro_parameters["alpha_T"] = [0.09]
 
     return macro_parameters

@@ -41,8 +41,8 @@ Japanese demographics:
 | Reform | Long-run effect |
 |---|---|
 | [Consumption tax 10 to 15 percent](docs/results_consumption_tax.md) | revenue up about 1.5 points of GDP per two-point rise |
-| [Pension age 65 to 70](docs/results_retirement_age.md) | pension bill from 11.4 to 9.5 percent of GDP, labor up |
-| [Replacement-rate cut 10 and 20 percent](docs/results_replacement_rate.md) | pension bill from 11.4 to 9.1 percent, labor up |
+| [Pension age 65 to 70](docs/results_retirement_age.md) | pension bill from 11.5 to 9.6 percent of GDP, labor up |
+| [Replacement-rate cut 10 and 20 percent](docs/results_replacement_rate.md) | pension bill from 11.5 to 9.2 percent, labor up |
 
 ![Long-run effects of three fiscal reforms](docs/policy_results.png)
 

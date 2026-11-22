@@ -63,7 +63,7 @@ def test_alpha_G_is_the_steady_state_residual_not_national_accounts():
     twenty periods, debt explodes, and the transition fails to converge.
     """
     alpha_G = macro_params.get_macro_params()["alpha_G"][0]
-    assert alpha_G == pytest.approx(0.054, abs=0.005)
+    assert alpha_G == pytest.approx(0.062, abs=0.005)
     assert alpha_G < 0.10  # must not be the ~0.20 national-accounts value
 
 
@@ -87,7 +87,7 @@ def test_tax_functions_are_linear_with_correct_shapes():
     S = 80
     t = tax_params.get_tax_params(S)
     assert t["tax_func_type"] == "linear"
-    assert t["tau_payroll"] == [0.30]
+    assert t["tau_payroll"] == [[0.30]]
     assert t["cit_rate"] == [[0.30]]
     for key, rate in [
         ("etr_params", 0.08),

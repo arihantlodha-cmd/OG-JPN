@@ -35,16 +35,18 @@ and solves.
 
 ## Validation against Japan
 
+(Re-validated Nov 2026 after recalibrating `alpha_T` 0.10 to 0.09, `alpha_G` to 0.062 and the payroll array format for OG-Core 0.19; see NEXT_STEPS section 7. Figures below are the current run; the longer discussion text still quotes some earlier values.)
+
 Solving the steady state and comparing to Japan's actual ratios:
 
 | Ratio | Model | Japan | |
 |---|---|---|---|
 | Interest rate `r` | 0.044 | ~0.01-0.04 | matches (top edge) |
-| Pension outlays / GDP | 0.114 | ~0.10-0.11 | matches |
+| Pension outlays / GDP | 0.115 | ~0.10-0.11 | matches |
 | Debt / GDP | 2.00 | ~2.1 | matches (at cap) |
 | Revenue / GDP (incl. social) | 0.322 | ~0.376 (IMF total) | short by the property/other-tax gap |
-| Capital-output `K/Y` | 4.40 | ~3.0-3.5 (net) / ~5.4 (PWT) | consistent with PWT |
-| Consumption / GDP `C/Y` | 0.74 | ~0.53-0.55 | high; ceiling set by Japan's deficit |
+| Capital-output `K/Y` | 4.37 | ~3.0-3.5 (net) / ~5.4 (PWT) | consistent with PWT |
+| Consumption / GDP `C/Y` | 0.73 | ~0.53-0.55 | high; ceiling set by Japan's deficit |
 
 **The fiscal and demographic side matches Japan.** These are the
 quantities driven by the real data in the calibration, and the closest

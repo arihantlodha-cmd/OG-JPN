@@ -165,6 +165,65 @@ consequences:
   not just changing one number. Treat the currency output as a real
   calibration task, not a relabel.
 
+## 7. Steady state stopped converging against current OG-Core (0.19.1)
+
+**Status (Nov 2026): baseline steady state fixed.** OG-Core 0.19 changed `tau_payroll` to a (T, J) array and `alpha_T = 0.10` no longer clears the budget. Now `tau_payroll = [[0.30]]`, `alpha_T = 0.09`, `alpha_G = 0.062`. Result: pension/Y 0.1145, revenue/Y 0.322, debt/Y 2.0, G/Y 0.051, K/Y 4.37, C/Y 0.73. alpha_T = 0 and 0.10 fail, 0.05 and 0.07-0.09 solve, so the solution region is narrow. The three reform experiments and their docs were rerun under this calibration (Nov 8); headline numbers moved by at most 0.1 point of GDP. Verified to still solve on OG-Core 0.21.2. Still to do: a younger-age-mix counterfactual (swapping omega_SS to Japan's 1990 mix did not converge, even with g_n_ss matched; it needs a consistent fertility-based population, not a swap).
+
+Original diagnosis below, kept for the record.
+
+Found while scoping a switch to Japan's defined-benefit pension system. The
+baseline `run_ogjpn_ss.py` now raises "Steady state aggregate resource
+constraint not satisfied" (resource constraint difference on the order of
+1e27, government spending G driven negative). A pure OG-Core default steady
+state still solves cleanly on the same tree, so this is an OG-JPN
+calibration issue against the newer OG-Core, not an OG-Core regression.
+
+Bisecting the calibration dict onto the OG-Core default isolates two
+independent causes:
+
+- **Payroll tax.** `tau_payroll = 0.30` breaks the steady state on its own.
+  OG-Core's default is `tau_payroll = 0`, and the explicit-payroll revenue
+  path (revenue = tau_payroll * w * L, added into total revenue) means a 30%
+  flat payroll tax now floods government revenue without a matching outlay,
+  so the budget-closure residual drives G below zero until the resource
+  constraint diverges. Any positive tau_payroll tested (0.05 to 0.18) fails;
+  only `tau_payroll = 0` solves. Fix is a calibration decision: either drop
+  the standalone payroll tax and fold Japan's pension contributions into the
+  income/payroll tax function (OG-Core's default representation), or add the
+  offsetting pension outlay so the payroll revenue is spent, not banked.
+
+- **A negative-G interaction in the full calibration.** With payroll set to
+  zero, each block solves on its own against Japan's demographics: Japan
+  demographics alone (pension/Y about 0.125), Japan macro alone, and Japan
+  tax-without-payroll alone all clear the steady state. So do the pairs
+  demographics+macro and demographics+tax. Only the full combination
+  (demographics + macro + tax, payroll off) fails. The tell is that every
+  partial configuration already runs government purchases G negative (about
+  -0.04 to -0.08): revenue net of pensions, transfers (alpha_T), and
+  interest is below alpha_G * Y, so the budget identity is forcing G down to
+  clear. Stacking the blocks compounds that pressure until no non-negative G
+  satisfies the resource constraint. The demographic arrays themselves are
+  sane (omega sums to 1 per period, no NaNs, g_n_ss about -1.07%, correct
+  for a shrinking Japan), so this is a fiscal-closure calibration problem,
+  not bad population data.
+
+  Note: a quick alpha_G / alpha_T sweep on the failing combination is not
+  yet trustworthy: several runs returned numbers identical to the OG-Core
+  default (pension/Y 0.0867, r 0.0628), which means the calibration dict did
+  not take in those runs. The sweep needs to be redone with a check that the
+  Japan parameters are actually applied before drawing conclusions about
+  which fiscal share to move.
+
+Order of work: fix the payroll representation first (it breaks even without
+demographics). Then, on a verified-applied calibration, find the fiscal
+closure that clears the full combination under Japan demographics: the
+candidates are lowering alpha_G, lowering alpha_T, or raising modeled
+revenue back toward the roughly 32% of GDP the original alpha_G = 0.054
+derivation assumed (the payroll change is what dropped it). Then re-validate
+pension outlays and re-run the three reforms. Do not paper over either
+failure by loosening the solver tolerance; both are real budget-identity
+failures.
+
 ## How to run
 
 ```

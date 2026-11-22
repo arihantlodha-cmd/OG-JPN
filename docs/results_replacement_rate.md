@@ -1,11 +1,11 @@
 # Long-run (steady-state) effect of cutting Japan's pension replacement rate
 
-Real Japan demographics (UN, code 392); percent change in the steady-state aggregate vs the current-schedule baseline. Macro/tax parameters are first-pass (see docs/NEXT_STEPS.md), so read the signs and rough magnitudes, not the last digit. Baseline pension outlays are 11.4% of GDP.
+Real Japan demographics (UN, code 392); percent change in the steady-state aggregate vs the current-schedule baseline. Macro/tax parameters are first-pass (see docs/NEXT_STEPS.md), so read the signs and rough magnitudes, not the last digit. Baseline pension outlays are 11.5% of GDP.
 
 | Reform | Y (%) | C (%) | K (%) | L (%) | Pension outlays/GDP |
 |---|---|---|---|---|---|
-| -10% benefits | +0.14 | -1.17 | -0.44 | +0.58 | 0.114 -> 0.103 |
-| -20% benefits | +0.30 | -2.32 | -0.85 | +1.18 | 0.114 -> 0.091 |
+| -10% benefits | +0.14 | -1.18 | -0.45 | +0.59 | 0.115 -> 0.103 |
+| -20% benefits | +0.30 | -2.36 | -0.86 | +1.19 | 0.115 -> 0.092 |
 
 ## What this shows
 

@@ -97,7 +97,8 @@ def get_tax_params(num_ages=80):
         "mtrx_params": _linear_params(MTR_LABOR, num_ages),
         "mtry_params": _linear_params(MTR_CAPITAL, num_ages),
         # Payroll (social insurance) tax and corporate income tax.
-        "tau_payroll": [TAU_PAYROLL],
+        # OG-Core >= 0.19 takes tau_payroll as a (T, J) array, so a nested list.
+        "tau_payroll": [[TAU_PAYROLL]],
         "cit_rate": [[CIT_RATE]],
         # Consumption tax: 10% since October 2019.
         "tau_c": [[TAU_C]],

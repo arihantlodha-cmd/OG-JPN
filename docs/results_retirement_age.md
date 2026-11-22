@@ -1,11 +1,11 @@
 # Long-run (steady-state) effect of raising Japan's pension age
 
-Real Japan demographics (UN, code 392); percent change in the steady-state aggregate vs the age-65 baseline. Macro/tax parameters are first-pass (see docs/NEXT_STEPS.md), so read the signs and rough magnitudes, not the last digit. Baseline pension outlays are 11.4% of GDP.
+Real Japan demographics (UN, code 392); percent change in the steady-state aggregate vs the age-65 baseline. Macro/tax parameters are first-pass (see docs/NEXT_STEPS.md), so read the signs and rough magnitudes, not the last digit. Baseline pension outlays are 11.5% of GDP.
 
 | Reform | Y (%) | C (%) | K (%) | L (%) | Pension outlays/GDP |
 |---|---|---|---|---|---|
-| 65 -> 68 | -0.04 | -1.04 | -0.86 | +0.58 | 0.114 -> 0.104 |
-| 65 -> 70 | -0.01 | -1.84 | -1.37 | +1.03 | 0.114 -> 0.095 |
+| 65 -> 68 | -0.04 | -1.06 | -0.87 | +0.59 | 0.115 -> 0.104 |
+| 65 -> 70 | -0.01 | -1.86 | -1.38 | +1.04 | 0.115 -> 0.096 |
 
 ## What this shows
 
