@@ -13,6 +13,8 @@
 
 ## Next
 
+First, **rerun the reform transitions once OG-Core's household solver fix ([#1294](https://github.com/PSLmodels/OG-Core/pull/1294)) is released.** One or two cohorts per run currently carry large Euler errors from a silent sparse-Jacobian solver failure; the effect on aggregates is under 0.1 percent (see {ref}`Chap_Results`).
+
 1. **The t = 120 population freeze.** OG-Core fixes the population at `1.5 * S` periods even when it has not converged ([OG-Core #1290](https://github.com/PSLmodels/OG-Core/issues/1290)). Moving the freeze to period 200 removes the t = 120 error and halves it at the new freeze point; a convergence-based rule is the real fix.
 2. **The t = 2 resource-constraint error.** The observed initial wealth distribution cut it by about 30 percent; the rest has another source.
 3. **Personal income tax revenue** runs about a point of GDP high because OG-Core's total-income form taxes capital income progressively; OG-Core's separate labor/capital (`DEP`) form, or a lower effective rate on capital income, would fix it.
@@ -32,6 +34,7 @@
 | Resource-constraint failure diagnostics ([OG-Core #1213](https://github.com/PSLmodels/OG-Core/pull/1213)) | merged |
 | Population frozen before convergence for fast-aging countries ([OG-Core #1290](https://github.com/PSLmodels/OG-Core/issues/1290)) | issue, with test |
 | Optional `fixper` argument for the population freeze ([OG-Core #1293](https://github.com/PSLmodels/OG-Core/pull/1293)) | open |
+| Dense retry when the sparse-Jacobian household solve does not converge ([OG-Core #1294](https://github.com/PSLmodels/OG-Core/pull/1294)) | open |
 | Non-dollar initial guess for the currency factor ([OG-Core #1292](https://github.com/PSLmodels/OG-Core/pull/1292)) | open |
 | `age_specific` parameter description ([OG-Core #1291](https://github.com/PSLmodels/OG-Core/pull/1291)) | open |
 | OG-JPN in OG-Core's list of country calibrations ([OG-Core #1289](https://github.com/PSLmodels/OG-Core/pull/1289)) | open |

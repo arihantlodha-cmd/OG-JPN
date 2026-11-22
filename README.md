@@ -99,6 +99,11 @@ Building OG-JPN surfaced improvements to OG-Core itself, contributed back:
   the population at period 1.5 * S; for Japan and Korea it has not converged
   by then, which causes a resource-constraint error at t = 120. The PR lets a
   country model choose a later period.
+- **Silent household solver failures**
+  ([PR #1294](https://github.com/PSLmodels/OG-Core/pull/1294)): with the
+  sparse FOC Jacobian, a household solve that stopped without converging was
+  never retried with dense finite differences, leaving large Euler errors
+  for a few cohorts with no warning. Found by checking OG-JPN's transitions.
 - **Non-dollar currency anchor**
   ([PR #1292](https://github.com/PSLmodels/OG-Core/pull/1292)): lifts the cap
   on the initial guess for the currency factor so a model can be anchored to
