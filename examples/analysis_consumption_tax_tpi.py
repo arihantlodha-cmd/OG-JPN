@@ -28,6 +28,7 @@ magnitudes, not the last digit. Runs on Japan's UN demographics from the offline
 """
 
 import os
+import sys
 
 import numpy as np
 from dask.distributed import Client, LocalCluster
@@ -39,7 +40,7 @@ from ogcore import (
 from ogcore.execute import runner
 from ogcore.parameters import Specifications
 
-from ogjpn import calibrate, wealth
+from ogjpn import calibrate, reporting, wealth
 from ogjpn.constants import START_YEAR
 
 # The transition converges; the residuals are single-period errors at t=2
@@ -103,26 +104,37 @@ def solve_tpi(
 
 
 def main():
-    cluster = LocalCluster(n_workers=2, threads_per_worker=1)
-    client = Client(cluster)
-    try:
-        p0 = Specifications(baseline=True, num_workers=2)
-        p0.update_specifications({"start_year": START_YEAR})
-        calibrated = calibrate.Calibration(p0, use_demographics=True).get_dict()
-        print("Built Japan calibration with real UN demographics.", flush=True)
-
-        base_p, base, init_dist = solve_tpi(calibrated, 0.10, BASE_DIR, client)
-        print("Baseline transition solved.", flush=True)
-        reforms = {}
-        for rate, d in REFORM_DIRS.items():
-            rp, rtpi, _ = solve_tpi(
-                calibrated, rate, d, client, BASE_DIR, init_dist=init_dist
+    if "--report-only" in sys.argv:
+        # Rebuild the write-up from saved runs without re-solving.
+        def load(d):
+            return (
+                utils.safe_read_pickle(os.path.join(d, "model_params.pkl")),
+                utils.safe_read_pickle(os.path.join(d, "TPI", "TPI_vars.pkl")),
             )
-            reforms[rate] = (rp, rtpi)
-            print(f"Reform {int(rate * 100)}% transition solved.", flush=True)
-    finally:
-        client.close()
-        cluster.close()
+
+        base_p, base = load(BASE_DIR)
+        reforms = {k: load(d) for k, d in REFORM_DIRS.items()}
+    else:
+        cluster = LocalCluster(n_workers=2, threads_per_worker=1)
+        client = Client(cluster)
+        try:
+            p0 = Specifications(baseline=True, num_workers=2)
+            p0.update_specifications({"start_year": START_YEAR})
+            calibrated = calibrate.Calibration(p0, use_demographics=True).get_dict()
+            print("Built Japan calibration with real UN demographics.", flush=True)
+
+            base_p, base, init_dist = solve_tpi(calibrated, 0.10, BASE_DIR, client)
+            print("Baseline transition solved.", flush=True)
+            reforms = {}
+            for rate, d in REFORM_DIRS.items():
+                rp, rtpi, _ = solve_tpi(
+                    calibrated, rate, d, client, BASE_DIR, init_dist=init_dist
+                )
+                reforms[rate] = (rp, rtpi)
+                print(f"Reform {int(rate * 100)}% transition solved.", flush=True)
+        finally:
+            client.close()
+            cluster.close()
 
     base_paths = {v: _agg_path(base, v) for v in AGGS}
     base_rev = _agg_path(base, "total_tax_revenue") / base_paths["Y"]
@@ -162,8 +174,11 @@ def main():
             start_year=START_YEAR,
             table_format=None,
         )
-        npv_lines.append(f"\n**10% to {int(rate * 100)}%** (model units):\n")
-        npv_lines.append(_df_to_md(tbl))
+        npv_lines.append(
+            f"\n**10% to {int(rate * 100)}%** (share of first-year GDP and "
+            "trillion yen at FY2023 GDP):\n"
+        )
+        npv_lines.append(_df_to_md(reporting.npv_in_gdp_terms(tbl, base)))
 
     title = "# Transition-path effect of raising Japan's consumption tax"
     caption = (
@@ -174,22 +189,31 @@ def main():
         "units). Macro/tax parameters are first-pass (see docs/NEXT_STEPS.md); "
         "read directions and rough magnitudes, not the last digit."
     )
+    ci = {k: reporting.crowding_in(base, rtpi) for k, (_, rtpi) in reforms.items()}
+    rev_gain = (
+        reporting.path(reforms[0.12][1], "total_tax_revenue")[0]
+        - reporting.path(base, "total_tax_revenue")[0]
+    ) / reporting.path(base, "Y")[0]
+    per_point = rev_gain / 2 * wealth.SNA_FY2023_NOMINAL_GDP
     interpretation = (
         "## What this adds over the steady state\n\n"
-        "The steady-state experiment compares two long-run end points and "
-        "found capital roughly flat. The transition shows why that "
-        "understated the story: it traces the path between the end points on "
-        "Japan's real, aging age structure, and the striking feature is the "
-        "capital build-up. Taxing consumption shifts households toward "
-        "saving, so the capital stock rises steadily over the horizon (about "
-        "+4% by year 20 under the 12% reform and near +10% under 15%), and "
-        "output climbs with it, from almost nothing on impact to a couple of "
-        "percent or more two decades out. Consumption drops immediately as "
-        "households retime purchases and stays down, while labor edges up "
-        "throughout. The revenue gain accrues year by year, and discounting "
-        "that stream over the first decade (the NPV table above) gives a "
-        "finance ministry the object it would actually weigh, which a "
-        "steady-state comparison cannot produce.\n\n"
+        "The steady-state comparison found capital roughly flat in the long "
+        "run. The transition shows a large swing on the way there: by year "
+        f"20, capital is {ci[0.12]['K_pct']:+.1f} percent under the 12% rate "
+        f"and {ci[0.15]['K_pct']:+.1f} percent under 15%, and output "
+        f"{ci[0.15]['Y_pct']:+.1f} percent under 15%. Consumption drops "
+        "immediately and stays down, while labor edges up throughout.\n\n"
+        + reporting.crowding_in_text(ci[0.15], "15% consumption tax")
+        + "\n\nA check on the revenue line: in the first year, each point of "
+        f"consumption tax raises about ¥{per_point:.1f} trillion at Japan's "
+        "FY2023 GDP, against about ¥3.0 trillion in Japan (FY2024 budget: "
+        "¥30.2 trillion of national and local consumption tax at 10%). The "
+        "model's consumption share of GDP is about a third too high (see the "
+        "validation chapter), which is about the size of the gap."
+        "\n\nThe revenue gain accrues year by year, and discounting that "
+        "stream over the first decade (the NPV table above) gives a finance "
+        "ministry the object it would actually weigh, which a steady-state "
+        "comparison cannot produce.\n\n"
         "The magnitudes are indicative, not final (the tax side is still "
         "first-pass), so read the shape of the paths and the sign of the NPV, "
         "not the last digit. The reported quantities are all "

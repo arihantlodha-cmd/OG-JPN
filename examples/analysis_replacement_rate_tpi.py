@@ -10,19 +10,14 @@ npv_table).
 
 On the transition solution: each transition converges (outer loop below
 1e-5) and starts from Japan's observed wealth-by-age distribution
-(ogjpn.wealth). The resource constraint holds to below 1e-6 across the path,
-with three exceptions. Two are common to every OG-JPN transition and cancel
-in the reform-minus-baseline differences reported here: t=2 (~1.3e-3, an
+(ogjpn.wealth). The resource constraint holds to below 1e-6 except in two
+single periods common to every OG-JPN transition: t=2 (~1.3e-3, an
 initial-condition effect) and t=120 (~1.2e-3, where OG-Core freezes the
-population before Japan's has converged; OG-Core issue #1290). The third
-is unique to this larger reform: the very last period of the finite horizon
-(t=319) carries a bigger residual, about 3% at
-the 10% cut and 5% at the 20% cut, a terminal-boundary effect from
-approximating the reform's new steady state in one final period. It does not
-propagate backward (period 318 is already at ~1e-7) and sits far beyond the
-reported decade window, so none of the year-0-to-20 paths or the first-decade
-NPVs below are affected. The strict per-period RC check is disabled to let
-the runs complete past these single-period residuals.
+population before Japan's has converged; OG-Core issue #1290). Both cancel
+in the reform-minus-baseline differences reported here, so the strict
+per-period RC check is disabled to let the runs complete. (An earlier
+version of this reform also showed a 3-5 percent error in the final period
+of the horizon; on OG-Core 0.24.6 that is below 1e-6.)
 
 NOTE: demographics are real Japanese data; macro/tax parameters are still
 first-pass (see docs/NEXT_STEPS.md), so read directions and rough
@@ -30,6 +25,7 @@ magnitudes, not the last digit. Runs on Japan's UN demographics from the offline
 """
 
 import os
+import sys
 
 import numpy as np
 from dask.distributed import Client, LocalCluster
@@ -37,7 +33,7 @@ from ogcore import TPI, output_tables, utils
 from ogcore.execute import runner
 from ogcore.parameters import Specifications
 
-from ogjpn import calibrate, wealth
+from ogjpn import calibrate, reporting, wealth
 from ogjpn.constants import START_YEAR
 
 # The transition converges; the residuals are single-period errors at t=2
@@ -101,26 +97,37 @@ def solve_tpi(
 
 
 def main():
-    cluster = LocalCluster(n_workers=2, threads_per_worker=1)
-    client = Client(cluster)
-    try:
-        p0 = Specifications(baseline=True, num_workers=2)
-        p0.update_specifications({"start_year": START_YEAR})
-        calibrated = calibrate.Calibration(p0, use_demographics=True).get_dict()
-        print("Built Japan calibration with real UN demographics.", flush=True)
-
-        base_p, base, init_dist = solve_tpi(calibrated, 1.0, BASE_DIR, client)
-        print("Baseline transition solved.", flush=True)
-        reforms = {}
-        for adj, d in REFORM_DIRS.items():
-            rp, rtpi, _ = solve_tpi(
-                calibrated, adj, d, client, BASE_DIR, init_dist=init_dist
+    if "--report-only" in sys.argv:
+        # Rebuild the write-up from saved runs without re-solving.
+        def load(d):
+            return (
+                utils.safe_read_pickle(os.path.join(d, "model_params.pkl")),
+                utils.safe_read_pickle(os.path.join(d, "TPI", "TPI_vars.pkl")),
             )
-            reforms[adj] = (rp, rtpi)
-            print(f"Reform (cut to {adj}) transition solved.", flush=True)
-    finally:
-        client.close()
-        cluster.close()
+
+        base_p, base = load(BASE_DIR)
+        reforms = {k: load(d) for k, d in REFORM_DIRS.items()}
+    else:
+        cluster = LocalCluster(n_workers=2, threads_per_worker=1)
+        client = Client(cluster)
+        try:
+            p0 = Specifications(baseline=True, num_workers=2)
+            p0.update_specifications({"start_year": START_YEAR})
+            calibrated = calibrate.Calibration(p0, use_demographics=True).get_dict()
+            print("Built Japan calibration with real UN demographics.", flush=True)
+
+            base_p, base, init_dist = solve_tpi(calibrated, 1.0, BASE_DIR, client)
+            print("Baseline transition solved.", flush=True)
+            reforms = {}
+            for adj, d in REFORM_DIRS.items():
+                rp, rtpi, _ = solve_tpi(
+                    calibrated, adj, d, client, BASE_DIR, init_dist=init_dist
+                )
+                reforms[adj] = (rp, rtpi)
+                print(f"Reform (cut to {adj}) transition solved.", flush=True)
+        finally:
+            client.close()
+            cluster.close()
 
     base_paths = {v: _agg_path(base, v) for v in AGGS}
     base_pen = _agg_path(base, "agg_pension_outlays") / base_paths["Y"]
@@ -161,10 +168,10 @@ def main():
             table_format=None,
         )
         npv_lines.append(
-            f"\n**{pct}% benefit cut** (model units; pensions are reform "
+            f"\n**{pct}% benefit cut** (share of first-year GDP and trillion yen at FY2023 GDP; pensions are reform "
             "minus baseline, so negative is a saving):\n"
         )
-        npv_lines.append(_df_to_md(tbl))
+        npv_lines.append(_df_to_md(reporting.npv_in_gdp_terms(tbl, base)))
 
     title = "# Transition-path effect of cutting Japan's pension replacement rate"
     caption = (
@@ -172,32 +179,32 @@ def main():
         "current-schedule baseline transition at several horizons (years from "
         "the 2025 start), then the net present value of the "
         "reform-minus-baseline change over the first decade at 1/2/3% discount "
-        "rates (OG-Core npv_table, model units). Macro/tax parameters are "
+        "rates (OG-Core npv_table), as a share of first-year GDP and in "
+        "trillion yen at Japan's FY2023 GDP. Macro/tax parameters are "
         "first-pass (see docs/NEXT_STEPS.md); read directions and rough "
         "magnitudes, not the last digit."
     )
+    ci = {k: reporting.crowding_in(base, rtpi) for k, (_, rtpi) in reforms.items()}
+    big_pen = reporting.path(reforms[0.8][1], "agg_pension_outlays") / reporting.path(
+        reforms[0.8][1], "Y"
+    )
+    base_pen_path = reporting.path(base, "agg_pension_outlays") / reporting.path(
+        base, "Y"
+    )
+    pen_cut = {t: 100 * (base_pen_path[t] - big_pen[t]) for t in (10, 20)}
     interpretation = (
         "## What this adds over the steady state\n\n"
         "The steady-state comparison found the pension bill down, labor up, "
         "and capital slightly lower. The transition traces the path on "
-        "Japan's real, aging age structure and, as with the retirement-age "
-        "reform, flips the read on capital. The pension outlay drops year by "
-        "year as the thinner benefit takes hold, several tenths of a point of "
-        "GDP below the baseline throughout, and the NPV table above discounts "
-        "that saving over the first decade. Labor rises strongly and stays "
-        "up. And capital, which the steady-state end-point comparison showed "
-        "slightly lower, builds up over the horizon instead (about +3% by "
-        "year 20 under the 10% cut and +6% under 20%): facing a thinner "
-        "public pension, households save more of their higher labor income "
-        "during the transition, so the capital stock accumulates and output "
-        "climbs with it. This is the crowding-in the steady-state levels "
-        "alone did not show, and it is the same transition feature the "
-        "consumption-tax and retirement-age reforms displayed.\n\n"
-        "One reading caveat near the start: under the 10% cut the year-1 "
-        "consumption figure is an outlier, reflecting the abrupt retiming of "
-        "consumption plus the initial-condition transient noted in the module "
-        "docstring; read it as noise. The magnitudes are indicative, not final "
-        "(the pension calibration is still first-pass), so read the shape of "
+        "Japan's aging population. Under the 20% cut the pension bill is "
+        f"{pen_cut[10]:.1f} points of GDP below the baseline after 10 years "
+        f"and {pen_cut[20]:.1f} after 20, and the NPV table above discounts "
+        "that saving over the first decade. Labor rises and stays up. By "
+        f"year 20, capital is {ci[0.9]['K_pct']:+.1f} percent under the 10% "
+        f"cut and {ci[0.8]['K_pct']:+.1f} percent under 20%, and output "
+        f"{ci[0.8]['Y_pct']:+.1f} percent under 20%.\n\n"
+        + reporting.crowding_in_text(ci[0.8], "20% benefit cut")
+        + "\n\nThe magnitudes are indicative, not final, so read the shape of "
         "the paths and the sign of the NPV, not the last digit. The reported "
         "quantities are reform-minus-baseline differences, in which the "
         "single-period resource-constraint errors at t=2 and t=120 cancel."

@@ -27,6 +27,7 @@ magnitudes, not the last digit. Runs on Japan's UN demographics from the offline
 """
 
 import os
+import sys
 
 import numpy as np
 from dask.distributed import Client, LocalCluster
@@ -34,7 +35,7 @@ from ogcore import TPI, output_tables, utils
 from ogcore.execute import runner
 from ogcore.parameters import Specifications
 
-from ogjpn import calibrate, wealth
+from ogjpn import calibrate, reporting, wealth
 from ogjpn.constants import START_YEAR
 
 # The transition converges; the residuals are single-period errors at t=2
@@ -98,26 +99,37 @@ def solve_tpi(
 
 
 def main():
-    cluster = LocalCluster(n_workers=2, threads_per_worker=1)
-    client = Client(cluster)
-    try:
-        p0 = Specifications(baseline=True, num_workers=2)
-        p0.update_specifications({"start_year": START_YEAR})
-        calibrated = calibrate.Calibration(p0, use_demographics=True).get_dict()
-        print("Built Japan calibration with real UN demographics.", flush=True)
-
-        base_p, base, init_dist = solve_tpi(calibrated, 65, BASE_DIR, client)
-        print("Baseline (age 65) transition solved.", flush=True)
-        reforms = {}
-        for age, d in REFORM_DIRS.items():
-            rp, rtpi, _ = solve_tpi(
-                calibrated, age, d, client, BASE_DIR, init_dist=init_dist
+    if "--report-only" in sys.argv:
+        # Rebuild the write-up from saved runs without re-solving.
+        def load(d):
+            return (
+                utils.safe_read_pickle(os.path.join(d, "model_params.pkl")),
+                utils.safe_read_pickle(os.path.join(d, "TPI", "TPI_vars.pkl")),
             )
-            reforms[age] = (rp, rtpi)
-            print(f"Reform (age {age}) transition solved.", flush=True)
-    finally:
-        client.close()
-        cluster.close()
+
+        base_p, base = load(BASE_DIR)
+        reforms = {k: load(d) for k, d in REFORM_DIRS.items()}
+    else:
+        cluster = LocalCluster(n_workers=2, threads_per_worker=1)
+        client = Client(cluster)
+        try:
+            p0 = Specifications(baseline=True, num_workers=2)
+            p0.update_specifications({"start_year": START_YEAR})
+            calibrated = calibrate.Calibration(p0, use_demographics=True).get_dict()
+            print("Built Japan calibration with real UN demographics.", flush=True)
+
+            base_p, base, init_dist = solve_tpi(calibrated, 65, BASE_DIR, client)
+            print("Baseline (age 65) transition solved.", flush=True)
+            reforms = {}
+            for age, d in REFORM_DIRS.items():
+                rp, rtpi, _ = solve_tpi(
+                    calibrated, age, d, client, BASE_DIR, init_dist=init_dist
+                )
+                reforms[age] = (rp, rtpi)
+                print(f"Reform (age {age}) transition solved.", flush=True)
+        finally:
+            client.close()
+            cluster.close()
 
     base_paths = {v: _agg_path(base, v) for v in AGGS}
     base_pen = _agg_path(base, "agg_pension_outlays") / base_paths["Y"]
@@ -160,10 +172,10 @@ def main():
             table_format=None,
         )
         npv_lines.append(
-            f"\n**65 to {age}** (model units; pensions are reform minus "
+            f"\n**65 to {age}** (share of first-year GDP and trillion yen at FY2023 GDP; pensions are reform minus "
             "baseline, so negative is a saving):\n"
         )
-        npv_lines.append(_df_to_md(tbl))
+        npv_lines.append(_df_to_md(reporting.npv_in_gdp_terms(tbl, base)))
 
     title = "# Transition-path effect of raising Japan's pension age"
     caption = (
@@ -174,33 +186,31 @@ def main():
         "units). Macro/tax parameters are first-pass (see docs/NEXT_STEPS.md); "
         "read directions and rough magnitudes, not the last digit."
     )
+    ci = {k: reporting.crowding_in(base, rtpi) for k, (_, rtpi) in reforms.items()}
+    big_pen = reporting.path(reforms[70][1], "agg_pension_outlays") / reporting.path(
+        reforms[70][1], "Y"
+    )
+    base_pen_path = reporting.path(base, "agg_pension_outlays") / reporting.path(
+        base, "Y"
+    )
+    pen_cut = {t: 100 * (base_pen_path[t] - big_pen[t]) for t in (10, 20)}
     interpretation = (
         "## What this adds over the steady state\n\n"
         "The steady-state comparison found labor up, the pension bill down, "
         "and capital slightly lower. The transition traces the path on "
-        "Japan's real, aging age structure and sharpens the picture. The "
-        "pension bill is the headline a finance ministry watches: it falls "
-        "year by year as the higher age phases in, holding the outlay several "
-        "tenths of a point of GDP below the baseline throughout, and the NPV "
-        "table above discounts that saving over the first decade. The "
-        "surprise is capital. Where the steady-state end-point comparison "
-        "showed it slightly lower, the transition shows it building up, about "
-        "+2% by year 20 under the age-68 reform and +4% under 70. Working "
-        "longer raises labor income during the transition, households save "
-        "more of it, and the capital stock accumulates, with output rising "
-        "alongside. This is the same pattern the consumption-tax transition "
-        "showed, and it is exactly what a comparison of two long-run end "
-        "points cannot see.\n\n"
-        "One reading caveat near the start: under the sharpest reform (age "
-        "70), the year-1 consumption figure is an outlier, reflecting the "
-        "abrupt retiming of consumption for cohorts kept in work together "
-        "with the initial-condition transient noted in the module docstring; "
-        "read it as noise, not signal. The magnitudes are indicative, not "
-        "final (the tax and pension calibration is still first-pass), so read "
-        "the shape of the paths and the sign of the NPV, not the last digit. "
-        "The reported quantities are reform-minus-baseline differences, in "
-        "which the single-period resource-constraint errors at t=2 and t=120 "
-        "cancel."
+        "Japan's aging population. The pension bill is the headline a "
+        "finance ministry watches: under the age-70 reform it is "
+        f"{pen_cut[10]:.1f} points of GDP below the baseline after 10 years "
+        f"and {pen_cut[20]:.1f} after 20, and the NPV table above discounts "
+        "that saving over the first decade. By year 20, capital is "
+        f"{ci[68]['K_pct']:+.1f} percent under the age-68 reform and "
+        f"{ci[70]['K_pct']:+.1f} percent under 70, and output "
+        f"{ci[70]['Y_pct']:+.1f} percent under 70.\n\n"
+        + reporting.crowding_in_text(ci[70], "move to a pension age of 70")
+        + "\n\nThe magnitudes are indicative, not final, so read the shape of "
+        "the paths and the sign of the NPV, not the last digit. The reported "
+        "quantities are reform-minus-baseline differences, in which the "
+        "single-period resource-constraint errors at t=2 and t=120 cancel."
     )
     doc = "\n".join(
         [

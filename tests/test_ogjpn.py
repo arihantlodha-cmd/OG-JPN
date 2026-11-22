@@ -306,3 +306,45 @@ def test_pension_brackets_reproduce_japans_two_tier_formula():
             pp.japan_monthly_benefit(aime), rel=1e-9
         )
     assert _og_core_pia(0.0, p) == pytest.approx(66_250)
+
+
+def test_crowding_in_summary_and_text():
+    """The debt-channel summary reads debt/GDP, household wealth, and
+    capital at year 20 from the paths, and the text follows the sign of the
+    change in household wealth."""
+    from ogjpn import reporting
+
+    T = 40
+    ones = np.ones(T)
+    base = {"Y": ones, "D": 1.6 * ones, "B": 5.0 * ones, "K": 4.0 * ones}
+    reform = {
+        "Y": 1.05 * ones,
+        "D": 0.75 * ones,
+        "B": 4.95 * ones,
+        "K": np.r_[4.4 * np.ones(T - 1), 3.98],
+    }
+    s = reporting.crowding_in(base, reform)
+    assert s["debt_base"] == pytest.approx(1.6)
+    assert s["debt_reform"] == pytest.approx(0.75 / 1.05)
+    assert s["B_pct"] == pytest.approx(-1.0)
+    assert s["K_pct"] == pytest.approx(10.0)
+    assert s["K_pct_long_run"] == pytest.approx(-0.5)
+    assert "households save less" in reporting.crowding_in_text(s, "reform")
+    reform["B"] = 5.1 * ones
+    more = reporting.crowding_in_text(reporting.crowding_in(base, reform), "r")
+    assert "save more" in more and "save less" not in more
+
+
+def test_npv_in_gdp_terms():
+    """NPVs in model units become shares of first-year GDP and trillion yen
+    at Japan's FY2023 GDP (595.2 trillion yen)."""
+    import pandas as pd
+
+    from ogjpn import reporting
+
+    tbl = pd.DataFrame({"Variable": ["Revenue", "Labor ($L_t$)"], "1.0%": [0.2, 0.05]})
+    base = {"Y": np.array([0.8, 0.81])}
+    out = reporting.npv_in_gdp_terms(tbl, base)
+    assert out.loc[0, "1.0%"] == "25.0% of GDP (¥149 tn)"
+    # labor is hours, not money: left in model units
+    assert out.loc[1, "1.0%"] == "0.05 (model units)"

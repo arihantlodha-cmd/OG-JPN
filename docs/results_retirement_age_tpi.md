@@ -8,43 +8,45 @@ Real Japan demographics (UN, code 392). Percent change vs the age-65 baseline tr
 
 | Year | Y (%) | C (%) | K (%) | L (%) | Pension/GDP (base -> reform) |
 |---|---|---|---|---|---|
-| +0 | +0.30 | -0.50 | +0.06 | +0.49 | 0.095 -> 0.086 |
-| +1 | +0.34 | -0.51 | +0.12 | +0.50 | 0.095 -> 0.086 |
-| +5 | +0.49 | -0.53 | +0.40 | +0.55 | 0.097 -> 0.088 |
-| +10 | +0.74 | -0.58 | +0.87 | +0.65 | 0.102 -> 0.090 |
-| +20 | +1.57 | -0.70 | +2.41 | +0.94 | 0.115 -> 0.104 |
+| +0 | +0.31 | -0.75 | +0.06 | +0.51 | 0.102 -> 0.092 |
+| +1 | +0.35 | -0.75 | +0.14 | +0.52 | 0.103 -> 0.092 |
+| +5 | +0.54 | -0.74 | +0.51 | +0.57 | 0.105 -> 0.093 |
+| +10 | +0.84 | -0.76 | +1.09 | +0.65 | 0.109 -> 0.095 |
+| +20 | +1.78 | -0.90 | +2.86 | +0.97 | 0.122 -> 0.109 |
 
 ### 65 to 70
 
 | Year | Y (%) | C (%) | K (%) | L (%) | Pension/GDP (base -> reform) |
 |---|---|---|---|---|---|
-| +0 | +0.53 | -0.90 | +0.10 | +0.85 | 0.095 -> 0.079 |
-| +1 | +0.58 | -0.91 | +0.20 | +0.87 | 0.095 -> 0.079 |
-| +5 | +0.85 | -0.95 | +0.71 | +0.95 | 0.097 -> 0.081 |
-| +10 | +1.31 | -1.03 | +1.57 | +1.12 | 0.102 -> 0.083 |
-| +20 | +2.80 | -1.27 | +4.33 | +1.66 | 0.115 -> 0.094 |
+| +0 | +0.54 | -1.29 | +0.10 | +0.87 | 0.102 -> 0.085 |
+| +1 | +0.61 | -1.29 | +0.24 | +0.89 | 0.103 -> 0.085 |
+| +5 | +0.93 | -1.28 | +0.89 | +0.96 | 0.105 -> 0.086 |
+| +10 | +1.46 | -1.32 | +1.92 | +1.11 | 0.109 -> 0.087 |
+| +20 | +3.08 | -1.58 | +5.01 | +1.65 | 0.122 -> 0.099 |
 
 ## Net present value of the change, first 10 years
 
 
-**65 to 68** (model units; pensions are reform minus baseline, so negative is a saving):
+**65 to 68** (share of first-year GDP and trillion yen at FY2023 GDP; pensions are reform minus baseline, so negative is a saving):
 
 | Variable | 1.0% | 2.0% | 3.0% |
 |---|---|---|---|
-| Pensions ($Pensions_{t}$) | -0.07464 | -0.07138 | -0.06835 |
-| GDP ($Y_t$) | 0.03873 | 0.03682 | 0.03505 |
-| Labor ($L_t$) | 0.01457 | 0.01393 | 0.01333 |
+| Pensions ($Pensions_{t}$) | -10.2% of GDP (¥-61 tn) | -9.8% of GDP (¥-58 tn) | -9.4% of GDP (¥-56 tn) |
+| GDP ($Y_t$) | 5.1% of GDP (¥30 tn) | 4.8% of GDP (¥29 tn) | 4.6% of GDP (¥27 tn) |
+| Labor ($L_t$) | 0.0159 (model units) | 0.0152 (model units) | 0.0146 (model units) |
 
-**65 to 70** (model units; pensions are reform minus baseline, so negative is a saving):
+**65 to 70** (share of first-year GDP and trillion yen at FY2023 GDP; pensions are reform minus baseline, so negative is a saving):
 
 | Variable | 1.0% | 2.0% | 3.0% |
 |---|---|---|---|
-| Pensions ($Pensions_{t}$) | -0.1294 | -0.1238 | -0.1185 |
-| GDP ($Y_t$) | 0.06755 | 0.06421 | 0.06111 |
-| Labor ($L_t$) | 0.02512 | 0.02402 | 0.02299 |
+| Pensions ($Pensions_{t}$) | -17.3% of GDP (¥-103 tn) | -16.6% of GDP (¥-99 tn) | -15.9% of GDP (¥-95 tn) |
+| GDP ($Y_t$) | 8.8% of GDP (¥53 tn) | 8.4% of GDP (¥50 tn) | 8.0% of GDP (¥47 tn) |
+| Labor ($L_t$) | 0.0275 (model units) | 0.0263 (model units) | 0.0252 (model units) |
 
 ## What this adds over the steady state
 
-The steady-state comparison found labor up, the pension bill down, and capital slightly lower. The transition traces the path on Japan's real, aging age structure and sharpens the picture. The pension bill is the headline a finance ministry watches: it falls year by year as the higher age phases in, holding the outlay several tenths of a point of GDP below the baseline throughout, and the NPV table above discounts that saving over the first decade. The surprise is capital. Where the steady-state end-point comparison showed it slightly lower, the transition shows it building up, about +2% by year 20 under the age-68 reform and +4% under 70. Working longer raises labor income during the transition, households save more of it, and the capital stock accumulates, with output rising alongside. This is the same pattern the consumption-tax transition showed, and it is exactly what a comparison of two long-run end points cannot see.
+The steady-state comparison found labor up, the pension bill down, and capital slightly lower. The transition traces the path on Japan's aging population. The pension bill is the headline a finance ministry watches: under the age-70 reform it is 2.1 points of GDP below the baseline after 10 years and 2.3 after 20, and the NPV table above discounts that saving over the first decade. By year 20, capital is +2.9 percent under the age-68 reform and +5.0 percent under 70, and output +3.1 percent under 70.
 
-One reading caveat near the start: under the sharpest reform (age 70), the year-1 consumption figure is an outlier, reflecting the abrupt retiming of consumption for cohorts kept in work together with the initial-condition transient noted in the module docstring; read it as noise, not signal. The magnitudes are indicative, not final (the tax and pension calibration is still first-pass), so read the shape of the paths and the sign of the NPV, not the last digit. The reported quantities are reform-minus-baseline differences, in which the single-period t=2 resource-constraint artifact cancels.
+Where the capital comes from. OG-Core holds government purchases at a fixed share of GDP for the first 20 years, so the budget gain from the move to a pension age of 70 goes to paying down debt: by year 20, debt is 1.01 times GDP against 1.59 in the baseline. Lower debt frees household saving for private capital. That, not extra household saving, is what lifts capital: household wealth is 1.8 percent lower (households save less), while capital is +5.0 percent at year 20. After year 20 OG-Core's closure rule brings debt back to its target, and capital ends the path -1.6 percent from baseline. Most of the capital gain along the transition is therefore a consequence of using the proceeds to pay down debt, as OG-Core's fiscal closure does.
+
+The magnitudes are indicative, not final, so read the shape of the paths and the sign of the NPV, not the last digit. The reported quantities are reform-minus-baseline differences, in which the single-period resource-constraint errors at t=2 and t=120 cancel.

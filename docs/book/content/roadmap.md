@@ -31,6 +31,7 @@
 | Custom initial wealth distribution ([OG-Core #1209](https://github.com/PSLmodels/OG-Core/pull/1209)) | superseded by the maintainers' [#1254](https://github.com/PSLmodels/OG-Core/pull/1254), merged |
 | Resource-constraint failure diagnostics ([OG-Core #1213](https://github.com/PSLmodels/OG-Core/pull/1213)) | merged |
 | Population frozen before convergence for fast-aging countries ([OG-Core #1290](https://github.com/PSLmodels/OG-Core/issues/1290)) | issue, with test |
+| Optional `fixper` argument for the population freeze ([OG-Core #1293](https://github.com/PSLmodels/OG-Core/pull/1293)) | open |
 | Non-dollar initial guess for the currency factor ([OG-Core #1292](https://github.com/PSLmodels/OG-Core/pull/1292)) | open |
 | `age_specific` parameter description ([OG-Core #1291](https://github.com/PSLmodels/OG-Core/pull/1291)) | open |
 | OG-JPN in OG-Core's list of country calibrations ([OG-Core #1289](https://github.com/PSLmodels/OG-Core/pull/1289)) | open |

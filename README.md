@@ -55,18 +55,21 @@ Japanese demographics:
 
 | Reform | Long-run effect |
 |---|---|
-| [Consumption tax 10 to 15 percent](docs/results_consumption_tax.md) | revenue up about 1.5 points of GDP per two-point rise |
-| [Pension age 65 to 70](docs/results_retirement_age.md) | pension bill from 11.5 to 9.6 percent of GDP, labor up |
-| [Replacement-rate cut 10 and 20 percent](docs/results_replacement_rate.md) | pension bill from 11.5 to 9.2 percent, labor up |
+| [Consumption tax 10 to 12 and 15 percent](docs/results_consumption_tax.md) | tax revenue up 1.3 and 3.2 points of GDP; consumption down, labor slightly up |
+| [Pension age 65 to 68 and 70](docs/results_retirement_age.md) | long-run pension bill from 12.1 to 10.9 and 10.0 percent of GDP; labor up |
+| [Replacement-rate cut 10 and 20 percent](docs/results_replacement_rate.md) | long-run pension bill from 12.1 to 10.9 and 9.7 percent of GDP; labor up |
 
 ![Long-run effects of three fiscal reforms](docs/policy_results.png)
 
-The transition versions (the `*_tpi.md` docs) add what a steady-state
-comparison cannot: the year-by-year path and the net present value of the
-change. Across all three, one result is consistent and was invisible to the
-steady-state comparison alone: **capital builds up over the horizon**, as
-each reform tilts households toward saving. That is the kind of thing the
-dynamics are there to show.
+The transition versions (the `*_tpi.md` docs) add the year-by-year path
+and the net present value of each change. They also show capital rising
+along the transition (close to 10 percent by year 20 under the 15 percent
+consumption tax). That comes mainly from debt: for its first 20 years
+OG-Core holds government purchases at a fixed share of GDP, so each
+reform's budget gain pays down debt, which frees saving for private
+capital. Once the debt rule restores debt to target, capital returns to
+close to its baseline level. Each result page measures this channel from
+the solved paths.
 
 ## Contributions upstream
 
@@ -90,6 +93,16 @@ Building OG-JPN surfaced improvements to OG-Core itself, contributed back:
   ([PR #1213](https://github.com/PSLmodels/OG-Core/pull/1213), merged): the transition
   solver now reports the size and location of a resource-constraint failure
   so a boundary artifact can be told from a real calibration problem.
+- **Population freeze before convergence**
+  ([issue #1290](https://github.com/PSLmodels/OG-Core/issues/1290),
+  [PR #1293](https://github.com/PSLmodels/OG-Core/pull/1293)): OG-Core fixes
+  the population at period 1.5 * S; for Japan and Korea it has not converged
+  by then, which causes a resource-constraint error at t = 120. The PR lets a
+  country model choose a later period.
+- **Non-dollar currency anchor**
+  ([PR #1292](https://github.com/PSLmodels/OG-Core/pull/1292)): lifts the cap
+  on the initial guess for the currency factor so a model can be anchored to
+  yen.
 
 ## Honest limitations
 
