@@ -5,23 +5,22 @@
 
 * Country skeleton on OG-Core, with Japan's UN demographics (code 392).
 * Macro and fiscal calibration from IMF, Penn World Table, and national sources.
-* **Progressive personal income tax** fitted to the National Tax Agency's 2023 salary-bracket tax data; social insurance, capital, corporate, and consumption taxes from statutory rates.
+* **Progressive personal income tax** on labor fitted to the National Tax Agency's 2023 salary-bracket tax data, and capital income taxed at Japan's effective rate (5.7 percent, national accounts), combined age by age; social insurance, corporate, and consumption taxes from statutory rates.
 * **Japan's two-tier public pension** (basic + employees' pension) in yen, with the model's income anchored to the 2023 mean salary.
 * Japan's observed initial wealth distribution from the 2019 national survey.
-* Validated against Japan: first-year pension outlays 10.2 percent of GDP against 10.4 percent actual; tax revenue 33.3 against 34.4 percent.
+* Validated against Japan: first-year pension outlays 10.1 percent of GDP against 10.4 percent actual; tax revenue 31.8 against 34.4 percent; personal income tax 5.7 against 5.3 percent.
 * Converging transition path on OG-Core 0.24.6, and three policy reforms (consumption tax, pension age, replacement rate), each as a steady-state comparison and on the transition path, with net present values.
 
 ## Next
 
-First, **rerun the reform transitions once OG-Core's household solver fix ([#1294](https://github.com/PSLmodels/OG-Core/pull/1294)) is released.** One or two cohorts per run currently carry large Euler errors from a silent sparse-Jacobian solver failure; the effect on aggregates is under 0.1 percent (see {ref}`Chap_Results`).
+First, **rerun the reform transitions once OG-Core's household solver fix ([#1294](https://github.com/PSLmodels/OG-Core/pull/1294)) is released.** A few cohorts in three of the nine runs carry large Euler errors from a silent sparse-Jacobian solver failure; re-solving one with the fix moves aggregates by under 0.1 percent (see {ref}`Chap_Results`).
 
 1. **The t = 120 population freeze.** OG-Core fixes the population at `1.5 * S` periods even when it has not converged ([OG-Core #1290](https://github.com/PSLmodels/OG-Core/issues/1290)). Moving the freeze to period 200 removes the t = 120 error and halves it at the new freeze point; a convergence-based rule is the real fix.
 2. **The t = 2 resource-constraint error.** The observed initial wealth distribution cut it by about 30 percent; the rest has another source.
-3. **Personal income tax revenue** runs about a point of GDP high because OG-Core's total-income form taxes capital income progressively; OG-Core's separate labor/capital (`DEP`) form, or a lower effective rate on capital income, would fix it.
-4. **Level of initial wealth.** Test `initial_wealth_ratio` at the national-accounts value (3.69 times GDP excluding land).
-5. **Pension details:** the spouse's basic pension, survivor benefits, and the macroeconomic slide as part of the baseline rather than a reform.
-6. **Income-mortality gradient** from Japanese data.
-7. **Property tax** through OG-Core's wealth tax, once the convergence problem with the consumption-tax reform is understood.
+3. **Level of initial wealth.** Test `initial_wealth_ratio` at the national-accounts value (3.69 times GDP excluding land).
+4. **Pension details:** the spouse's basic pension, survivor benefits, and the macroeconomic slide as part of the baseline rather than a reform.
+5. **Income-mortality gradient** from Japanese data.
+6. **Property tax** through OG-Core's wealth tax, once the convergence problem with the consumption-tax reform is understood.
 
 ## Contributions upstream
 

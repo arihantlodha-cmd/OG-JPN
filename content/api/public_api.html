@@ -345,6 +345,30 @@
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ogjpn.tax_params.get_tax_params"><code class="docutils literal notranslate"><span class="pre">get_tax_params()</span></code></a></li>
 </ul>
 </li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-ogjpn.income_tax"><code class="docutils literal notranslate"><span class="pre">ogjpn.income_tax</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ogjpn.income_tax.age_specific_params"><code class="docutils literal notranslate"><span class="pre">age_specific_params()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ogjpn.income_tax.bracket_rates"><code class="docutils literal notranslate"><span class="pre">bracket_rates()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ogjpn.income_tax.dep_totalinc"><code class="docutils literal notranslate"><span class="pre">dep_totalinc()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ogjpn.income_tax.effective_capital_tax_rate"><code class="docutils literal notranslate"><span class="pre">effective_capital_tax_rate()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ogjpn.income_tax.fit_dep_totalinc"><code class="docutils literal notranslate"><span class="pre">fit_dep_totalinc()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ogjpn.income_tax.labor_share_by_age"><code class="docutils literal notranslate"><span class="pre">labor_share_by_age()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ogjpn.income_tax.load_labor_share_by_age"><code class="docutils literal notranslate"><span class="pre">load_labor_share_by_age()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ogjpn.income_tax.load_nta_2023"><code class="docutils literal notranslate"><span class="pre">load_nta_2023()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ogjpn.income_tax.to_model_units"><code class="docutils literal notranslate"><span class="pre">to_model_units()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-ogjpn.pension_params"><code class="docutils literal notranslate"><span class="pre">ogjpn.pension_params</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ogjpn.pension_params.get_pension_params"><code class="docutils literal notranslate"><span class="pre">get_pension_params()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ogjpn.pension_params.japan_monthly_benefit"><code class="docutils literal notranslate"><span class="pre">japan_monthly_benefit()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-ogjpn.reporting"><code class="docutils literal notranslate"><span class="pre">ogjpn.reporting</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ogjpn.reporting.crowding_in"><code class="docutils literal notranslate"><span class="pre">crowding_in()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ogjpn.reporting.crowding_in_text"><code class="docutils literal notranslate"><span class="pre">crowding_in_text()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ogjpn.reporting.npv_in_gdp_terms"><code class="docutils literal notranslate"><span class="pre">npv_in_gdp_terms()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ogjpn.reporting.path"><code class="docutils literal notranslate"><span class="pre">path()</span></code></a></li>
+</ul>
+</li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-ogjpn.wealth"><code class="docutils literal notranslate"><span class="pre">ogjpn.wealth</span></code></a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ogjpn.wealth.get_initial_hhwealth_dist"><code class="docutils literal notranslate"><span class="pre">get_initial_hhwealth_dist()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ogjpn.wealth.net_worth_by_age"><code class="docutils literal notranslate"><span class="pre">net_worth_by_age()</span></code></a></li>
@@ -376,9 +400,10 @@ other country models (OG-USA, OG-THA, OG-BRA).</p>
 <dl class="simple">
 <dt>Phase status:</dt><dd><ul class="simple">
 <li><p>macro parameters: provisional first pass (ogjpn.macro_params)</p></li>
-<li><p>tax parameters: first-pass linear calibration of income, payroll,
-capital, corporate, and consumption taxes from published Japanese
-rates (ogjpn.tax_params)</p></li>
+<li><p>tax parameters: progressive labor income tax fitted to NTA data, an
+effective capital income tax from the national accounts, and payroll,
+corporate, and consumption taxes from published Japanese rates
+(ogjpn.tax_params)</p></li>
 <li><p>demographics: live UN data by country code 392, requires a UN API
 token (see README); optional so the pipeline still runs without it</p></li>
 </ul>
@@ -386,7 +411,7 @@ token (see README); optional so the pipeline still runs without it</p></li>
 </dl>
 <dl class="py class">
 <dt class="sig sig-object py" id="ogjpn.calibrate.Calibration">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ogjpn.calibrate.</span></span><span class="sig-name descname"><span class="pre">Calibration</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">p</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_demographics</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">demographic_data_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">income_tax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'progressive'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pension</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'japan'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ogjpn/calibrate.html#Calibration"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ogjpn.calibrate.Calibration" title="Link to this definition">#</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ogjpn.calibrate.</span></span><span class="sig-name descname"><span class="pre">Calibration</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">p</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_demographics</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">demographic_data_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">income_tax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'progressive'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pension</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'japan'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labor_share</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ogjpn/calibrate.html#Calibration"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ogjpn.calibrate.Calibration" title="Link to this definition">#</a></dt>
 <dd><p>OG-Japan calibration built on top of an OG-Core Specifications.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="ogjpn.calibrate.Calibration.get_dict">
@@ -465,51 +490,34 @@ equal the steady-state residual G/Y.</p></li>
 <section id="module-ogjpn.tax_params">
 <span id="ogjpn-tax-params"></span><h2><code class="docutils literal notranslate"><span class="pre">ogjpn.tax_params</span></code><a class="headerlink" href="#module-ogjpn.tax_params" title="Link to this heading">#</a></h2>
 <p>OG-Japan tax calibration.</p>
-<p>This is a first-pass calibration of Japan’s income, payroll, capital, and
-consumption taxes, grounded in published rates rather than a tax
-microsimulator (Japan has no open-source equivalent of the US
-Tax-Calculator). It uses OG-Core’s linear (constant-rate) tax functions,
-which the model supports directly, so each rate is a single, sourced
-number rather than a fitted polynomial that would imply precision the
-underlying data does not support.</p>
-<dl class="simple">
-<dt>Sources (all real, retrieved 2026-08):</dt><dd><ul class="simple">
-<li><p>Consumption tax 10% since Oct 2019 (National Tax Agency / MOF).</p></li>
-<li><p>Personal income tax: national schedule 5-45% over seven brackets plus
-a flat 10% local inhabitant tax and a 2.1% reconstruction surtax on
-the national tax (PwC Worldwide Tax Summaries: Japan). The average
-effective personal income tax burden is low because of large
-deductions: OECD Taxing Wages 2025 puts the net average tax rate for a
-single worker at the average wage at 22.0%, of which roughly 15 points
-are employee social insurance, leaving income tax alone near 7-8%.</p></li>
-<li><p>Social insurance (payroll on labor): the full combined contribution is
-about 30% of remuneration (Japan Pension Service / MHLW): pension 18.3%,
-health ~10%, long-term care ~1.6% (age 40+), employment ~0.9%, with
-employer and employee sides both borne by labor. OG-Core’s payroll tax
-revenue funds general government rather than an earmarked pension pot,
-so all of it correctly finances spending.</p></li>
-<li><p>Capital income: listed dividends, interest, and share capital gains
-are taxed at a flat 20.315% (15% national + 5% local + 0.315%
-reconstruction surtax) (PwC Worldwide Tax Summaries: Japan).</p></li>
+<p>Japan has no open-source tax microsimulation model (no equivalent of the US
+Tax-Calculator), so taxes are calibrated from administrative data and
+published rates:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Personal income tax (default, <code class="docutils literal notranslate"><span class="pre">income_tax=&quot;progressive&quot;</span></code>): Japan’s
+progressive schedule on labor income, fitted to the National Tax
+Agency’s 2023 salary-bracket data, plus a flat effective tax on capital
+income, combined age by age into OG-Core’s DEP_totalinc form (see
+ogjpn.income_tax). The option <code class="docutils literal notranslate"><span class="pre">income_tax=&quot;linear&quot;</span></code> keeps the earlier
+constant rates (8% average, 30% marginal on labor, 20.315% on capital).</p></li>
+<li><p>Social insurance (payroll on labor): about 30% of remuneration (Japan
+Pension Service / MHLW): pension 18.3%, health ~10%, long-term care
+~0.8% (blended), employment ~0.9%, employer and employee sides both
+borne by labor. OG-Core’s payroll tax revenue funds general government
+rather than an earmarked pension pot. The contribution cap is not
+modeled.</p></li>
 <li><p>Corporate income: effective combined rate about 30% (national 23.2%
 plus local corporate, inhabitant, and enterprise taxes) (PwC / JETRO).</p></li>
+<li><p>Consumption tax: 10% since October 2019 (National Tax Agency / MOF).</p></li>
 </ul>
-</dd>
-</dl>
-<p>What is still first-pass: the income tax is treated as a single average
-effective rate with a separate constant marginal rate, rather than the full
-progressive schedule (refining it needs the income distribution behind the
-published effective rates). The social insurance contribution cap and the
-frac_tax_payroll split are not modeled. Model revenue reaches about 32% of
-GDP against Japan’s 37.6%. Japan’s property tax (Fixed Asset plus City
-Planning Tax, ~2% of GDP) could be added through OG-Core’s wealth tax
-(p_wealth), and doing so raises revenue to ~34% and trims C/Y, but it makes
-the consumption-tax reform experiment fail to converge, so it is deferred
-until that solver interaction is understood. The rest of the gap is
-inheritance and other minor taxes not modeled here.</p>
+</div></blockquote>
+<p>Japan’s property tax (Fixed Asset plus City Planning Tax, ~2% of GDP) could
+be added through OG-Core’s wealth tax but made the consumption-tax reform
+fail to converge, so it is deferred.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="ogjpn.tax_params.get_tax_params">
-<span class="sig-prename descclassname"><span class="pre">ogjpn.tax_params.</span></span><span class="sig-name descname"><span class="pre">get_tax_params</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num_ages</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">80</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">income_tax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'progressive'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mean_income</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ogjpn/tax_params.html#get_tax_params"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ogjpn.tax_params.get_tax_params" title="Link to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">ogjpn.tax_params.</span></span><span class="sig-name descname"><span class="pre">get_tax_params</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num_ages</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">80</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">income_tax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'progressive'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mean_income</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labor_share</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">capital_tax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ogjpn/tax_params.html#get_tax_params"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ogjpn.tax_params.get_tax_params" title="Link to this definition">#</a></dt>
 <dd><p>Return Japan tax parameters for <code class="docutils literal notranslate"><span class="pre">Specifications.update_specifications</span></code>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -523,6 +531,12 @@ marginal (30% labor, 20.315% capital) rates</p></li>
 <li><p><strong>mean_income</strong> (<em>float</em>) – the model’s income anchor
 (<code class="docutils literal notranslate"><span class="pre">mean_income_data</span></code>), used to put the progressive functions
 in model income units; defaults to OG-Core’s default value</p></li>
+<li><p><strong>labor_share</strong> (<em>array_like</em>) – labor share of income at each age, for
+the progressive option; defaults to the stored steady-state
+shares (ogjpn.income_tax.load_labor_share_by_age)</p></li>
+<li><p><strong>capital_tax</strong> (<em>float</em>) – flat tax rate on capital income for the
+progressive option; defaults to Japan’s effective rate
+(ogjpn.income_tax.effective_capital_tax_rate, about 5.7%)</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -532,6 +546,369 @@ in model income units; defaults to OG-Core’s default value</p></li>
 <dd class="field-odd"><p>tax_parameters (dict)</p>
 </dd>
 </dl>
+</dd></dl>
+
+</section>
+<section id="module-ogjpn.income_tax">
+<span id="ogjpn-income-tax"></span><h2><code class="docutils literal notranslate"><span class="pre">ogjpn.income_tax</span></code><a class="headerlink" href="#module-ogjpn.income_tax" title="Link to this heading">#</a></h2>
+<p>Japan’s progressive personal income tax, for OG-Core’s <code class="docutils literal notranslate"><span class="pre">DEP_totalinc</span></code>
+tax functions.</p>
+<p>Effective rates come from administrative data, not a tax simulator. The
+National Tax Agency’s 2023 salary survey (民間給与実態統計調査, see
+scripts/fetch_nta_tax_data.py) reports, for each salary bracket, the number
+of earners, total salary, number of taxpayers, and national income tax
+withheld. From these:</p>
+<ul class="simple">
+<li><p><strong>National income tax</strong> per bracket is the tax withheld (it includes the
+2.1% reconstruction surtax).</p></li>
+<li><p><strong>Resident tax</strong> (住民税, 10% of taxable income plus a flat per-capita
+levy) is not withheld by employers, so it is built from taxable income.
+Taxable income per taxpayer is recovered by inverting the national
+bracket schedule on tax withheld per taxpayer; resident taxable income is
+higher by the 50,000 yen gap between the national (480,000) and resident
+(430,000) basic deductions.</p></li>
+<li><p><strong>Effective rate</strong> = (national + resident tax) / salary, over all earners
+in the bracket, taxpayers or not.</p></li>
+</ul>
+<p>Marginal rates on labor income are statutory, evaluated at each bracket’s
+mean salary: (national bracket rate x 1.021 + 10% resident) x (1 - slope of
+the employment income deduction - employee social insurance rate), scaled
+by the share of the bracket that pays tax.</p>
+<p>Both are fitted with OG-Core’s <code class="docutils literal notranslate"><span class="pre">DEP_totalinc</span></code> form,</p>
+<blockquote>
+<div><p>rate(I) = (max - min) * (A I^2 + B I) / (A I^2 + B I + 1) + min,</p>
+</div></blockquote>
+<p>on income expressed relative to mean salary, then rescaled to the model’s
+income anchor (<code class="docutils literal notranslate"><span class="pre">mean_income_data</span></code>), so the progressivity relative to the
+mean is right whatever currency the anchor is in.</p>
+<p>Labor and capital income are taxed separately in Japan: salaries on the
+progressive schedule, most financial income at a flat rate. OG-Core’s
+<code class="docutils literal notranslate"><span class="pre">DEP_totalinc</span></code> form takes total income I, but its parameters can vary by
+age. At age s with labor share of income lambda_s, the separable tax
+lambda tau_L(lambda I) + (1 - lambda) tau_k is again a DEP_totalinc curve
+(<code class="docutils literal notranslate"><span class="pre">age_specific_params</span></code>), so each age gets its own curve. The labor shares
+come from the model’s own steady state (<code class="docutils literal notranslate"><span class="pre">labor_share_by_age</span></code>, iterated to
+a fixed point by scripts/calibrate_labor_share.py and stored in
+data/labor_share_by_age.csv).</p>
+<p>The capital rate tau_k is an effective rate, not the 20.315% statute:
+Japan taxes interest, dividends, and investment-trust income at 20.315%,
+but leaves untaxed the return on owner-occupied housing and the investment
+income of insurance and pension reserves, which together are most of
+household capital income (<code class="docutils literal notranslate"><span class="pre">effective_capital_tax_rate</span></code>).</p>
+<p>Limits: the survey covers private-sector salary earners only; deductions
+other than the basic deduction are averaged into the inversion; the labor
+share is an average over lifetime-income groups at each age; realized
+capital gains, rental income (taxed progressively), and NISA exemptions are
+left out of the capital rate.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="ogjpn.income_tax.age_specific_params">
+<span class="sig-prename descclassname"><span class="pre">ogjpn.income_tax.</span></span><span class="sig-name descname"><span class="pre">age_specific_params</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">etr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mtrx</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labor_share</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tau_k</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mean_income</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ogjpn/income_tax.html#age_specific_params"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ogjpn.income_tax.age_specific_params" title="Link to this definition">#</a></dt>
+<dd><p>DEP_totalinc parameters by age for a separable labor/capital tax.</p>
+<p>With labor share lambda at an age, labor income is lambda I, so the tax
+on labor is lambda I tau_L(lambda I) and on capital (1 - lambda) I
+tau_k. Dividing by I, the effective rate is lambda tau_L(lambda I) +
+(1 - lambda) tau_k: a DEP_totalinc curve with A and B scaled by lambda^2
+and lambda, and the top and bottom rates by lambda plus the constant
+capital term. The marginal rate on labor is the labor schedule at
+lambda I (A and B scaled, rates unchanged); the marginal rate on capital
+is tau_k.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>etr</strong> (<em>array_like</em>) – A, B, max, min of the labor effective rate on
+income relative to mean salary (fit_dep_totalinc)</p></li>
+<li><p><strong>mtrx</strong> (<em>array_like</em>) – same for the labor marginal rate</p></li>
+<li><p><strong>labor_share</strong> (<em>array_like</em>) – labor share of income at each age</p></li>
+<li><p><strong>tau_k</strong> (<em>float</em>) – flat tax rate on capital income</p></li>
+<li><p><strong>mean_income</strong> (<em>float</em>) – model income at the mean salary</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><dl class="simple">
+<dt>etr, mtrx, mtry parameters, each a list of S lists of six</dt><dd><p>OG-Core DEP_totalinc coefficients</p>
+</dd>
+</dl>
+</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>(tuple)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ogjpn.income_tax.bracket_rates">
+<span class="sig-prename descclassname"><span class="pre">ogjpn.income_tax.</span></span><span class="sig-name descname"><span class="pre">bracket_rates</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ogjpn/income_tax.html#bracket_rates"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ogjpn.income_tax.bracket_rates" title="Link to this definition">#</a></dt>
+<dd><p>Effective and marginal income tax rates by salary bracket.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>df</strong> (<em>pandas DataFrame</em>) – bracket data; defaults to load_nta_2023()</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><dl class="simple">
+<dt>mean salary, income relative to the mean</dt><dd><p>(<code class="docutils literal notranslate"><span class="pre">x</span></code>), taxable income per taxpayer, effective rate (national
++ resident), and statutory marginal rate on labor income, with
+earners and total salary as weights</p>
+</dd>
+</dl>
+</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>(pandas DataFrame)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ogjpn.income_tax.dep_totalinc">
+<span class="sig-prename descclassname"><span class="pre">ogjpn.income_tax.</span></span><span class="sig-name descname"><span class="pre">dep_totalinc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">params</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">income</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ogjpn/income_tax.html#dep_totalinc"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ogjpn.income_tax.dep_totalinc" title="Link to this definition">#</a></dt>
+<dd><p>OG-Core’s DEP_totalinc rate at <code class="docutils literal notranslate"><span class="pre">income</span></code> (shift terms zero).</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ogjpn.income_tax.effective_capital_tax_rate">
+<span class="sig-prename descclassname"><span class="pre">ogjpn.income_tax.</span></span><span class="sig-name descname"><span class="pre">effective_capital_tax_rate</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ogjpn/income_tax.html#effective_capital_tax_rate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ogjpn.income_tax.effective_capital_tax_rate" title="Link to this definition">#</a></dt>
+<dd><p>Income tax collected per yen of household capital income in Japan.</p>
+<p>The statutory 20.315% applies to interest, dividends, and investment
+trust income; household capital income also includes the return on
+owner-occupied housing and on insurance and pension reserves, which are
+not taxed as they accrue. FY2023 national accounts give about 5.7%.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>effective average tax rate on household capital income</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>(float)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ogjpn.income_tax.fit_dep_totalinc">
+<span class="sig-prename descclassname"><span class="pre">ogjpn.income_tax.</span></span><span class="sig-name descname"><span class="pre">fit_dep_totalinc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rate</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weights</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_cap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.56</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ogjpn/income_tax.html#fit_dep_totalinc"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ogjpn.income_tax.fit_dep_totalinc" title="Link to this definition">#</a></dt>
+<dd><p>Weighted least-squares fit of DEP_totalinc to rates on relative income.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>array_like</em>) – income relative to mean salary</p></li>
+<li><p><strong>rate</strong> (<em>array_like</em>) – tax rates to fit</p></li>
+<li><p><strong>weights</strong> (<em>array_like</em>) – observation weights</p></li>
+<li><p><strong>max_cap</strong> (<em>float</em>) – upper bound on the top rate (Japan’s top combined
+statutory rate is 45% x 1.021 + 10% = 55.9%)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A, B, max_rate, min_rate on relative income</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>(Numpy array)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ogjpn.income_tax.labor_share_by_age">
+<span class="sig-prename descclassname"><span class="pre">ogjpn.income_tax.</span></span><span class="sig-name descname"><span class="pre">labor_share_by_age</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ss</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ogjpn/income_tax.html#labor_share_by_age"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ogjpn.income_tax.labor_share_by_age" title="Link to this definition">#</a></dt>
+<dd><p>Labor share of household income (labor + capital) at each age, averaged
+over lifetime-income groups with population weights.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ss</strong> (<em>dict</em>) – OG-Core SS_vars</p></li>
+<li><p><strong>p</strong> (<em>OG-Core Specifications object</em>) – model parameters</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>labor share at each of the S ages</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>(Numpy array)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ogjpn.income_tax.load_labor_share_by_age">
+<span class="sig-prename descclassname"><span class="pre">ogjpn.income_tax.</span></span><span class="sig-name descname"><span class="pre">load_labor_share_by_age</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ogjpn/income_tax.html#load_labor_share_by_age"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ogjpn.income_tax.load_labor_share_by_age" title="Link to this definition">#</a></dt>
+<dd><p>Steady-state labor share of household income by model age, stored by
+scripts/calibrate_labor_share.py.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>labor share at each of the S model ages</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>(Numpy array)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ogjpn.income_tax.load_nta_2023">
+<span class="sig-prename descclassname"><span class="pre">ogjpn.income_tax.</span></span><span class="sig-name descname"><span class="pre">load_nta_2023</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ogjpn/income_tax.html#load_nta_2023"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ogjpn.income_tax.load_nta_2023" title="Link to this definition">#</a></dt>
+<dd><p>Salary-bracket data from the NTA 2023 salary survey.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><dl class="simple">
+<dt>one row per salary bracket with earners,</dt><dd><p>taxpayers, total salary, and income tax withheld (yen)</p>
+</dd>
+</dl>
+</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>(pandas DataFrame)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ogjpn.income_tax.to_model_units">
+<span class="sig-prename descclassname"><span class="pre">ogjpn.income_tax.</span></span><span class="sig-name descname"><span class="pre">to_model_units</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">params</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mean_income</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ogjpn/income_tax.html#to_model_units"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ogjpn.income_tax.to_model_units" title="Link to this definition">#</a></dt>
+<dd><p>Rescale DEP_totalinc parameters from relative income to the model’s
+income units, where mean income equals <code class="docutils literal notranslate"><span class="pre">mean_income</span></code>, and append
+OG-Core’s two shift terms (zero).</p>
+</dd></dl>
+
+</section>
+<section id="module-ogjpn.pension_params">
+<span id="ogjpn-pension-params"></span><h2><code class="docutils literal notranslate"><span class="pre">ogjpn.pension_params</span></code><a class="headerlink" href="#module-ogjpn.pension_params" title="Link to this heading">#</a></h2>
+<p>Japan’s public pension formula and the yen income anchor.</p>
+<p>Japan’s public pension has two tiers:</p>
+<ol class="arabic simple">
+<li><p><strong>Basic pension</strong> (国民年金・老齢基礎年金), a flat amount for 40 years of
+contributions: 795,000 yen a year in FY2023 (Japan Pension Service, 令和5
+年度, new recipients aged 67 or under).</p></li>
+<li><p><strong>Employees’ pension</strong> (厚生年金・報酬比例部分), proportional to earnings:
+annual benefit = average indexed standard remuneration x 5.481/1000 x
+months of coverage (the post-April-2003 rate, bonuses included). Over a
+40-year career that is 0.005481 x 40 = 21.9 percent of average earnings.</p></li>
+</ol>
+<p>OG-Core’s “US-Style Social Security” system computes a monthly benefit
+(PIA) from average indexed monthly earnings (AIME) with three bracket rates
+through the origin. Setting the second and third rates to 21.9 percent and
+placing the first bend point where 90 percent of AIME equals the basic
+pension plus 21.9 percent of AIME reproduces Japan’s formula exactly above
+the bend point:</p>
+<blockquote>
+<div><p>PIA = 0.9 b1 + 0.219 (AIME - b1) = basic + 0.219 AIME,  AIME &gt;= b1,</p>
+</div></blockquote>
+<p>with b1 = basic / (0.9 - 0.219). Below it, the minimum payment (the basic
+pension) is a floor. Benefits are capped at the basic pension plus 21.9
+percent of the contribution ceiling (standard monthly remuneration of
+650,000 yen plus a 1.5 million yen bonus a year).</p>
+<p>The formula is in yen, so it needs the model’s income anchor in yen:
+<code class="docutils literal notranslate"><span class="pre">mean_income_data</span></code> is set to the mean salary of full-year private-sector
+earners in 2023 (NTA 民間給与実態統計調査, 4.595 million yen), the same data
+year and source as the income-tax calibration (ogjpn.income_tax).</p>
+<p>Limits: the spouse’s basic pension (第3号被保険者) and survivor benefits are
+not modeled; AIME averages the best 35 years (OG-Core’s
+<code class="docutils literal notranslate"><span class="pre">avg_earn_num_years</span></code>) rather than all months of coverage; and the
+macroeconomic slide (マクロ経済スライド) is a policy experiment
+(docs results), not part of the baseline formula.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="ogjpn.pension_params.get_pension_params">
+<span class="sig-prename descclassname"><span class="pre">ogjpn.pension_params.</span></span><span class="sig-name descname"><span class="pre">get_pension_params</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ogjpn/pension_params.html#get_pension_params"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ogjpn.pension_params.get_pension_params" title="Link to this definition">#</a></dt>
+<dd><p>Return Japan’s pension and income-anchor parameters for
+<code class="docutils literal notranslate"><span class="pre">Specifications.update_specifications</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><dl class="simple">
+<dt>pension system parameters (yen, monthly) and</dt><dd><p><code class="docutils literal notranslate"><span class="pre">mean_income_data</span></code> (yen, annual)</p>
+</dd>
+</dl>
+</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>(dict)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ogjpn.pension_params.japan_monthly_benefit">
+<span class="sig-prename descclassname"><span class="pre">ogjpn.pension_params.</span></span><span class="sig-name descname"><span class="pre">japan_monthly_benefit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">aime</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ogjpn/pension_params.html#japan_monthly_benefit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ogjpn.pension_params.japan_monthly_benefit" title="Link to this definition">#</a></dt>
+<dd><p>Japan’s two-tier monthly benefit at average monthly earnings <code class="docutils literal notranslate"><span class="pre">aime</span></code>
+(yen), capped at the contribution ceiling: the target the OG-Core
+parameters reproduce.</p>
+</dd></dl>
+
+</section>
+<section id="module-ogjpn.reporting">
+<span id="ogjpn-reporting"></span><h2><code class="docutils literal notranslate"><span class="pre">ogjpn.reporting</span></code><a class="headerlink" href="#module-ogjpn.reporting" title="Link to this heading">#</a></h2>
+<p>Helpers for reporting reform transitions.</p>
+<p>OG-Core holds government purchases at a fixed share of GDP until the
+debt-closure rule starts (period <code class="docutils literal notranslate"><span class="pre">tG1</span></code>, 20 by default). A reform that
+raises revenue or cuts spending therefore pays down government debt over
+those first 20 years. Lower debt frees household saving for private
+capital (“crowding in”), so capital rises along the transition even when
+households save less. After <code class="docutils literal notranslate"><span class="pre">tG1</span></code> the closure rule brings debt back to
+its target and capital returns toward its new steady state. These helpers
+measure that channel so the write-ups state it from the solved paths.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="ogjpn.reporting.crowding_in">
+<span class="sig-prename descclassname"><span class="pre">ogjpn.reporting.</span></span><span class="sig-name descname"><span class="pre">crowding_in</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">base</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reform</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">20</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ogjpn/reporting.html#crowding_in"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ogjpn.reporting.crowding_in" title="Link to this definition">#</a></dt>
+<dd><p>Summarize the debt channel of a reform at year <code class="docutils literal notranslate"><span class="pre">t</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>base</strong> (<em>dict</em>) – baseline TPI_vars</p></li>
+<li><p><strong>reform</strong> (<em>dict</em>) – reform TPI_vars</p></li>
+<li><p><strong>t</strong> (<em>int</em>) – year to report (default 20, OG-Core’s tG1)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><dl class="simple">
+<dt>debt/GDP in baseline and reform at <code class="docutils literal notranslate"><span class="pre">t</span></code>, and percent</dt><dd><p>changes vs baseline in household wealth B and capital K at
+<code class="docutils literal notranslate"><span class="pre">t</span></code> and in K in the last period of the path</p>
+</dd>
+</dl>
+</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>(dict)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ogjpn.reporting.crowding_in_text">
+<span class="sig-prename descclassname"><span class="pre">ogjpn.reporting.</span></span><span class="sig-name descname"><span class="pre">crowding_in_text</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">summary</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ogjpn/reporting.html#crowding_in_text"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ogjpn.reporting.crowding_in_text" title="Link to this definition">#</a></dt>
+<dd><p>One paragraph stating the debt channel for a reform.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ogjpn.reporting.npv_in_gdp_terms">
+<span class="sig-prename descclassname"><span class="pre">ogjpn.reporting.</span></span><span class="sig-name descname"><span class="pre">npv_in_gdp_terms</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">table</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">base</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gdp_yen_tn</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ogjpn/reporting.html#npv_in_gdp_terms"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ogjpn.reporting.npv_in_gdp_terms" title="Link to this definition">#</a></dt>
+<dd><p>Restate an <code class="docutils literal notranslate"><span class="pre">ogcore.output_tables.npv_table</span></code> result (model units)
+relative to the baseline’s first-year GDP, and in trillion yen at
+Japan’s actual GDP.</p>
+<p>The model’s currency anchor (mean salary) is not the same concept as
+income per model person, so yen figures computed with the model’s
+<code class="docutils literal notranslate"><span class="pre">factor</span></code> would not be economy-wide totals. Dividing by first-year
+model GDP gives a unit-free share, which is then scaled by Japan’s
+measured nominal GDP.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>table</strong> (<em>pandas DataFrame</em>) – npv_table output; first column the
+variable label, other columns one per discount rate</p></li>
+<li><p><strong>base</strong> (<em>dict</em>) – baseline TPI_vars</p></li>
+<li><p><strong>gdp_yen_tn</strong> (<em>float</em>) – nominal GDP in trillion yen; defaults to FY2023
+(Cabinet Office national accounts, ogjpn.wealth)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>same layout, each cell “x.x% of GDP (¥y tn)”</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>(pandas DataFrame)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ogjpn.reporting.path">
+<span class="sig-prename descclassname"><span class="pre">ogjpn.reporting.</span></span><span class="sig-name descname"><span class="pre">path</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tpi</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ogjpn/reporting.html#path"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ogjpn.reporting.path" title="Link to this definition">#</a></dt>
+<dd><p>A TPI variable as a flat time path.</p>
 </dd></dl>
 
 </section>
@@ -704,6 +1081,30 @@ the 2019 survey’s age bands.</p>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-ogjpn.tax_params"><code class="docutils literal notranslate"><span class="pre">ogjpn.tax_params</span></code></a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ogjpn.tax_params.get_tax_params"><code class="docutils literal notranslate"><span class="pre">get_tax_params()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-ogjpn.income_tax"><code class="docutils literal notranslate"><span class="pre">ogjpn.income_tax</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ogjpn.income_tax.age_specific_params"><code class="docutils literal notranslate"><span class="pre">age_specific_params()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ogjpn.income_tax.bracket_rates"><code class="docutils literal notranslate"><span class="pre">bracket_rates()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ogjpn.income_tax.dep_totalinc"><code class="docutils literal notranslate"><span class="pre">dep_totalinc()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ogjpn.income_tax.effective_capital_tax_rate"><code class="docutils literal notranslate"><span class="pre">effective_capital_tax_rate()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ogjpn.income_tax.fit_dep_totalinc"><code class="docutils literal notranslate"><span class="pre">fit_dep_totalinc()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ogjpn.income_tax.labor_share_by_age"><code class="docutils literal notranslate"><span class="pre">labor_share_by_age()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ogjpn.income_tax.load_labor_share_by_age"><code class="docutils literal notranslate"><span class="pre">load_labor_share_by_age()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ogjpn.income_tax.load_nta_2023"><code class="docutils literal notranslate"><span class="pre">load_nta_2023()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ogjpn.income_tax.to_model_units"><code class="docutils literal notranslate"><span class="pre">to_model_units()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-ogjpn.pension_params"><code class="docutils literal notranslate"><span class="pre">ogjpn.pension_params</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ogjpn.pension_params.get_pension_params"><code class="docutils literal notranslate"><span class="pre">get_pension_params()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ogjpn.pension_params.japan_monthly_benefit"><code class="docutils literal notranslate"><span class="pre">japan_monthly_benefit()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-ogjpn.reporting"><code class="docutils literal notranslate"><span class="pre">ogjpn.reporting</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ogjpn.reporting.crowding_in"><code class="docutils literal notranslate"><span class="pre">crowding_in()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ogjpn.reporting.crowding_in_text"><code class="docutils literal notranslate"><span class="pre">crowding_in_text()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ogjpn.reporting.npv_in_gdp_terms"><code class="docutils literal notranslate"><span class="pre">npv_in_gdp_terms()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ogjpn.reporting.path"><code class="docutils literal notranslate"><span class="pre">path()</span></code></a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-ogjpn.wealth"><code class="docutils literal notranslate"><span class="pre">ogjpn.wealth</span></code></a><ul class="nav section-nav flex-column">

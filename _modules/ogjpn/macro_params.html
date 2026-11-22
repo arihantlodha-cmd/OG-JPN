@@ -351,8 +351,7 @@
 <span class="c1"># Steady-state residual G/Y for each (income tax, pension) calibration (see</span>
 <span class="c1"># the alpha_G comment below); the transition needs alpha_G equal to it.</span>
 <span class="n">ALPHA_G</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="p">(</span><span class="s2">"progressive"</span><span class="p">,</span> <span class="s2">"japan"</span><span class="p">):</span> <span class="mf">0.065</span><span class="p">,</span>
-    <span class="p">(</span><span class="s2">"progressive"</span><span class="p">,</span> <span class="s2">"us"</span><span class="p">):</span> <span class="mf">0.070</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">"progressive"</span><span class="p">,</span> <span class="s2">"japan"</span><span class="p">):</span> <span class="mf">0.058</span><span class="p">,</span>
     <span class="p">(</span><span class="s2">"linear"</span><span class="p">,</span> <span class="s2">"us"</span><span class="p">):</span> <span class="mf">0.062</span><span class="p">,</span>
 <span class="p">}</span>
 
@@ -425,9 +424,10 @@
     <span class="c1"># That inconsistency, not solver tuning, is why the transition would not</span>
     <span class="c1"># converge. Setting alpha_G to the steady-state residual share removes it.</span>
     <span class="c1"># The residual depends on the calibration: 0.062 with the linear (flat)</span>
-    <span class="c1"># income tax and US pension formula, 0.070 with the progressive income</span>
-    <span class="c1"># tax (which raises revenue by about a point of GDP), and 0.065 with the</span>
-    <span class="c1"># progressive tax and Japan's two-tier pension (which pays out more).</span>
+    <span class="c1"># income tax and US pension formula, and 0.058 with the default</span>
+    <span class="c1"># progressive labor tax, effective capital tax, and Japan's two-tier</span>
+    <span class="c1"># pension. (Under the earlier total-income progressive tax it was 0.065;</span>
+    <span class="c1"># the effective capital rate collects about 1.5 points of GDP less.)</span>
     <span class="k">if</span> <span class="p">(</span><span class="n">income_tax</span><span class="p">,</span> <span class="n">pension</span><span class="p">)</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">ALPHA_G</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
             <span class="sa">f</span><span class="s2">"no alpha_G calibrated for income_tax=</span><span class="si">{</span><span class="n">income_tax</span><span class="si">!r}</span><span class="s2">, "</span>

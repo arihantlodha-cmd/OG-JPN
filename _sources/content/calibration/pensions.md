@@ -35,16 +35,16 @@ The formula is in yen, so the model's income must be in yen. OG-Core converts mo
 
 ## Result
 
-With Japan's formula and the yen anchor, the model's currency factor is about 6.7 million yen per model unit, and:
+With Japan's formula and the yen anchor, the model's currency factor is about 6.6 million yen per model unit. The comparison below was computed under the earlier income-tax calibration (the progressive schedule applied to total income); with the current separable tax the US-formula variant no longer reaches a steady state and is not kept as an option.
 
 | | US formula, dollar anchor | Japan formula, yen anchor | Japan |
 |---|---|---|---|
 | Pension outlays / GDP, first year of transition | 0.096 | **0.102** | 0.104 (MHLW, FY2022) |
-| Pension outlays / GDP, steady state | 0.115 | 0.121 | |
+| Pension outlays / GDP, steady state | 0.115 | 0.121 (0.120 with the current tax) | |
 
 The two-tier formula pays more at the bottom (the flat basic pension) than the US formula's bend points, which brings the first-year bill to within 0.2 points of GDP of Japan's. Labor, output, capital, and revenue change by under 0.5 percent; government purchases absorb the higher pension bill, falling from 7.0 to 6.5 percent of GDP.
 
-OG-Core caps `initial_guess_factor_SS` at 500,000, and the steady state does not converge from a guess at that cap when the factor is 6.7 million, so `ogjpn.calibrate.update_specs` sets the guess directly. [OG-Core #1292](https://github.com/PSLmodels/OG-Core/pull/1292) proposes raising the cap.
+OG-Core caps `initial_guess_factor_SS` at 500,000, and the steady state does not converge from a guess at that cap when the factor is 6.6 million, so `ogjpn.calibrate.update_specs` sets the guess directly. [OG-Core #1292](https://github.com/PSLmodels/OG-Core/pull/1292) proposes raising the cap.
 
 ## Known limitations
 

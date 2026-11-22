@@ -362,25 +362,25 @@
 </thead>
 <tbody>
 <tr class="row-even"><td><p>First year of the transition (2025)</p></td>
-<td><p><strong>0.102</strong></p></td>
+<td><p><strong>0.101</strong></p></td>
 <td><p><strong>0.104</strong> (MHLW, FY2022 budget: 58.9 trillion yen)</p></td>
 </tr>
 <tr class="row-odd"><td><p>10 years on</p></td>
-<td><p>0.109</p></td>
+<td><p>0.107</p></td>
 <td><p></p></td>
 </tr>
 <tr class="row-even"><td><p>20 years on</p></td>
-<td><p>0.122</p></td>
+<td><p>0.121</p></td>
 <td><p></p></td>
 </tr>
 <tr class="row-odd"><td><p>Steady state</p></td>
-<td><p>0.121</p></td>
+<td><p>0.120</p></td>
 <td><p></p></td>
 </tr>
 </tbody>
 </table>
 </div>
-<p>Fed Japan’s demographics, its pension formula, and its tax data, the model reproduces Japan’s pension bill within 0.2 points of GDP, and shows it rising by about two points over the next two decades as the population ages further.</p>
+<p>Fed Japan’s demographics, its pension formula, and its tax data, the model reproduces Japan’s pension bill within 0.3 points of GDP, and shows it rising by about two points over the next two decades as the population ages further.</p>
 </section>
 <section id="steady-state-ratios">
 <h2>Steady-state ratios<a class="headerlink" href="#steady-state-ratios" title="Link to this heading">#</a></h2>
@@ -394,7 +394,7 @@
 </thead>
 <tbody>
 <tr class="row-even"><td><p>Interest rate <code class="docutils literal notranslate"><span class="pre">r</span></code></p></td>
-<td><p>0.046</p></td>
+<td><p>0.042</p></td>
 <td><p>~0.01-0.04</p></td>
 <td><p>top edge of range</p></td>
 </tr>
@@ -404,22 +404,22 @@
 <td><p>matches (at OG-Core’s cap)</p></td>
 </tr>
 <tr class="row-even"><td><p>Tax revenue / GDP (incl. social insurance)</p></td>
-<td><p>0.333</p></td>
+<td><p>0.318</p></td>
 <td><p>0.344 (OECD, 2022)</p></td>
 <td><p>close</p></td>
 </tr>
 <tr class="row-odd"><td><p>Personal income tax / GDP</p></td>
-<td><p>0.073</p></td>
-<td><p>~0.064 (OECD, 2021)</p></td>
-<td><p>somewhat high, see <a class="reference internal" href="taxes.html#chap-taxes"><span class="std std-ref">Taxes</span></a></p></td>
+<td><p>0.057</p></td>
+<td><p>0.053 (national accounts, FY2023); 0.064 (OECD, 2021)</p></td>
+<td><p>close, see <a class="reference internal" href="taxes.html#chap-taxes"><span class="std std-ref">Taxes</span></a></p></td>
 </tr>
 <tr class="row-even"><td><p>Capital / GDP <code class="docutils literal notranslate"><span class="pre">K/Y</span></code></p></td>
-<td><p>4.33</p></td>
+<td><p>4.50</p></td>
 <td><p>~5.4 (Penn World Table)</p></td>
 <td><p>consistent with the source-matched benchmark</p></td>
 </tr>
 <tr class="row-odd"><td><p>Household wealth / GDP</p></td>
-<td><p>5.47</p></td>
+<td><p>5.67</p></td>
 <td><p>3.69 (national accounts, excl. land)</p></td>
 <td><p>high</p></td>
 </tr>
@@ -444,11 +444,11 @@
 </section>
 <section id="the-capital-output-ratio-is-not-a-free-parameter">
 <h2>The capital-output ratio is not a free parameter<a class="headerlink" href="#the-capital-output-ratio-is-not-a-free-parameter" title="Link to this heading">#</a></h2>
-<p>In the steady state, <code class="docutils literal notranslate"><span class="pre">K/Y</span> <span class="pre">=</span> <span class="pre">gamma</span> <span class="pre">/</span> <span class="pre">(r</span> <span class="pre">+</span> <span class="pre">delta)</span></code> exactly, from the firm’s first-order condition. A low return and a high capital share together force a high <code class="docutils literal notranslate"><span class="pre">K/Y</span></code>, and both are real inputs here: <code class="docutils literal notranslate"><span class="pre">r</span></code> is in Japan’s range and <code class="docutils literal notranslate"><span class="pre">gamma</span> <span class="pre">=</span> <span class="pre">0.43</span></code> is the Penn World Table capital share. The ~3.0-3.5 figure often quoted for Japan uses a narrow net-capital concept. Measured from the same source as <code class="docutils literal notranslate"><span class="pre">gamma</span></code> (Penn World Table capital stock over real GDP, FRED <code class="docutils literal notranslate"><span class="pre">RKNANPJPA666NRUG</span></code> and <code class="docutils literal notranslate"><span class="pre">RGDPNAJPA666NRUG</span></code>), Japan’s ratio is about 5.4, so the model’s 4.33 is not too high. <code class="docutils literal notranslate"><span class="pre">K/Y</span></code> should not be tuned down.</p>
+<p>In the steady state, <code class="docutils literal notranslate"><span class="pre">K/Y</span> <span class="pre">=</span> <span class="pre">gamma</span> <span class="pre">/</span> <span class="pre">(r</span> <span class="pre">+</span> <span class="pre">delta)</span></code> exactly, from the firm’s first-order condition. A low return and a high capital share together force a high <code class="docutils literal notranslate"><span class="pre">K/Y</span></code>, and both are real inputs here: <code class="docutils literal notranslate"><span class="pre">r</span></code> is in Japan’s range and <code class="docutils literal notranslate"><span class="pre">gamma</span> <span class="pre">=</span> <span class="pre">0.43</span></code> is the Penn World Table capital share. The ~3.0-3.5 figure often quoted for Japan uses a narrow net-capital concept. Measured from the same source as <code class="docutils literal notranslate"><span class="pre">gamma</span></code> (Penn World Table capital stock over real GDP, FRED <code class="docutils literal notranslate"><span class="pre">RKNANPJPA666NRUG</span></code> and <code class="docutils literal notranslate"><span class="pre">RGDPNAJPA666NRUG</span></code>), Japan’s ratio is about 5.4, so the model’s 4.50 is not too high. <code class="docutils literal notranslate"><span class="pre">K/Y</span></code> should not be tuned down.</p>
 </section>
 <section id="consumption-runs-high-because-government-purchases-are-squeezed">
 <h2>Consumption runs high because government purchases are squeezed<a class="headerlink" href="#consumption-runs-high-because-government-purchases-are-squeezed" title="Link to this heading">#</a></h2>
-<p><code class="docutils literal notranslate"><span class="pre">G</span></code> is the residual that closes the government budget, so when revenue falls short, <code class="docutils literal notranslate"><span class="pre">G</span></code> is squeezed and output the government would buy shows up as household consumption instead. Adding Japan’s full social insurance lifted revenue from 25.9 to 32.2 percent of GDP and brought <code class="docutils literal notranslate"><span class="pre">C/Y</span></code> down from 0.79, and the progressive income tax lifted it to 33.3 percent and <code class="docutils literal notranslate"><span class="pre">C/Y</span></code> to 0.73. The remaining gap has a ceiling the model cannot remove: Japan’s government spends about 39.1 percent of GDP and collects 37.6 percent, funding the difference by borrowing. A steady state with a fixed debt ratio must balance, so it cannot reproduce a government that permanently spends more than it collects. One measurable consequence of the high consumption share: in the model each point of consumption tax raises about 3.9 trillion yen (at FY2023 GDP), against about 3.0 trillion in Japan (FY2024 budget, 30.2 trillion yen at 10 percent), so consumption-tax revenue is overstated by roughly the same third.</p>
+<p><code class="docutils literal notranslate"><span class="pre">G</span></code> is the residual that closes the government budget, so when revenue falls short, <code class="docutils literal notranslate"><span class="pre">G</span></code> is squeezed and output the government would buy shows up as household consumption instead. Adding Japan’s full social insurance lifted revenue from 25.9 to 32.2 percent of GDP and brought <code class="docutils literal notranslate"><span class="pre">C/Y</span></code> down from 0.79, and the progressive income tax lifted it to 33.3 percent and <code class="docutils literal notranslate"><span class="pre">C/Y</span></code> to 0.73. Taxing capital income at Japan’s effective rate (5.7 percent, <a class="reference internal" href="taxes.html#chap-taxes"><span class="std std-ref">Taxes</span></a>) rather than progressively brought revenue back to 31.8 percent, with <code class="docutils literal notranslate"><span class="pre">C/Y</span></code> at 0.74. The remaining gap has a ceiling the model cannot remove: Japan’s government spends about 39.1 percent of GDP and collects 37.6 percent, funding the difference by borrowing. A steady state with a fixed debt ratio must balance, so it cannot reproduce a government that permanently spends more than it collects. One measurable consequence of the high consumption share: in the model each point of consumption tax raises about 3.9 trillion yen (at FY2023 GDP), against about 3.0 trillion in Japan (FY2024 budget, 30.2 trillion yen at 10 percent), so consumption-tax revenue is overstated by roughly the same third.</p>
 </section>
 <section id="household-wealth">
 <h2>Household wealth<a class="headerlink" href="#household-wealth" title="Link to this heading">#</a></h2>
@@ -456,7 +456,7 @@
 </section>
 <section id="the-debt-path-along-the-transition">
 <h2>The debt path along the transition<a class="headerlink" href="#the-debt-path-along-the-transition" title="Link to this heading">#</a></h2>
-<p>Debt does not stay at its target along the transition. Government purchases are fixed at <code class="docutils literal notranslate"><span class="pre">alpha_G</span></code> times GDP for the first 20 years (OG-Core’s <code class="docutils literal notranslate"><span class="pre">tG1</span></code>), and because today’s pension bill (10.2 percent of GDP) is below its long-run level (12.1 percent), the government runs surpluses and debt falls from 2.0 to about 1.6 times GDP by year 20. OG-Core’s debt-closure rule then adjusts purchases to bring debt back to target: purchases jump to about 11.5 percent of GDP in year 20 and settle back to 6.5 percent as debt returns to 2.0 by around year 40. The jump is a feature of the closure rule, not of Japan. It affects baseline and reform alike, so it largely differences out of reform comparisons, but year-20 levels of <code class="docutils literal notranslate"><span class="pre">G</span></code> should not be read literally.</p>
+<p>Debt does not stay at its target along the transition. Government purchases are fixed at <code class="docutils literal notranslate"><span class="pre">alpha_G</span></code> times GDP for the first 20 years (OG-Core’s <code class="docutils literal notranslate"><span class="pre">tG1</span></code>), and because today’s pension bill (10.1 percent of GDP) is below its long-run level (12.0 percent), the government runs surpluses and debt falls from 2.0 to about 1.6 times GDP by year 20. OG-Core’s debt-closure rule then adjusts purchases to bring debt back to target: purchases jump to about 10.4 percent of GDP in year 20 and settle back toward 6 percent as debt returns to 2.0 by around year 40. The jump is a feature of the closure rule, not of Japan. It affects baseline and reform alike, so it largely differences out of reform comparisons, but year-20 levels of <code class="docutils literal notranslate"><span class="pre">G</span></code> should not be read literally.</p>
 </section>
 </section>
 

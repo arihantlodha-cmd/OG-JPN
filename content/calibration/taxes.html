@@ -335,6 +335,8 @@
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#data">Data</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#effective-and-marginal-rates">Effective and marginal rates</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#functional-form">Functional form</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#labor-and-capital-income-are-taxed-separately">Labor and capital income are taxed separately</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-effective-tax-rate-on-capital-income">The effective tax rate on capital income</a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#other-taxes">Other taxes</a></li>
@@ -406,8 +408,23 @@
 \[
 \tau(I) = (\tau^{max} - \tau^{min}) \frac{A I^2 + B I}{A I^2 + B I + 1} + \tau^{min},
 \]</div>
-<p>a curve bounded between a minimum and a maximum rate. It tracks Japan’s schedule within about 2 percentage points across all brackets. (A two-parameter Heathcote-Storesletten-Violante function cannot: its rate flattens as income rises while Japan’s steepens, and it puts the top bracket at 17 percent against an actual 40.) The fit is on income relative to mean salary and is rescaled to the model’s income anchor (<code class="docutils literal notranslate"><span class="pre">mean_income_data</span></code>), so progressivity relative to the mean is right whichever currency the anchor is in. Capital income keeps a flat marginal rate of 20.315 percent.</p>
-<p>The finding that matters for the model: <strong>at mean income, Japan’s marginal income tax rate is about 12 percent</strong>, not the 30 percent the earlier flat calibration used. A flat 30 percent is correct only around 10 to 12 million yen. Since labor supply responds to the marginal rate, this changes the economy: in the steady state, labor supply is 9 percent higher and output 8 percent higher than under the flat calibration, and tax revenue rises from 32.2 to 33.3 percent of GDP.</p>
+<p>a curve bounded between a minimum and a maximum rate. It tracks Japan’s schedule within about 2 percentage points across all brackets. (A two-parameter Heathcote-Storesletten-Violante function cannot: its rate flattens as income rises while Japan’s steepens, and it puts the top bracket at 17 percent against an actual 40.) The fit is on income relative to mean salary and is rescaled to the model’s income anchor (<code class="docutils literal notranslate"><span class="pre">mean_income_data</span></code>), so progressivity relative to the mean is right whichever currency the anchor is in.</p>
+</section>
+<section id="labor-and-capital-income-are-taxed-separately">
+<h3>Labor and capital income are taxed separately<a class="headerlink" href="#labor-and-capital-income-are-taxed-separately" title="Link to this heading">#</a></h3>
+<p>Japan taxes salaries on the progressive schedule and most financial income at a flat rate, but OG-Core’s <code class="docutils literal notranslate"><span class="pre">DEP_totalinc</span></code> form is a function of total income <span class="math notranslate nohighlight">\(I\)</span>. Its parameters can vary by age, though, and that is enough. If <span class="math notranslate nohighlight">\(\lambda_s\)</span> is the labor share of income at age <span class="math notranslate nohighlight">\(s\)</span>, the separable tax</p>
+<div class="math notranslate nohighlight">
+\[
+\frac{T_s(I)}{I} = \lambda_s \, \tau_L(\lambda_s I) + (1 - \lambda_s) \, \tau_k
+\]</div>
+<p>is again a <code class="docutils literal notranslate"><span class="pre">DEP_totalinc</span></code> curve, with <span class="math notranslate nohighlight">\(A\)</span> scaled by <span class="math notranslate nohighlight">\(\lambda_s^2\)</span>, <span class="math notranslate nohighlight">\(B\)</span> by <span class="math notranslate nohighlight">\(\lambda_s\)</span>, and the top and bottom rates by <span class="math notranslate nohighlight">\(\lambda_s\)</span> plus the constant <span class="math notranslate nohighlight">\((1-\lambda_s)\tau_k\)</span> (<code class="docutils literal notranslate"><span class="pre">ogjpn.income_tax.age_specific_params</span></code>). The marginal rate on labor is the labor schedule at labor income <span class="math notranslate nohighlight">\(\lambda_s I\)</span>, and the marginal rate on capital is <span class="math notranslate nohighlight">\(\tau_k\)</span>. The labor shares come from the model’s own steady state: <code class="docutils literal notranslate"><span class="pre">scripts/calibrate_labor_share.py</span></code> solves the steady state, recomputes the shares, and repeats until they stop moving (two iterations, maximum change 0.0004), and stores them in <code class="docutils literal notranslate"><span class="pre">ogjpn/data/labor_share_by_age.csv</span></code>. The share is near 1 at age 21 and falls to about 0.2 at 100, as retirees live on their savings.</p>
+</section>
+<section id="the-effective-tax-rate-on-capital-income">
+<h3>The effective tax rate on capital income<a class="headerlink" href="#the-effective-tax-rate-on-capital-income" title="Link to this heading">#</a></h3>
+<p>The statutory 20.315 percent (15 percent national, 5 percent local, 0.315 percent reconstruction surtax) applies to interest, dividends, and investment-trust income. Most household capital income is not of that kind. In the FY2023 national accounts (Cabinet Office, household sector income accounts), households received 30.5 trillion yen of property income and 18.0 trillion yen of net operating surplus on owner-occupied housing, 48.5 trillion yen in all. Of this, only 13.7 trillion yen is taxed at the flat rate: interest actually received (3.6 trillion before the FISIM adjustment), dividends (9.5), and investment-trust income (0.6). The rest, the return on owner-occupied housing and the investment income of insurance and pension reserves, is untaxed as it accrues. Japan therefore collects about <strong>5.7 yen of income tax per 100 yen of household capital income</strong>, and that is the rate the model uses for capital (<code class="docutils literal notranslate"><span class="pre">ogjpn.income_tax.effective_capital_tax_rate</span></code>), on average and at the margin.</p>
+<p>The earlier version applied the progressive schedule to total income and attributed its high personal income tax revenue (7.3 percent of GDP) to taxing capital income progressively. That was the wrong diagnosis. Taxing the model’s capital income at the statutory 20.315 percent would have raised revenue further, to 8.9 percent of GDP, because the model’s capital income (about 20 percent of GDP, the return on all household wealth including land and housing) is much broader than the income Japan actually taxes. Separating the two taxes and using the effective rate brings personal income tax to <strong>5.75 percent of GDP</strong>, against 5.3 percent in the national accounts (taxes on household income, 31.6 trillion yen in FY2023) and 6.4 percent in OECD <em>Revenue Statistics</em>, whose personal income tax category also includes tax withheld on dividends paid to companies.</p>
+<p>Lower tax on capital raises saving: in the steady state the capital-output ratio rises from 4.33 to 4.50, the interest rate falls from 4.6 to 4.2 percent, and output rises 3.9 percent. Total tax revenue falls from 33.3 to 31.8 percent of GDP, and government purchases (the budget residual) from 6.5 to 5.8 percent.</p>
+<p>The finding that matters for the model: <strong>at mean income, Japan’s marginal income tax rate is about 12 percent</strong>, not the 30 percent the earlier flat calibration used. A flat 30 percent is correct only around 10 to 12 million yen. Since labor supply responds to the marginal rate, this changes the economy: in the steady state, labor supply was 9 percent higher and output 8 percent higher than under the flat calibration (both measured before the capital-tax change above).</p>
 <p>The earlier flat calibration is still available as <code class="docutils literal notranslate"><span class="pre">Calibration(p,</span> <span class="pre">income_tax=&quot;linear&quot;)</span></code>.</p>
 </section>
 </section>
@@ -421,9 +438,9 @@
 </tr>
 </thead>
 <tbody>
-<tr class="row-even"><td><p>Capital income, marginal (<code class="docutils literal notranslate"><span class="pre">mtry_params</span></code>)</p></td>
-<td><p>20.315%</p></td>
-<td><p>15% national + 5% local + 0.315% reconstruction surtax on dividends, interest, and listed capital gains</p></td>
+<tr class="row-even"><td><p>Capital income, average and marginal</p></td>
+<td><p>5.7%</p></td>
+<td><p>effective: the statutory 20.315% on interest, dividends, and investment-trust income, over all household capital income including owner-occupied housing (FY2023 national accounts); see above</p></td>
 </tr>
 <tr class="row-odd"><td><p>Social insurance (<code class="docutils literal notranslate"><span class="pre">tau_payroll</span></code>)</p></td>
 <td><p>30%</p></td>
@@ -448,7 +465,8 @@
 <section id="known-limitations">
 <h2>Known limitations<a class="headerlink" href="#known-limitations" title="Link to this heading">#</a></h2>
 <ul class="simple">
-<li><p><strong>Personal income tax revenue runs high.</strong> The model collects about 7.3 percent of GDP in personal income tax against about 6.4 percent in Japan (OECD <em>Revenue Statistics</em>: 18.9 percent of tax revenue in 2021). OG-Core’s total-income form applies the progressive schedule to capital income as well, while Japan taxes most capital income separately at 20.315 percent and exempts some (NISA, pension savings) entirely.</p></li>
+<li><p><strong>Labor shares are averaged within each age.</strong> The split between labor and capital income uses the population-weighted average share at each age, so a high-wealth and a low-wealth household of the same age face the same mix.</p></li>
+<li><p><strong>The capital rate leaves some income out.</strong> Realized capital gains on shares (not income in the national accounts), rental income (taxed progressively), and NISA exemptions are not in the effective rate. The effective rate also serves as the marginal rate, which is right for the average saver but understates the margin for someone adding to taxable securities.</p></li>
 <li><p><strong>Salary earners only.</strong> The survey covers private-sector salary earners; the self-employed and public employees are not in it.</p></li>
 <li><p><strong>Deductions are averaged.</strong> The inversion treats all deductions other than the basic deduction as part of an average; it does not distinguish dependants or spouses.</p></li>
 <li><p><strong>No contribution cap in the payroll tax.</strong> Social insurance contributions in Japan are capped; <code class="docutils literal notranslate"><span class="pre">tau_payroll</span></code> is flat, which overstates the rate for high earners.</p></li>
@@ -527,6 +545,8 @@
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#data">Data</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#effective-and-marginal-rates">Effective and marginal rates</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#functional-form">Functional form</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#labor-and-capital-income-are-taxed-separately">Labor and capital income are taxed separately</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#the-effective-tax-rate-on-capital-income">The effective tax rate on capital income</a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#other-taxes">Other taxes</a></li>

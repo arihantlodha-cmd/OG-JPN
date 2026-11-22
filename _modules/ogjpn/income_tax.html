@@ -1,0 +1,759 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ogjpn.income_tax &#8212; OG-JPN</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=55c26ed414f5f8a31ebb" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=55c26ed414f5f8a31ebb" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/sphinx-book-theme.css?v=3c74b3bc" />
+    <link rel="stylesheet" type="text/css" href="../../_static/togglebutton.css?v=9c3e77be" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=6a604523" />
+  
+  <!-- So that users can add custom icons -->
+  <script defer src="../../_static/scripts/fontawesome.js?digest=55c26ed414f5f8a31ebb"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=55c26ed414f5f8a31ebb" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=55c26ed414f5f8a31ebb" />
+
+    <script src="../../_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../_static/copybutton.js?v=f281be69"></script>
+    <script src="../../_static/scripts/sphinx-book-theme.js?v=fab101a9"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../../_static/togglebutton.js?v=b8b12719"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script data-sd-tabs-storage-prefix="sphinx-design-tab-id-" src="../../_static/design-tabs.js?v=fcb327ea"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="../../_static/sphinx-thebe.js?v=c100c467"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/ogjpn/income_tax';</script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
+    <link rel="canonical" href="https://arihantlodha-cmd.github.io/OG-JPN/_modules/ogjpn/income_tax.html" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="" />
+  
+    
+    <script src="../../_static/searchtools.js"></script>
+    <script src="../../_static/language_data.js"></script>
+    <script src="../../searchindex.js"></script>
+  
+  </head>
+  <body data-default-mode="">
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+  
+  
+  
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../content/intro/intro.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">OG-JPN</p>
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Getting started</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../content/intro/running.html">Installing and running OG-JPN</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../content/contributing/contributor_guide.html">Contributor guide</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Calibration</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../content/calibration/demographics.html">Demographics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../content/calibration/macro.html">Macroeconomic and fiscal parameters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../content/calibration/taxes.html">Taxes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../content/calibration/pensions.html">Public pensions and the yen anchor</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../content/calibration/wealth.html">Initial distribution of household wealth</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../content/calibration/validation.html">Validation against Japan</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Policy results</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../content/results/overview.html">Policy results</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../content/results/consumption_tax.html">Raising the consumption tax</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../content/results/retirement_age.html">Raising the pension eligibility age</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../content/results/replacement_rate.html">Cutting the pension replacement rate</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../content/api/public_api.html">OG-JPN API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../content/roadmap.html">Roadmap</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../content/references.html">Data sources and references</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button pst-navbar-icon"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button>
+
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button>
+
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1></h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <h1>Source code for ogjpn.income_tax</h1><div class="highlight"><pre>
+<span></span><span class="sd">"""</span>
+<span class="sd">Japan's progressive personal income tax, for OG-Core's ``DEP_totalinc``</span>
+<span class="sd">tax functions.</span>
+
+<span class="sd">Effective rates come from administrative data, not a tax simulator. The</span>
+<span class="sd">National Tax Agency's 2023 salary survey (民間給与実態統計調査, see</span>
+<span class="sd">scripts/fetch_nta_tax_data.py) reports, for each salary bracket, the number</span>
+<span class="sd">of earners, total salary, number of taxpayers, and national income tax</span>
+<span class="sd">withheld. From these:</span>
+
+<span class="sd">* **National income tax** per bracket is the tax withheld (it includes the</span>
+<span class="sd">  2.1% reconstruction surtax).</span>
+<span class="sd">* **Resident tax** (住民税, 10% of taxable income plus a flat per-capita</span>
+<span class="sd">  levy) is not withheld by employers, so it is built from taxable income.</span>
+<span class="sd">  Taxable income per taxpayer is recovered by inverting the national</span>
+<span class="sd">  bracket schedule on tax withheld per taxpayer; resident taxable income is</span>
+<span class="sd">  higher by the 50,000 yen gap between the national (480,000) and resident</span>
+<span class="sd">  (430,000) basic deductions.</span>
+<span class="sd">* **Effective rate** = (national + resident tax) / salary, over all earners</span>
+<span class="sd">  in the bracket, taxpayers or not.</span>
+
+<span class="sd">Marginal rates on labor income are statutory, evaluated at each bracket's</span>
+<span class="sd">mean salary: (national bracket rate x 1.021 + 10% resident) x (1 - slope of</span>
+<span class="sd">the employment income deduction - employee social insurance rate), scaled</span>
+<span class="sd">by the share of the bracket that pays tax.</span>
+
+<span class="sd">Both are fitted with OG-Core's ``DEP_totalinc`` form,</span>
+
+<span class="sd">    rate(I) = (max - min) * (A I^2 + B I) / (A I^2 + B I + 1) + min,</span>
+
+<span class="sd">on income expressed relative to mean salary, then rescaled to the model's</span>
+<span class="sd">income anchor (``mean_income_data``), so the progressivity relative to the</span>
+<span class="sd">mean is right whatever currency the anchor is in.</span>
+
+<span class="sd">Labor and capital income are taxed separately in Japan: salaries on the</span>
+<span class="sd">progressive schedule, most financial income at a flat rate. OG-Core's</span>
+<span class="sd">``DEP_totalinc`` form takes total income I, but its parameters can vary by</span>
+<span class="sd">age. At age s with labor share of income lambda_s, the separable tax</span>
+<span class="sd">lambda tau_L(lambda I) + (1 - lambda) tau_k is again a DEP_totalinc curve</span>
+<span class="sd">(``age_specific_params``), so each age gets its own curve. The labor shares</span>
+<span class="sd">come from the model's own steady state (``labor_share_by_age``, iterated to</span>
+<span class="sd">a fixed point by scripts/calibrate_labor_share.py and stored in</span>
+<span class="sd">data/labor_share_by_age.csv).</span>
+
+<span class="sd">The capital rate tau_k is an effective rate, not the 20.315% statute:</span>
+<span class="sd">Japan taxes interest, dividends, and investment-trust income at 20.315%,</span>
+<span class="sd">but leaves untaxed the return on owner-occupied housing and the investment</span>
+<span class="sd">income of insurance and pension reserves, which together are most of</span>
+<span class="sd">household capital income (``effective_capital_tax_rate``).</span>
+
+<span class="sd">Limits: the survey covers private-sector salary earners only; deductions</span>
+<span class="sd">other than the basic deduction are averaged into the inversion; the labor</span>
+<span class="sd">share is an average over lifetime-income groups at each age; realized</span>
+<span class="sd">capital gains, rental income (taxed progressively), and NISA exemptions are</span>
+<span class="sd">left out of the capital rate.</span>
+<span class="sd">"""</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">importlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">resources</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">scipy.optimize</span><span class="w"> </span><span class="kn">import</span> <span class="n">least_squares</span>
+
+<span class="c1"># National income tax schedule (所得税, 2015 onward): upper bound of taxable</span>
+<span class="c1"># income, rate, and the quick-calculation deduction (控除額), in yen.</span>
+<span class="n">NATIONAL_SCHEDULE</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">(</span><span class="mi">1_950_000</span><span class="p">,</span> <span class="mf">0.05</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+    <span class="p">(</span><span class="mi">3_300_000</span><span class="p">,</span> <span class="mf">0.10</span><span class="p">,</span> <span class="mi">97_500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mi">6_950_000</span><span class="p">,</span> <span class="mf">0.20</span><span class="p">,</span> <span class="mi">427_500</span><span class="p">),</span>
+    <span class="p">(</span><span class="mi">9_000_000</span><span class="p">,</span> <span class="mf">0.23</span><span class="p">,</span> <span class="mi">636_000</span><span class="p">),</span>
+    <span class="p">(</span><span class="mi">18_000_000</span><span class="p">,</span> <span class="mf">0.33</span><span class="p">,</span> <span class="mi">1_536_000</span><span class="p">),</span>
+    <span class="p">(</span><span class="mi">40_000_000</span><span class="p">,</span> <span class="mf">0.40</span><span class="p">,</span> <span class="mi">2_796_000</span><span class="p">),</span>
+    <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">,</span> <span class="mf">0.45</span><span class="p">,</span> <span class="mi">4_796_000</span><span class="p">),</span>
+<span class="p">]</span>
+<span class="n">SURTAX</span> <span class="o">=</span> <span class="mf">1.021</span>  <span class="c1"># special income tax for reconstruction (復興特別所得税)</span>
+<span class="n">RESIDENT_RATE</span> <span class="o">=</span> <span class="mf">0.10</span>  <span class="c1"># 住民税 所得割 (prefectural 4% + municipal 6%)</span>
+<span class="n">RESIDENT_BASIC_GAP</span> <span class="o">=</span> <span class="mi">50_000</span>  <span class="c1"># 480,000 national vs 430,000 resident basic deduction</span>
+<span class="n">RESIDENT_PER_CAPITA</span> <span class="o">=</span> <span class="mi">5_000</span>  <span class="c1"># 均等割, approximate</span>
+<span class="c1"># Employee social insurance on salary, and the pension contribution cap.</span>
+<span class="n">SI_EMPLOYEE</span> <span class="o">=</span> <span class="mf">0.15</span>  <span class="c1"># pension 9.15% + health ~5% + care/employment ~0.9%</span>
+<span class="n">PENSION_EMPLOYEE</span> <span class="o">=</span> <span class="mf">0.0915</span>
+<span class="n">PENSION_CAP_SALARY</span> <span class="o">=</span> <span class="mi">650_000</span> <span class="o">*</span> <span class="mi">12</span> <span class="o">+</span> <span class="mi">1_500_000</span>  <span class="c1"># top standard monthly pay + bonus cap</span>
+
+
+<span class="c1"># Statutory flat rate on interest, dividends, and listed capital gains</span>
+<span class="c1"># (15% national + 5% local + 0.315% reconstruction surtax).</span>
+<span class="n">CAPITAL_TAX_STATUTORY</span> <span class="o">=</span> <span class="mf">0.20315</span>
+
+<span class="c1"># Household (incl. unincorporated enterprises) primary income, FY2023,</span>
+<span class="c1"># trillion yen (Cabinet Office, 2023年度国民経済計算, 制度部門別所得支出勘定</span>
+<span class="c1"># 家計, table 1: 第1次所得の配分勘定).</span>
+<span class="n">SNA_FY2023_HH_PROPERTY_INCOME</span> <span class="o">=</span> <span class="mf">30.5</span>  <span class="c1"># 財産所得（受取）</span>
+<span class="n">SNA_FY2023_HH_OWNER_OCCUPIED_SURPLUS</span> <span class="o">=</span> <span class="mf">18.0</span>  <span class="c1"># 営業余剰（持ち家）（純）</span>
+<span class="c1"># The parts taxed at the flat rate: interest actually received (before the</span>
+<span class="c1"># FISIM adjustment), dividends, and investment-trust income.</span>
+<span class="n">SNA_FY2023_HH_INTEREST_PRE_FISIM</span> <span class="o">=</span> <span class="mf">3.6</span>
+<span class="n">SNA_FY2023_HH_DIVIDENDS</span> <span class="o">=</span> <span class="mf">9.5</span>
+<span class="n">SNA_FY2023_HH_INVESTMENT_TRUST</span> <span class="o">=</span> <span class="mf">0.6</span>
+
+
+<div class="viewcode-block" id="effective_capital_tax_rate">
+<a class="viewcode-back" href="../../content/api/public_api.html#ogjpn.income_tax.effective_capital_tax_rate">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">effective_capital_tax_rate</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Income tax collected per yen of household capital income in Japan.</span>
+
+<span class="sd">    The statutory 20.315% applies to interest, dividends, and investment</span>
+<span class="sd">    trust income; household capital income also includes the return on</span>
+<span class="sd">    owner-occupied housing and on insurance and pension reserves, which are</span>
+<span class="sd">    not taxed as they accrue. FY2023 national accounts give about 5.7%.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        (float): effective average tax rate on household capital income</span>
+<span class="sd">    """</span>
+    <span class="n">taxed</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">SNA_FY2023_HH_INTEREST_PRE_FISIM</span>
+        <span class="o">+</span> <span class="n">SNA_FY2023_HH_DIVIDENDS</span>
+        <span class="o">+</span> <span class="n">SNA_FY2023_HH_INVESTMENT_TRUST</span>
+    <span class="p">)</span>
+    <span class="n">total</span> <span class="o">=</span> <span class="n">SNA_FY2023_HH_PROPERTY_INCOME</span> <span class="o">+</span> <span class="n">SNA_FY2023_HH_OWNER_OCCUPIED_SURPLUS</span>
+    <span class="k">return</span> <span class="n">CAPITAL_TAX_STATUTORY</span> <span class="o">*</span> <span class="n">taxed</span> <span class="o">/</span> <span class="n">total</span></div>
+
+
+
+<div class="viewcode-block" id="load_labor_share_by_age">
+<a class="viewcode-back" href="../../content/api/public_api.html#ogjpn.income_tax.load_labor_share_by_age">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">load_labor_share_by_age</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Steady-state labor share of household income by model age, stored by</span>
+<span class="sd">    scripts/calibrate_labor_share.py.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        (Numpy array): labor share at each of the S model ages</span>
+<span class="sd">    """</span>
+    <span class="n">path</span> <span class="o">=</span> <span class="n">resources</span><span class="o">.</span><span class="n">files</span><span class="p">(</span><span class="s2">"ogjpn"</span><span class="p">)</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="s2">"data/labor_share_by_age.csv"</span><span class="p">)</span>
+    <span class="k">with</span> <span class="n">path</span><span class="o">.</span><span class="n">open</span><span class="p">()</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">labor_share</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span></div>
+
+
+
+<div class="viewcode-block" id="labor_share_by_age">
+<a class="viewcode-back" href="../../content/api/public_api.html#ogjpn.income_tax.labor_share_by_age">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">labor_share_by_age</span><span class="p">(</span><span class="n">ss</span><span class="p">,</span> <span class="n">p</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Labor share of household income (labor + capital) at each age, averaged</span>
+<span class="sd">    over lifetime-income groups with population weights.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        ss (dict): OG-Core SS_vars</span>
+<span class="sd">        p (OG-Core Specifications object): model parameters</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        (Numpy array): labor share at each of the S ages</span>
+<span class="sd">    """</span>
+    <span class="n">labor</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">ss</span><span class="p">[</span><span class="s2">"labor_income"</span><span class="p">])</span>
+    <span class="n">capital</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">ss</span><span class="p">[</span><span class="s2">"capital_income"</span><span class="p">])</span>
+    <span class="n">weights</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">omega_SS</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">labor</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">weights</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="n">labor</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+        <span class="n">weights</span> <span class="o">=</span> <span class="n">weights</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">lambdas</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">weights</span> <span class="o">*</span> <span class="n">labor</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">weights</span> <span class="o">*</span> <span class="p">(</span><span class="n">labor</span> <span class="o">+</span> <span class="n">capital</span><span class="p">))</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="age_specific_params">
+<a class="viewcode-back" href="../../content/api/public_api.html#ogjpn.income_tax.age_specific_params">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">age_specific_params</span><span class="p">(</span><span class="n">etr</span><span class="p">,</span> <span class="n">mtrx</span><span class="p">,</span> <span class="n">labor_share</span><span class="p">,</span> <span class="n">tau_k</span><span class="p">,</span> <span class="n">mean_income</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    DEP_totalinc parameters by age for a separable labor/capital tax.</span>
+
+<span class="sd">    With labor share lambda at an age, labor income is lambda I, so the tax</span>
+<span class="sd">    on labor is lambda I tau_L(lambda I) and on capital (1 - lambda) I</span>
+<span class="sd">    tau_k. Dividing by I, the effective rate is lambda tau_L(lambda I) +</span>
+<span class="sd">    (1 - lambda) tau_k: a DEP_totalinc curve with A and B scaled by lambda^2</span>
+<span class="sd">    and lambda, and the top and bottom rates by lambda plus the constant</span>
+<span class="sd">    capital term. The marginal rate on labor is the labor schedule at</span>
+<span class="sd">    lambda I (A and B scaled, rates unchanged); the marginal rate on capital</span>
+<span class="sd">    is tau_k.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        etr (array_like): A, B, max, min of the labor effective rate on</span>
+<span class="sd">            income relative to mean salary (fit_dep_totalinc)</span>
+<span class="sd">        mtrx (array_like): same for the labor marginal rate</span>
+<span class="sd">        labor_share (array_like): labor share of income at each age</span>
+<span class="sd">        tau_k (float): flat tax rate on capital income</span>
+<span class="sd">        mean_income (float): model income at the mean salary</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        (tuple): etr, mtrx, mtry parameters, each a list of S lists of six</span>
+<span class="sd">            OG-Core DEP_totalinc coefficients</span>
+<span class="sd">    """</span>
+    <span class="n">out_etr</span><span class="p">,</span> <span class="n">out_mtrx</span><span class="p">,</span> <span class="n">out_mtry</span> <span class="o">=</span> <span class="p">[],</span> <span class="p">[],</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">lam</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">labor_share</span><span class="p">,</span> <span class="nb">float</span><span class="p">),</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">):</span>
+        <span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="n">mx</span><span class="p">,</span> <span class="n">mn</span> <span class="o">=</span> <span class="n">etr</span>
+        <span class="n">c</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">lam</span><span class="p">)</span> <span class="o">*</span> <span class="n">tau_k</span>
+        <span class="n">out_etr</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+            <span class="n">to_model_units</span><span class="p">(</span>
+                <span class="p">[</span><span class="n">A</span> <span class="o">*</span> <span class="n">lam</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span> <span class="n">B</span> <span class="o">*</span> <span class="n">lam</span><span class="p">,</span> <span class="n">lam</span> <span class="o">*</span> <span class="n">mx</span> <span class="o">+</span> <span class="n">c</span><span class="p">,</span> <span class="n">lam</span> <span class="o">*</span> <span class="n">mn</span> <span class="o">+</span> <span class="n">c</span><span class="p">],</span> <span class="n">mean_income</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+        <span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="n">mx</span><span class="p">,</span> <span class="n">mn</span> <span class="o">=</span> <span class="n">mtrx</span>
+        <span class="n">out_mtrx</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">to_model_units</span><span class="p">([</span><span class="n">A</span> <span class="o">*</span> <span class="n">lam</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span> <span class="n">B</span> <span class="o">*</span> <span class="n">lam</span><span class="p">,</span> <span class="n">mx</span><span class="p">,</span> <span class="n">mn</span><span class="p">],</span> <span class="n">mean_income</span><span class="p">))</span>
+        <span class="n">out_mtry</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">to_model_units</span><span class="p">([</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="n">tau_k</span><span class="p">,</span> <span class="n">tau_k</span><span class="p">],</span> <span class="n">mean_income</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">out_etr</span><span class="p">,</span> <span class="n">out_mtrx</span><span class="p">,</span> <span class="n">out_mtry</span></div>
+
+
+
+<div class="viewcode-block" id="load_nta_2023">
+<a class="viewcode-back" href="../../content/api/public_api.html#ogjpn.income_tax.load_nta_2023">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">load_nta_2023</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Salary-bracket data from the NTA 2023 salary survey.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        (pandas DataFrame): one row per salary bracket with earners,</span>
+<span class="sd">            taxpayers, total salary, and income tax withheld (yen)</span>
+<span class="sd">    """</span>
+    <span class="n">path</span> <span class="o">=</span> <span class="n">resources</span><span class="o">.</span><span class="n">files</span><span class="p">(</span><span class="s2">"ogjpn"</span><span class="p">)</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="s2">"data/nta_2023_salary_tax.csv"</span><span class="p">)</span>
+    <span class="k">with</span> <span class="n">path</span><span class="o">.</span><span class="n">open</span><span class="p">()</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">f</span><span class="p">)</span></div>
+
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_invert_national</span><span class="p">(</span><span class="n">tax_base</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Taxable income that produces ``tax_base`` under the national schedule."""</span>
+    <span class="k">for</span> <span class="n">upper</span><span class="p">,</span> <span class="n">rate</span><span class="p">,</span> <span class="n">deduction</span> <span class="ow">in</span> <span class="n">NATIONAL_SCHEDULE</span><span class="p">:</span>
+        <span class="n">taxable</span> <span class="o">=</span> <span class="p">(</span><span class="n">tax_base</span> <span class="o">+</span> <span class="n">deduction</span><span class="p">)</span> <span class="o">/</span> <span class="n">rate</span>
+        <span class="k">if</span> <span class="n">taxable</span> <span class="o">&lt;=</span> <span class="n">upper</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">taxable</span>
+    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"tax out of range"</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_national_rate</span><span class="p">(</span><span class="n">taxable</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">upper</span><span class="p">,</span> <span class="n">rate</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">NATIONAL_SCHEDULE</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">taxable</span> <span class="o">&lt;=</span> <span class="n">upper</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">rate</span>
+    <span class="k">return</span> <span class="n">NATIONAL_SCHEDULE</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_employment_deduction_slope</span><span class="p">(</span><span class="n">salary</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Slope of the employment income deduction (給与所得控除, 2020 onward)."""</span>
+    <span class="k">for</span> <span class="n">upper</span><span class="p">,</span> <span class="n">slope</span> <span class="ow">in</span> <span class="p">[</span>
+        <span class="p">(</span><span class="mi">1_625_000</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">),</span>
+        <span class="p">(</span><span class="mi">1_800_000</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">),</span>
+        <span class="p">(</span><span class="mi">3_600_000</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">),</span>
+        <span class="p">(</span><span class="mi">6_600_000</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">),</span>
+        <span class="p">(</span><span class="mi">8_500_000</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">),</span>
+    <span class="p">]:</span>
+        <span class="k">if</span> <span class="n">salary</span> <span class="o">&lt;=</span> <span class="n">upper</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">slope</span>
+    <span class="k">return</span> <span class="mf">0.0</span>
+
+
+<div class="viewcode-block" id="bracket_rates">
+<a class="viewcode-back" href="../../content/api/public_api.html#ogjpn.income_tax.bracket_rates">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">bracket_rates</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Effective and marginal income tax rates by salary bracket.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        df (pandas DataFrame): bracket data; defaults to load_nta_2023()</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        (pandas DataFrame): mean salary, income relative to the mean</span>
+<span class="sd">            (``x``), taxable income per taxpayer, effective rate (national</span>
+<span class="sd">            + resident), and statutory marginal rate on labor income, with</span>
+<span class="sd">            earners and total salary as weights</span>
+<span class="sd">    """</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">load_nta_2023</span><span class="p">()</span> <span class="k">if</span> <span class="n">df</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">df</span>
+    <span class="n">earners</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">earners</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span>
+    <span class="n">taxpayers</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">taxpayers</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span>
+    <span class="n">salary</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">salary_total_yen</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span>
+    <span class="n">tax</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">income_tax_withheld_yen</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span>
+
+    <span class="n">mean_salary</span> <span class="o">=</span> <span class="n">salary</span> <span class="o">/</span> <span class="n">earners</span>
+    <span class="n">mean_all</span> <span class="o">=</span> <span class="n">salary</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">/</span> <span class="n">earners</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+    <span class="n">taxable</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+        <span class="p">[</span><span class="n">_invert_national</span><span class="p">(</span><span class="n">t</span> <span class="o">/</span> <span class="n">n</span> <span class="o">/</span> <span class="n">SURTAX</span><span class="p">)</span> <span class="k">for</span> <span class="n">t</span><span class="p">,</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">tax</span><span class="p">,</span> <span class="n">taxpayers</span><span class="p">)]</span>
+    <span class="p">)</span>
+    <span class="n">resident</span> <span class="o">=</span> <span class="n">taxpayers</span> <span class="o">*</span> <span class="p">(</span>
+        <span class="n">RESIDENT_RATE</span> <span class="o">*</span> <span class="p">(</span><span class="n">taxable</span> <span class="o">+</span> <span class="n">RESIDENT_BASIC_GAP</span><span class="p">)</span> <span class="o">+</span> <span class="n">RESIDENT_PER_CAPITA</span>
+    <span class="p">)</span>
+    <span class="n">etr</span> <span class="o">=</span> <span class="p">(</span><span class="n">tax</span> <span class="o">+</span> <span class="n">resident</span><span class="p">)</span> <span class="o">/</span> <span class="n">salary</span>
+
+    <span class="n">si</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span>
+        <span class="n">mean_salary</span> <span class="o">&lt;=</span> <span class="n">PENSION_CAP_SALARY</span><span class="p">,</span>
+        <span class="n">SI_EMPLOYEE</span><span class="p">,</span>
+        <span class="n">SI_EMPLOYEE</span> <span class="o">-</span> <span class="n">PENSION_EMPLOYEE</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">slope</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">_employment_deduction_slope</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">mean_salary</span><span class="p">])</span>
+    <span class="n">nat</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">_national_rate</span><span class="p">(</span><span class="n">a</span><span class="p">)</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">taxable</span><span class="p">])</span>
+    <span class="n">mtr</span> <span class="o">=</span> <span class="p">(</span><span class="n">nat</span> <span class="o">*</span> <span class="n">SURTAX</span> <span class="o">+</span> <span class="n">RESIDENT_RATE</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">slope</span> <span class="o">-</span> <span class="n">si</span><span class="p">)</span> <span class="o">*</span> <span class="n">taxpayers</span> <span class="o">/</span> <span class="n">earners</span>
+
+    <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+        <span class="p">{</span>
+            <span class="s2">"mean_salary_yen"</span><span class="p">:</span> <span class="n">mean_salary</span><span class="p">,</span>
+            <span class="s2">"x"</span><span class="p">:</span> <span class="n">mean_salary</span> <span class="o">/</span> <span class="n">mean_all</span><span class="p">,</span>
+            <span class="s2">"taxable_yen"</span><span class="p">:</span> <span class="n">taxable</span><span class="p">,</span>
+            <span class="s2">"etr"</span><span class="p">:</span> <span class="n">etr</span><span class="p">,</span>
+            <span class="s2">"mtr_labor"</span><span class="p">:</span> <span class="n">mtr</span><span class="p">,</span>
+            <span class="s2">"earners"</span><span class="p">:</span> <span class="n">earners</span><span class="p">,</span>
+            <span class="s2">"salary_total_yen"</span><span class="p">:</span> <span class="n">salary</span><span class="p">,</span>
+        <span class="p">}</span>
+    <span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="dep_totalinc">
+<a class="viewcode-back" href="../../content/api/public_api.html#ogjpn.income_tax.dep_totalinc">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">dep_totalinc</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">income</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""OG-Core's DEP_totalinc rate at ``income`` (shift terms zero)."""</span>
+    <span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="n">max_rate</span><span class="p">,</span> <span class="n">min_rate</span> <span class="o">=</span> <span class="n">params</span>
+    <span class="n">q</span> <span class="o">=</span> <span class="n">A</span> <span class="o">*</span> <span class="n">income</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">B</span> <span class="o">*</span> <span class="n">income</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">max_rate</span> <span class="o">-</span> <span class="n">min_rate</span><span class="p">)</span> <span class="o">*</span> <span class="n">q</span> <span class="o">/</span> <span class="p">(</span><span class="n">q</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="n">min_rate</span></div>
+
+
+
+<div class="viewcode-block" id="fit_dep_totalinc">
+<a class="viewcode-back" href="../../content/api/public_api.html#ogjpn.income_tax.fit_dep_totalinc">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">fit_dep_totalinc</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">rate</span><span class="p">,</span> <span class="n">weights</span><span class="p">,</span> <span class="n">max_cap</span><span class="o">=</span><span class="mf">0.56</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Weighted least-squares fit of DEP_totalinc to rates on relative income.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        x (array_like): income relative to mean salary</span>
+<span class="sd">        rate (array_like): tax rates to fit</span>
+<span class="sd">        weights (array_like): observation weights</span>
+<span class="sd">        max_cap (float): upper bound on the top rate (Japan's top combined</span>
+<span class="sd">            statutory rate is 45% x 1.021 + 10% = 55.9%)</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        (Numpy array): A, B, max_rate, min_rate on relative income</span>
+<span class="sd">    """</span>
+    <span class="n">x</span><span class="p">,</span> <span class="n">rate</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="nb">float</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">rate</span><span class="p">,</span> <span class="nb">float</span><span class="p">)</span>
+    <span class="n">w</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">weights</span><span class="p">,</span> <span class="nb">float</span><span class="p">)</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">weights</span><span class="p">))</span>
+    <span class="n">fit</span> <span class="o">=</span> <span class="n">least_squares</span><span class="p">(</span>
+        <span class="k">lambda</span> <span class="n">p</span><span class="p">:</span> <span class="p">(</span><span class="n">dep_totalinc</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span> <span class="o">-</span> <span class="n">rate</span><span class="p">)</span> <span class="o">*</span> <span class="n">w</span><span class="p">,</span>
+        <span class="n">x0</span><span class="o">=</span><span class="p">[</span><span class="mf">0.05</span><span class="p">,</span> <span class="mf">0.05</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>
+        <span class="n">bounds</span><span class="o">=</span><span class="p">([</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">,</span> <span class="n">max_cap</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">]),</span>
+    <span class="p">)</span>
+    <span class="k">return</span> <span class="n">fit</span><span class="o">.</span><span class="n">x</span></div>
+
+
+
+<div class="viewcode-block" id="to_model_units">
+<a class="viewcode-back" href="../../content/api/public_api.html#ogjpn.income_tax.to_model_units">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">to_model_units</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">mean_income</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Rescale DEP_totalinc parameters from relative income to the model's</span>
+<span class="sd">    income units, where mean income equals ``mean_income``, and append</span>
+<span class="sd">    OG-Core's two shift terms (zero).</span>
+<span class="sd">    """</span>
+    <span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="n">max_rate</span><span class="p">,</span> <span class="n">min_rate</span> <span class="o">=</span> <span class="n">params</span>
+    <span class="k">return</span> <span class="p">[</span>
+        <span class="nb">float</span><span class="p">(</span><span class="n">A</span><span class="p">)</span> <span class="o">/</span> <span class="n">mean_income</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span>
+        <span class="nb">float</span><span class="p">(</span><span class="n">B</span><span class="p">)</span> <span class="o">/</span> <span class="n">mean_income</span><span class="p">,</span>
+        <span class="nb">float</span><span class="p">(</span><span class="n">max_rate</span><span class="p">),</span>
+        <span class="nb">float</span><span class="p">(</span><span class="n">min_rate</span><span class="p">),</span>
+        <span class="mf">0.0</span><span class="p">,</span>
+        <span class="mf">0.0</span><span class="p">,</span>
+    <span class="p">]</span></div>
+
+</pre></div>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Ari Lodha
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2026.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../_static/scripts/bootstrap.js?digest=55c26ed414f5f8a31ebb"></script>
+<script defer src="../../_static/scripts/pydata-sphinx-theme.js?digest=55c26ed414f5f8a31ebb"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

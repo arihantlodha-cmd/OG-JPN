@@ -1,0 +1,533 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ogjpn.reporting &#8212; OG-JPN</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=55c26ed414f5f8a31ebb" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=55c26ed414f5f8a31ebb" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/sphinx-book-theme.css?v=3c74b3bc" />
+    <link rel="stylesheet" type="text/css" href="../../_static/togglebutton.css?v=9c3e77be" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=6a604523" />
+  
+  <!-- So that users can add custom icons -->
+  <script defer src="../../_static/scripts/fontawesome.js?digest=55c26ed414f5f8a31ebb"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=55c26ed414f5f8a31ebb" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=55c26ed414f5f8a31ebb" />
+
+    <script src="../../_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../_static/copybutton.js?v=f281be69"></script>
+    <script src="../../_static/scripts/sphinx-book-theme.js?v=fab101a9"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../../_static/togglebutton.js?v=b8b12719"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script data-sd-tabs-storage-prefix="sphinx-design-tab-id-" src="../../_static/design-tabs.js?v=fcb327ea"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="../../_static/sphinx-thebe.js?v=c100c467"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/ogjpn/reporting';</script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
+    <link rel="canonical" href="https://arihantlodha-cmd.github.io/OG-JPN/_modules/ogjpn/reporting.html" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="" />
+  
+    
+    <script src="../../_static/searchtools.js"></script>
+    <script src="../../_static/language_data.js"></script>
+    <script src="../../searchindex.js"></script>
+  
+  </head>
+  <body data-default-mode="">
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+  
+  
+  
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../content/intro/intro.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">OG-JPN</p>
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Getting started</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../content/intro/running.html">Installing and running OG-JPN</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../content/contributing/contributor_guide.html">Contributor guide</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Calibration</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../content/calibration/demographics.html">Demographics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../content/calibration/macro.html">Macroeconomic and fiscal parameters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../content/calibration/taxes.html">Taxes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../content/calibration/pensions.html">Public pensions and the yen anchor</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../content/calibration/wealth.html">Initial distribution of household wealth</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../content/calibration/validation.html">Validation against Japan</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Policy results</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../content/results/overview.html">Policy results</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../content/results/consumption_tax.html">Raising the consumption tax</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../content/results/retirement_age.html">Raising the pension eligibility age</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../content/results/replacement_rate.html">Cutting the pension replacement rate</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../content/api/public_api.html">OG-JPN API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../content/roadmap.html">Roadmap</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../content/references.html">Data sources and references</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button pst-navbar-icon"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button>
+
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button>
+
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1></h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <h1>Source code for ogjpn.reporting</h1><div class="highlight"><pre>
+<span></span><span class="sd">"""</span>
+<span class="sd">Helpers for reporting reform transitions.</span>
+
+<span class="sd">OG-Core holds government purchases at a fixed share of GDP until the</span>
+<span class="sd">debt-closure rule starts (period ``tG1``, 20 by default). A reform that</span>
+<span class="sd">raises revenue or cuts spending therefore pays down government debt over</span>
+<span class="sd">those first 20 years. Lower debt frees household saving for private</span>
+<span class="sd">capital ("crowding in"), so capital rises along the transition even when</span>
+<span class="sd">households save less. After ``tG1`` the closure rule brings debt back to</span>
+<span class="sd">its target and capital returns toward its new steady state. These helpers</span>
+<span class="sd">measure that channel so the write-ups state it from the solved paths.</span>
+<span class="sd">"""</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+
+
+<div class="viewcode-block" id="path">
+<a class="viewcode-back" href="../../content/api/public_api.html#ogjpn.reporting.path">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">path</span><span class="p">(</span><span class="n">tpi</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""A TPI variable as a flat time path."""</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">tpi</span><span class="p">[</span><span class="n">key</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span></div>
+
+
+
+<div class="viewcode-block" id="crowding_in">
+<a class="viewcode-back" href="../../content/api/public_api.html#ogjpn.reporting.crowding_in">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">crowding_in</span><span class="p">(</span><span class="n">base</span><span class="p">,</span> <span class="n">reform</span><span class="p">,</span> <span class="n">t</span><span class="o">=</span><span class="mi">20</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Summarize the debt channel of a reform at year ``t``.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        base (dict): baseline TPI_vars</span>
+<span class="sd">        reform (dict): reform TPI_vars</span>
+<span class="sd">        t (int): year to report (default 20, OG-Core's tG1)</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        (dict): debt/GDP in baseline and reform at ``t``, and percent</span>
+<span class="sd">            changes vs baseline in household wealth B and capital K at</span>
+<span class="sd">            ``t`` and in K in the last period of the path</span>
+<span class="sd">    """</span>
+    <span class="n">bY</span><span class="p">,</span> <span class="n">rY</span> <span class="o">=</span> <span class="n">path</span><span class="p">(</span><span class="n">base</span><span class="p">,</span> <span class="s2">"Y"</span><span class="p">),</span> <span class="n">path</span><span class="p">(</span><span class="n">reform</span><span class="p">,</span> <span class="s2">"Y"</span><span class="p">)</span>
+    <span class="n">bD</span><span class="p">,</span> <span class="n">rD</span> <span class="o">=</span> <span class="n">path</span><span class="p">(</span><span class="n">base</span><span class="p">,</span> <span class="s2">"D"</span><span class="p">),</span> <span class="n">path</span><span class="p">(</span><span class="n">reform</span><span class="p">,</span> <span class="s2">"D"</span><span class="p">)</span>
+    <span class="n">bB</span><span class="p">,</span> <span class="n">rB</span> <span class="o">=</span> <span class="n">path</span><span class="p">(</span><span class="n">base</span><span class="p">,</span> <span class="s2">"B"</span><span class="p">),</span> <span class="n">path</span><span class="p">(</span><span class="n">reform</span><span class="p">,</span> <span class="s2">"B"</span><span class="p">)</span>
+    <span class="n">bK</span><span class="p">,</span> <span class="n">rK</span> <span class="o">=</span> <span class="n">path</span><span class="p">(</span><span class="n">base</span><span class="p">,</span> <span class="s2">"K"</span><span class="p">),</span> <span class="n">path</span><span class="p">(</span><span class="n">reform</span><span class="p">,</span> <span class="s2">"K"</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">{</span>
+        <span class="s2">"Y_pct"</span><span class="p">:</span> <span class="mi">100</span> <span class="o">*</span> <span class="p">(</span><span class="n">rY</span><span class="p">[</span><span class="n">t</span><span class="p">]</span> <span class="o">-</span> <span class="n">bY</span><span class="p">[</span><span class="n">t</span><span class="p">])</span> <span class="o">/</span> <span class="n">bY</span><span class="p">[</span><span class="n">t</span><span class="p">],</span>
+        <span class="s2">"t"</span><span class="p">:</span> <span class="n">t</span><span class="p">,</span>
+        <span class="s2">"debt_base"</span><span class="p">:</span> <span class="n">bD</span><span class="p">[</span><span class="n">t</span><span class="p">]</span> <span class="o">/</span> <span class="n">bY</span><span class="p">[</span><span class="n">t</span><span class="p">],</span>
+        <span class="s2">"debt_reform"</span><span class="p">:</span> <span class="n">rD</span><span class="p">[</span><span class="n">t</span><span class="p">]</span> <span class="o">/</span> <span class="n">rY</span><span class="p">[</span><span class="n">t</span><span class="p">],</span>
+        <span class="s2">"B_pct"</span><span class="p">:</span> <span class="mi">100</span> <span class="o">*</span> <span class="p">(</span><span class="n">rB</span><span class="p">[</span><span class="n">t</span><span class="p">]</span> <span class="o">-</span> <span class="n">bB</span><span class="p">[</span><span class="n">t</span><span class="p">])</span> <span class="o">/</span> <span class="n">bB</span><span class="p">[</span><span class="n">t</span><span class="p">],</span>
+        <span class="s2">"K_pct"</span><span class="p">:</span> <span class="mi">100</span> <span class="o">*</span> <span class="p">(</span><span class="n">rK</span><span class="p">[</span><span class="n">t</span><span class="p">]</span> <span class="o">-</span> <span class="n">bK</span><span class="p">[</span><span class="n">t</span><span class="p">])</span> <span class="o">/</span> <span class="n">bK</span><span class="p">[</span><span class="n">t</span><span class="p">],</span>
+        <span class="s2">"K_pct_long_run"</span><span class="p">:</span> <span class="mi">100</span> <span class="o">*</span> <span class="p">(</span><span class="n">rK</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">bK</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span> <span class="o">/</span> <span class="n">bK</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span>
+    <span class="p">}</span></div>
+
+
+
+<div class="viewcode-block" id="crowding_in_text">
+<a class="viewcode-back" href="../../content/api/public_api.html#ogjpn.reporting.crowding_in_text">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">crowding_in_text</span><span class="p">(</span><span class="n">summary</span><span class="p">,</span> <span class="n">label</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""One paragraph stating the debt channel for a reform."""</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="n">summary</span>
+    <span class="k">if</span> <span class="n">s</span><span class="p">[</span><span class="s2">"B_pct"</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">saving</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="s2">"That, not extra household saving, is what lifts capital: "</span>
+            <span class="sa">f</span><span class="s2">"household wealth is </span><span class="si">{</span><span class="nb">abs</span><span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="s1">'B_pct'</span><span class="p">])</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2"> percent lower "</span>
+            <span class="s2">"(households save less)"</span>
+        <span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">saving</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="s2">"Households also save more (household wealth is "</span>
+            <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">s</span><span class="p">[</span><span class="s1">'B_pct'</span><span class="p">]</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2"> percent higher), so both channels add to "</span>
+            <span class="s2">"capital"</span>
+        <span class="p">)</span>
+    <span class="k">return</span> <span class="p">(</span>
+        <span class="s2">"Where the capital comes from. OG-Core holds government purchases "</span>
+        <span class="s2">"at a fixed share of GDP for the first 20 years, so the budget gain "</span>
+        <span class="sa">f</span><span class="s2">"from the </span><span class="si">{</span><span class="n">label</span><span class="si">}</span><span class="s2"> goes to paying down debt: by year </span><span class="si">{</span><span class="n">s</span><span class="p">[</span><span class="s1">'t'</span><span class="p">]</span><span class="si">}</span><span class="s2">, debt "</span>
+        <span class="sa">f</span><span class="s2">"is </span><span class="si">{</span><span class="n">s</span><span class="p">[</span><span class="s1">'debt_reform'</span><span class="p">]</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2"> times GDP against </span><span class="si">{</span><span class="n">s</span><span class="p">[</span><span class="s1">'debt_base'</span><span class="p">]</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2"> in "</span>
+        <span class="s2">"the baseline. Lower debt frees household saving for private "</span>
+        <span class="sa">f</span><span class="s2">"capital. </span><span class="si">{</span><span class="n">saving</span><span class="si">}</span><span class="s2">, while capital is </span><span class="si">{</span><span class="n">s</span><span class="p">[</span><span class="s1">'K_pct'</span><span class="p">]</span><span class="si">:</span><span class="s2">+.1f</span><span class="si">}</span><span class="s2"> percent at "</span>
+        <span class="sa">f</span><span class="s2">"year </span><span class="si">{</span><span class="n">s</span><span class="p">[</span><span class="s1">'t'</span><span class="p">]</span><span class="si">}</span><span class="s2">. After year 20 OG-Core's closure rule brings debt "</span>
+        <span class="s2">"back to its target, and capital ends the path "</span>
+        <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">s</span><span class="p">[</span><span class="s1">'K_pct_long_run'</span><span class="p">]</span><span class="si">:</span><span class="s2">+.1f</span><span class="si">}</span><span class="s2"> percent from baseline. Most of the "</span>
+        <span class="s2">"capital gain along the transition is therefore a consequence of "</span>
+        <span class="s2">"using the proceeds to pay down debt, as OG-Core's fiscal closure "</span>
+        <span class="s2">"does."</span>
+    <span class="p">)</span></div>
+
+
+
+<span class="c1"># npv_table row labels of variables that are not money (left in model units).</span>
+<span class="n">NON_MONETARY</span> <span class="o">=</span> <span class="p">(</span><span class="s2">"Labor"</span><span class="p">,)</span>
+
+
+<div class="viewcode-block" id="npv_in_gdp_terms">
+<a class="viewcode-back" href="../../content/api/public_api.html#ogjpn.reporting.npv_in_gdp_terms">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">npv_in_gdp_terms</span><span class="p">(</span><span class="n">table</span><span class="p">,</span> <span class="n">base</span><span class="p">,</span> <span class="n">gdp_yen_tn</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Restate an ``ogcore.output_tables.npv_table`` result (model units)</span>
+<span class="sd">    relative to the baseline's first-year GDP, and in trillion yen at</span>
+<span class="sd">    Japan's actual GDP.</span>
+
+<span class="sd">    The model's currency anchor (mean salary) is not the same concept as</span>
+<span class="sd">    income per model person, so yen figures computed with the model's</span>
+<span class="sd">    ``factor`` would not be economy-wide totals. Dividing by first-year</span>
+<span class="sd">    model GDP gives a unit-free share, which is then scaled by Japan's</span>
+<span class="sd">    measured nominal GDP.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        table (pandas DataFrame): npv_table output; first column the</span>
+<span class="sd">            variable label, other columns one per discount rate</span>
+<span class="sd">        base (dict): baseline TPI_vars</span>
+<span class="sd">        gdp_yen_tn (float): nominal GDP in trillion yen; defaults to FY2023</span>
+<span class="sd">            (Cabinet Office national accounts, ogjpn.wealth)</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        (pandas DataFrame): same layout, each cell "x.x% of GDP (¥y tn)"</span>
+<span class="sd">    """</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">ogjpn</span><span class="w"> </span><span class="kn">import</span> <span class="n">wealth</span>
+
+    <span class="n">gdp</span> <span class="o">=</span> <span class="n">wealth</span><span class="o">.</span><span class="n">SNA_FY2023_NOMINAL_GDP</span> <span class="k">if</span> <span class="n">gdp_yen_tn</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">gdp_yen_tn</span>
+    <span class="n">y0</span> <span class="o">=</span> <span class="n">path</span><span class="p">(</span><span class="n">base</span><span class="p">,</span> <span class="s2">"Y"</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">out</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+    <span class="c1"># Labor is in model hours, not currency, so it is not converted.</span>
+    <span class="n">monetary</span> <span class="o">=</span> <span class="o">~</span><span class="n">out</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">NON_MONETARY</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">out</span><span class="o">.</span><span class="n">columns</span><span class="p">[</span><span class="mi">1</span><span class="p">:]:</span>
+        <span class="n">vals</span> <span class="o">=</span> <span class="n">out</span><span class="p">[</span><span class="n">col</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span>
+        <span class="n">out</span><span class="p">[</span><span class="n">col</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="mi">100</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">v</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">y0</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">% of GDP (¥</span><span class="si">{</span><span class="n">v</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">y0</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">gdp</span><span class="si">:</span><span class="s2">.0f</span><span class="si">}</span><span class="s2"> tn)"</span>
+            <span class="k">if</span> <span class="n">is_money</span>
+            <span class="k">else</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">v</span><span class="si">:</span><span class="s2">.3g</span><span class="si">}</span><span class="s2"> (model units)"</span>
+            <span class="k">for</span> <span class="n">v</span><span class="p">,</span> <span class="n">is_money</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">vals</span><span class="p">,</span> <span class="n">monetary</span><span class="p">)</span>
+        <span class="p">]</span>
+    <span class="k">return</span> <span class="n">out</span></div>
+
+</pre></div>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Ari Lodha
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2026.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../_static/scripts/bootstrap.js?digest=55c26ed414f5f8a31ebb"></script>
+<script defer src="../../_static/scripts/pydata-sphinx-theme.js?digest=55c26ed414f5f8a31ebb"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

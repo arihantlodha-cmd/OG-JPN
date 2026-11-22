@@ -338,9 +338,10 @@
 
 <span class="sd">Phase status:</span>
 <span class="sd">  - macro parameters: provisional first pass (ogjpn.macro_params)</span>
-<span class="sd">  - tax parameters: first-pass linear calibration of income, payroll,</span>
-<span class="sd">    capital, corporate, and consumption taxes from published Japanese</span>
-<span class="sd">    rates (ogjpn.tax_params)</span>
+<span class="sd">  - tax parameters: progressive labor income tax fitted to NTA data, an</span>
+<span class="sd">    effective capital income tax from the national accounts, and payroll,</span>
+<span class="sd">    corporate, and consumption taxes from published Japanese rates</span>
+<span class="sd">    (ogjpn.tax_params)</span>
 <span class="sd">  - demographics: live UN data by country code 392, requires a UN API</span>
 <span class="sd">    token (see README); optional so the pipeline still runs without it</span>
 <span class="sd">"""</span>
@@ -352,7 +353,7 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">ogjpn.constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">UN_COUNTRY_CODE</span>
 
 <span class="c1"># Initial guess for OG-Core's model-to-currency factor when the model is</span>
-<span class="c1"># anchored to yen: the steady-state factor is about 6.7 million yen per</span>
+<span class="c1"># anchored to yen: the steady-state factor is about 6.6 million yen per</span>
 <span class="c1"># model unit. OG-Core validates initial_guess_factor_SS against a maximum</span>
 <span class="c1"># of 500,000, set with dollar-anchored models in mind, and the steady state</span>
 <span class="c1"># does not converge from a guess at that cap, so update_specs sets it</span>
@@ -395,6 +396,7 @@
         <span class="n">demographic_data_path</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">income_tax</span><span class="o">=</span><span class="s2">"progressive"</span><span class="p">,</span>
         <span class="n">pension</span><span class="o">=</span><span class="s2">"japan"</span><span class="p">,</span>
+        <span class="n">labor_share</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="p">):</span>
 <span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Args:</span>
@@ -412,6 +414,9 @@
 <span class="sd">                formula with the model anchored to yen</span>
 <span class="sd">                (ogjpn.pension_params), or "us" for OG-Core's default US</span>
 <span class="sd">                Social Security formula and dollar anchor</span>
+<span class="sd">            labor_share (array_like): labor share of income by age for the</span>
+<span class="sd">                progressive income tax; defaults to the stored steady-state</span>
+<span class="sd">                shares (see scripts/calibrate_labor_share.py)</span>
 <span class="sd">        """</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">macro_params</span> <span class="o">=</span> <span class="n">macro_params</span><span class="o">.</span><span class="n">get_macro_params</span><span class="p">(</span><span class="n">income_tax</span><span class="p">,</span> <span class="n">pension</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">pension_params</span> <span class="o">=</span> <span class="p">{}</span>
@@ -424,7 +429,10 @@
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"pension must be 'japan' or 'us'"</span><span class="p">)</span>
         <span class="c1"># The income-tax functions are scaled to the income anchor in use.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">tax_params</span> <span class="o">=</span> <span class="n">tax_params</span><span class="o">.</span><span class="n">get_tax_params</span><span class="p">(</span>
-            <span class="n">p</span><span class="o">.</span><span class="n">S</span><span class="p">,</span> <span class="n">income_tax</span><span class="o">=</span><span class="n">income_tax</span><span class="p">,</span> <span class="n">mean_income</span><span class="o">=</span><span class="n">mean_income</span>
+            <span class="n">p</span><span class="o">.</span><span class="n">S</span><span class="p">,</span>
+            <span class="n">income_tax</span><span class="o">=</span><span class="n">income_tax</span><span class="p">,</span>
+            <span class="n">mean_income</span><span class="o">=</span><span class="n">mean_income</span><span class="p">,</span>
+            <span class="n">labor_share</span><span class="o">=</span><span class="n">labor_share</span><span class="p">,</span>
         <span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">demographic_params</span> <span class="o">=</span> <span class="kc">None</span>
