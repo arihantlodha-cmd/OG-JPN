@@ -3,6 +3,7 @@ OG-Japan macro calibration.
 
 Sourced from the IMF World Economic Outlook via the IMF DataMapper API
 (retrieved 2026-08-18). Japan's general government, share of GDP:
+
   - gross debt 214.5% (2024, GGXWDG_NGDP)
   - total revenue 37.6% (2024, indicator "rev")
   - total expenditure 39.1% (2024, indicator "exp")
@@ -14,8 +15,8 @@ government. The split of total expenditure (39.1%) into its OG-Core
 pieces -- government consumption (alpha_G), pensions (a separate model
 outlay), non-pension transfers (alpha_T), interest, and investment -- is
 estimated from the standard composition, since the aggregate API series
-do not break it out. gamma (capital share) is still a standard value to
-verify against the Penn World Table.
+do not break it out. gamma (capital share) is from the Penn World Table
+labor share (see get_macro_params).
 """
 
 

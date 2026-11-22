@@ -8,3 +8,8 @@ un_api_token.txt
 OUTPUT*/
 *.pkl
 Data/
+.venv/
+docs/book/_build/
+coverage.xml
+.coverage
+uv.lock

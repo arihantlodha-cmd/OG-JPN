@@ -1,0 +1,26 @@
+name: Build and deploy documentation
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          python-version: "3.13"
+      - name: Install package and dependencies
+        run: uv sync --extra docs
+      - name: Build Jupyter Book
+        run: cd docs/book && uv run jupyter-book build . --warningiserror --keep-going
+      - name: Deploy
+        if: github.event_name != 'pull_request'
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          branch: gh-pages
+          folder: docs/book/_build/html

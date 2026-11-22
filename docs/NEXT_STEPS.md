@@ -1,5 +1,9 @@
 # OG-Japan: what to do next (driving Phases 1 and 2 to completion)
 
+> The maintained roadmap is now in the documentation site
+> (docs/book/content/roadmap.md). This file is the detailed working log
+> behind it; some sections describe problems that are since fixed.
+
 The scaffolding is built and the pipeline solves. What remains is mostly
 **data you fetch and verify**, not more code. This is the concrete list.
 

@@ -1,5 +1,13 @@
 # OG-Japan (OG-JPN)
 
+| | |
+| --- | --- |
+| Org | [![OG-Core](https://img.shields.io/badge/built%20on-OG--Core-1f6feb)](https://pslmodels.github.io/OG-Core/) [![OS License: CC0-1.0](https://img.shields.io/badge/OS%20License-CC0%201.0-yellow)](LICENSE) [![Jupyter Book Badge](https://raw.githubusercontent.com/jupyter-book/jupyter-book/next/docs/media/images/badge.svg)](https://arihantlodha-cmd.github.io/OG-JPN/) |
+| Package | [![Python 3.12](https://img.shields.io/badge/python-3.12-blue.svg)](https://www.python.org/downloads/) [![Python 3.13](https://img.shields.io/badge/python-3.13-blue.svg)](https://www.python.org/downloads/) [![Code style: ruff](https://img.shields.io/badge/code%20style-ruff-000000.svg)](https://github.com/astral-sh/ruff) |
+| Testing | ![Build and test](https://github.com/arihantlodha-cmd/OG-JPN/actions/workflows/build_and_test.yml/badge.svg?branch=main) ![Docs](https://github.com/arihantlodha-cmd/OG-JPN/actions/workflows/deploy_docs.yml/badge.svg?branch=main) ![Ruff](https://github.com/arihantlodha-cmd/OG-JPN/actions/workflows/check_ruff.yml/badge.svg?branch=main) |
+
+**Documentation: https://arihantlodha-cmd.github.io/OG-JPN/**
+
 An overlapping-generations model of Japanese fiscal policy, built on
 [OG-Core](https://github.com/PSLmodels/OG-Core). OG-JPN is a country
 calibration of OG-Core, in the same family as OG-USA, OG-UK, OG-BRA, and
@@ -58,7 +66,7 @@ dynamics are there to show.
 Building OG-JPN surfaced improvements to OG-Core itself, contributed back:
 
 - **npv_table** ([PR #1195](https://github.com/PSLmodels/OG-Core/pull/1195),
-  approved): a table of the net present value of a reform's flow-variable
+  merged): a table of the net present value of a reform's flow-variable
   changes, which OG-JPN uses to report the transition results.
 - **Custom initial wealth distribution**
   ([PR #1209](https://github.com/PSLmodels/OG-Core/pull/1209), superseded by
@@ -72,7 +80,7 @@ Building OG-JPN surfaced improvements to OG-Core itself, contributed back:
   ([PR #1196](https://github.com/PSLmodels/OG-Core/pull/1196)), so Japan runs
   offline like the other supported countries.
 - **Resource-constraint failure diagnostics**
-  ([PR #1213](https://github.com/PSLmodels/OG-Core/pull/1213)): the transition
+  ([PR #1213](https://github.com/PSLmodels/OG-Core/pull/1213), merged): the transition
   solver now reports the size and location of a resource-constraint failure
   so a boundary artifact can be told from a real calibration problem.
 
@@ -81,13 +89,14 @@ Building OG-JPN surfaced improvements to OG-Core itself, contributed back:
 - The income tax uses a single average effective rate rather than Japan's
   full progressive schedule; sharpening it needs the income distribution
   behind the published rates.
-- The transition satisfies the resource constraint to about 1e-7 at every
-  period except the second, where a small localized artifact survives. It is
-  an initial-condition effect (OG-Core seeds the path from the terminal
-  steady state's wealth profile, a poor match for Japan's demographic shift),
-  it does not propagate, and it cancels in every reform-minus-baseline
-  result. PR #1209 above is the upstream half of closing it; the remaining
-  half is feeding it Japan's observed wealth-by-age data.
+- The transition satisfies the resource constraint to below 1e-6 everywhere
+  except two single periods, both of which cancel in reform-minus-baseline
+  results. **t = 2** (initial condition): starting from Japan's observed
+  wealth-by-age profile (`ogjpn/wealth.py`) instead of OG-Core's
+  steady-state proxy cut it from 1.8e-3 to 1.2e-3; the rest has another
+  source, still being traced. **t = 120** (~1.2e-3): OG-Core freezes the
+  population at period `1.5 * S` even though Japan's age mix is still
+  moving, so population growth jumps there.
 - The income anchor (`mean_income_data`) is still OG-Core's US default, so
   currency-denominated output is not yet in yen (see docs/NEXT_STEPS.md).
 
@@ -97,18 +106,16 @@ Building OG-JPN surfaced improvements to OG-Core itself, contributed back:
 ogjpn/
   calibrate.py     assembles macro + tax + demographics into OG-Core
   macro_params.py  debt, growth, capital share, spending shares (sourced)
-  tax_params.py    income, payroll, capital, corporate, consumption taxes
+  tax_params.py    income, social insurance, capital, corporate, consumption taxes
+  wealth.py        Japan's initial wealth-by-age distribution (2019 survey)
   constants.py     country code (392) and metadata
-examples/
-  run_ogjpn_ss.py               solve and validate the steady state
-  run_ogjpn_tpi.py              solve the baseline transition path
-  analysis_consumption_tax.py   / _tpi.py   consumption-tax reform
-  analysis_retirement_age.py    / _tpi.py   pension-age reform
-  analysis_replacement_rate.py  / _tpi.py   replacement-rate reform
+examples/          steady state, transition, and the three reform analyses
+scripts/           data fetch and figure scripts
+tests/             calibration tests (no network, no solve)
 docs/
-  METHODOLOGY.md   how it is built, data sources, validation
-  NEXT_STEPS.md    what remains and how to do it
-  results_*.md     the policy write-ups
+  book/            the Jupyter Book documentation site
+  results_*.md     the policy write-ups (also included in the docs site)
+  METHODOLOGY.md, NEXT_STEPS.md   working notes
 ```
 
 ## Running
@@ -116,11 +123,12 @@ docs/
 Install OG-Core and this package into the same environment:
 
 ```
-pip install ogcore
 git clone https://github.com/arihantlodha-cmd/OG-JPN.git
 cd OG-JPN
-pip install -e .
+uv sync --extra dev        # or: pip install -e ".[dev]"
 ```
+
+This pulls OG-Core (0.24.6 or later) from PyPI.
 
 Then:
 
@@ -139,11 +147,5 @@ the live data instead.
 
 ## Roadmap
 
-- **Done:** the skeleton; a data-grounded calibration; a validated steady
-  state; a converging transition path; three policy reforms, each in both a
-  steady-state and a transition version; and three upstream OG-Core
-  contributions.
-- **Next:** Japan's observed wealth-by-age distribution to close the
-  initial-condition artifact; a yen income anchor and a Japan-specific
-  pension formula for currency-denominated output; the full progressive
-  income tax; and adding Japan to OG-Core's offline demographic data.
+See the [roadmap](https://arihantlodha-cmd.github.io/OG-JPN/content/roadmap.html)
+in the documentation.

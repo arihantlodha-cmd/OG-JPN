@@ -4,12 +4,37 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "ogjpn"
-version = "0.0.1"
-description = "OG-Japan: an overlapping-generations model of Japanese fiscal policy, built on OG-Core"
+version = "0.1.0"
+description = "OG-JPN: an overlapping-generations model of Japanese fiscal policy, built on OG-Core"
 readme = "README.md"
-requires-python = ">=3.11"
+authors = [{ name = "Ari Lodha" }]
+requires-python = ">=3.12, <3.14"
 license = { text = "CC0-1.0" }
-dependencies = ["ogcore"]
+keywords = ["overlapping generations", "fiscal policy", "Japan", "OG-Core", "macroeconomics"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Science/Research",
+    "License :: CC0 1.0 Universal (CC0 1.0) Public Domain Dedication",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Scientific/Engineering",
+]
+dependencies = ["ogcore>=0.24.6"]
+
+[project.optional-dependencies]
+dev = ["pytest>=6.0", "pytest-cov", "ruff"]
+docs = [
+    "jupyter-book>=1.0,<2.0",
+    "sphinx-book-theme",
+]
+
+[project.urls]
+Homepage = "https://github.com/arihantlodha-cmd/OG-JPN"
+Documentation = "https://arihantlodha-cmd.github.io/OG-JPN/"
+Issues = "https://github.com/arihantlodha-cmd/OG-JPN/issues"
 
 [tool.setuptools.packages.find]
 include = ["ogjpn*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

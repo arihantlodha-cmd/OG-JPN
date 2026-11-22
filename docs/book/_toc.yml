@@ -1,0 +1,25 @@
+format: jb-book
+root: content/intro/intro
+parts:
+- caption: Getting started
+  chapters:
+  - file: content/intro/running
+  - file: content/contributing/contributor_guide
+- caption: Calibration
+  chapters:
+  - file: content/calibration/demographics
+  - file: content/calibration/macro
+  - file: content/calibration/taxes
+  - file: content/calibration/wealth
+  - file: content/calibration/validation
+- caption: Policy results
+  chapters:
+  - file: content/results/overview
+  - file: content/results/consumption_tax
+  - file: content/results/retirement_age
+  - file: content/results/replacement_rate
+- caption: Reference
+  chapters:
+  - file: content/api/public_api
+  - file: content/roadmap
+  - file: content/references
