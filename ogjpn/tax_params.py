@@ -79,23 +79,30 @@ def _linear_params(rate, num_ages):
     return [[[rate] for _ in range(num_ages)]]
 
 
-def get_tax_params(num_ages=80):
+def _dep_params(params, num_ages):
+    """Repeat one DEP_totalinc parameter vector over ages: (1, S, 6)."""
+    return [[list(params) for _ in range(num_ages)]]
+
+
+def get_tax_params(num_ages=80, income_tax="progressive", mean_income=None):
     """
     Return Japan tax parameters for ``Specifications.update_specifications``.
 
     Args:
         num_ages (int): number of age groups S in the model, used to size
-            the linear income-tax function arrays (default 80, OG-Core's S)
+            the income-tax function arrays (default 80, OG-Core's S)
+        income_tax (str): "progressive" (default) for DEP_totalinc
+            functions fitted to Japan's 2023 salary-bracket tax data (see
+            ogjpn.income_tax), or "linear" for constant average (8%) and
+            marginal (30% labor, 20.315% capital) rates
+        mean_income (float): the model's income anchor
+            (``mean_income_data``), used to put the progressive functions
+            in model income units; defaults to OG-Core's default value
 
     Returns:
         tax_parameters (dict): Japan tax parameters
     """
     tax_parameters = {
-        # Constant (linear) income tax functions, one sourced rate each.
-        "tax_func_type": "linear",
-        "etr_params": _linear_params(ETR_INCOME, num_ages),
-        "mtrx_params": _linear_params(MTR_LABOR, num_ages),
-        "mtry_params": _linear_params(MTR_CAPITAL, num_ages),
         # Payroll (social insurance) tax and corporate income tax.
         # OG-Core >= 0.19 takes tau_payroll as a (T, J) array, so a nested list.
         "tau_payroll": [[TAU_PAYROLL]],
@@ -103,4 +110,43 @@ def get_tax_params(num_ages=80):
         # Consumption tax: 10% since October 2019.
         "tau_c": [[TAU_C]],
     }
+    if income_tax == "linear":
+        # Constant (linear) income tax functions, one sourced rate each.
+        tax_parameters.update(
+            {
+                "tax_func_type": "linear",
+                "etr_params": _linear_params(ETR_INCOME, num_ages),
+                "mtrx_params": _linear_params(MTR_LABOR, num_ages),
+                "mtry_params": _linear_params(MTR_CAPITAL, num_ages),
+            }
+        )
+    elif income_tax == "progressive":
+        from ogjpn import income_tax as it
+
+        if mean_income is None:
+            from ogcore.parameters import Specifications
+
+            mean_income = float(Specifications().mean_income_data)
+        b = it.bracket_rates()
+        etr = it.fit_dep_totalinc(b.x, b.etr, b.earners)
+        mtrx = it.fit_dep_totalinc(b.x, b.mtr_labor, b.earners)
+        # Capital income: flat 20.315% (A = B = 0, min = max = rate).
+        mtry = [0.0, 0.0, MTR_CAPITAL, MTR_CAPITAL]
+        tax_parameters.update(
+            {
+                "tax_func_type": "DEP_totalinc",
+                "analytical_mtrs": False,
+                "etr_params": _dep_params(
+                    it.to_model_units(etr, mean_income), num_ages
+                ),
+                "mtrx_params": _dep_params(
+                    it.to_model_units(mtrx, mean_income), num_ages
+                ),
+                "mtry_params": _dep_params(
+                    it.to_model_units(mtry, mean_income), num_ages
+                ),
+            }
+        )
+    else:
+        raise ValueError("income_tax must be 'linear' or 'progressive'")
     return tax_parameters

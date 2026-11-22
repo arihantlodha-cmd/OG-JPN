@@ -40,7 +40,7 @@ def solve_ss(calibrated, retire_age, output_base):
     p.update_specifications({"start_year": START_YEAR})
     scenario = dict(calibrated)
     scenario["retirement_age"] = [retire_age]  # scenario lever
-    p.update_specifications(scenario)
+    calibrate.update_specs(p, scenario)
     p.baseline_dir = p.output_base = output_base
     runner(p, time_path=False, client=None)
     return utils.safe_read_pickle(os.path.join(output_base, "SS", "SS_vars.pkl"))
@@ -73,12 +73,14 @@ def write_results(base, reforms):
     )
     sep = "|" + "|".join(["---"] * (len(aggregates) + 2)) + "|"
     rows = []
+    pen = {}
     for rate, reform in reforms:
         changes = [
             f"{100 * (_scalar(reform[v]) - _scalar(base[v])) / _scalar(base[v]):+.2f}"
             for v in aggregates
         ]
         r_pen = _scalar(reform["agg_pension_outlays"]) / _scalar(reform["Y"])
+        pen[rate] = r_pen
         rows.append(
             f"| 65 -> {rate} | "
             + " | ".join(changes)
@@ -98,16 +100,17 @@ def write_results(base, reforms):
         "Raising the age at which households can claim the public pension "
         "does what the fiscal debate expects, on Japan's real age structure. "
         "People work longer, so labor rises (and by more at the higher age); "
-        "the pension bill falls directly, from about eleven and a half "
-        "percent of GDP to under ten, because each cohort collects for fewer "
-        "years. Capital edges down rather than up: with a shorter retirement "
+        f"the pension bill falls directly, from {100 * b_pen:.1f} percent of "
+        f"GDP to {100 * pen[70]:.1f} at age 70, because each cohort collects "
+        "for fewer years. Capital edges down rather than up: with a shorter retirement "
         "to fund, households need less lifecycle wealth, so the saving they "
         "do over a working life buys a smaller capital stock. More labor and "
         "less capital roughly offset, leaving output close to flat, so the "
         "reform reads mainly as moving the adjustment onto the spending side "
         "of the budget rather than as a growth lever. The clean result is the "
-        "pension line: moving the age to 70 takes almost two points of GDP "
-        "off the public pension burden in the long run.\n\n"
+        "pension line: moving the age to 70 takes "
+        f"{100 * (b_pen - pen[70]):.1f} points of GDP off the public pension "
+        "burden in the long run.\n\n"
         "The magnitudes are indicative, not final. This is a comparison of "
         "two steady states, robust to the level miss in C/Y (see "
         "docs/METHODOLOGY.md) because both sides carry the same calibration, "

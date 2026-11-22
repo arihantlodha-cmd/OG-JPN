@@ -19,11 +19,26 @@ do not break it out. gamma (capital share) is from the Penn World Table
 labor share (see get_macro_params).
 """
 
+# Steady-state residual G/Y for each (income tax, pension) calibration (see
+# the alpha_G comment below); the transition needs alpha_G equal to it.
+ALPHA_G = {
+    ("progressive", "japan"): 0.065,
+    ("progressive", "us"): 0.070,
+    ("linear", "us"): 0.062,
+}
 
-def get_macro_params():
+
+def get_macro_params(income_tax="progressive", pension="japan"):
     """
     Return a dict of Japan macro parameters for
     ``Specifications.update_specifications``.
+
+    Args:
+        income_tax (str): "progressive" or "linear", the income-tax
+            representation in use (ogjpn.tax_params)
+        pension (str): "japan" or "us", the pension formula in use
+            (ogjpn.pension_params). Together they set alpha_G, which must
+            equal the steady-state residual G/Y.
 
     Returns:
         macro_parameters (dict): Japan macro parameters
@@ -78,7 +93,16 @@ def get_macro_params():
     # exploding debt and forcing the closure rule to demand negative G later.
     # That inconsistency, not solver tuning, is why the transition would not
     # converge. Setting alpha_G to the steady-state residual share removes it.
-    macro_parameters["alpha_G"] = [0.062]
+    # The residual depends on the calibration: 0.062 with the linear (flat)
+    # income tax and US pension formula, 0.070 with the progressive income
+    # tax (which raises revenue by about a point of GDP), and 0.065 with the
+    # progressive tax and Japan's two-tier pension (which pays out more).
+    if (income_tax, pension) not in ALPHA_G:
+        raise ValueError(
+            f"no alpha_G calibrated for income_tax={income_tax!r}, "
+            f"pension={pension!r}; supported: {sorted(ALPHA_G)}"
+        )
+    macro_parameters["alpha_G"] = [ALPHA_G[(income_tax, pension)]]
 
     # Government non-pension transfers as a share of GDP. Estimated from
     # the composition of the 39.1% total (consumption ~20, public pensions

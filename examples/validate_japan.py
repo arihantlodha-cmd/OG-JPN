@@ -22,7 +22,9 @@ def _s(x):
 def main(out="/tmp/ogjpn_validate"):
     p = Specifications(baseline=True, num_workers=1)
     p.update_specifications({"start_year": START_YEAR})
-    p.update_specifications(calibrate.Calibration(p, use_demographics=True).get_dict())
+    calibrate.update_specs(
+        p, calibrate.Calibration(p, use_demographics=True).get_dict()
+    )
     p.baseline_dir = p.output_base = out
     runner(p, time_path=False, client=None)
     ss = utils.safe_read_pickle(os.path.join(out, "SS", "SS_vars.pkl"))

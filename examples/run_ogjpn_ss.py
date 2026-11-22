@@ -41,7 +41,7 @@ def main(output_base="/tmp/ogjpn_phase0"):
         )
         c = calibrate.Calibration(p, use_demographics=False)
 
-    p.update_specifications(c.get_dict())
+    calibrate.update_specs(p, c.get_dict())
 
     p.baseline_dir = p.output_base = output_base
     runner(p, time_path=False, client=None)

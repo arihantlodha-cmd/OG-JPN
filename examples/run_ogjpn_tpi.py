@@ -8,28 +8,20 @@ dynamics as the population ages.
 
 This is a heavy solve and may take many minutes.
 
-STATUS: the transition now converges. The blocker was a fiscal-block
-inconsistency, not solver tuning: alpha_G (government consumption) had been
-set to Japan's headline national-accounts share (~20% of GDP), but before
-the debt-closure rule engages the transition spends G = alpha_G * Y
-directly, and that is roughly 4x the level the government budget can sustain
-at Japan's revenue and debt, so debt exploded in the first 20 periods and
-the closure rule could not recover. Setting alpha_G to the steady-state
-residual share (~5.4% of GDP, the G/Y the steady state itself produces)
-removes the inconsistency. With it, the outer loop converges to below its
-1e-5 tolerance in ~13 iterations and the debt ratio holds at ~2.004 across
-the whole path.
+STATUS: the transition converges (outer loop below 1e-5). What made that
+possible was setting alpha_G to the steady-state residual G/Y, so the
+transition runs the same fiscal policy as the steady state it converges to
+(see ogjpn/macro_params.py). By default it starts from Japan's observed
+initial wealth distribution (--initial-wealth data, ogjpn/wealth.py).
 
-One residual remains: the resource constraint is satisfied to ~1e-7 at
-every period except the second (t=2), where a single localized spike of
-~1.8e-3 survives. It is an initial-condition artifact -- OG-Core starts a
-baseline transition from the terminal steady state's wealth distribution
-scaled to the initial population, not Japan's observed distribution, and
-that mismatch surfaces as one blip near the start. It does not propagate
-(t=3 onward are clean) and it cancels in any baseline-vs-reform policy
-difference. OG-Core's strict RC check (RC_TPI, 1e-4, enforced at every
-period) still flags it, so the runner raises after writing the path; the
-written TPI_vars.pkl is usable. Closing the t=2 artifact is the open item.
+The resource constraint holds to below 1e-6 except in two single periods:
+t=2 (~1.3e-3, an initial-condition effect; the observed wealth distribution
+cut it by about 30 percent) and t=120 (~1.2e-3, where OG-Core freezes the
+population at fixper = 1.5*S before Japan's has converged; OG-Core issue
+#1290). OG-Core's strict per-period check flags them, so the runner raises
+after writing the path; this script reports the error and continues, and
+the written TPI_vars.pkl is usable. Both errors cancel in reform-minus-
+baseline comparisons.
 """
 
 import argparse
@@ -62,7 +54,9 @@ def main(out="/tmp/ogjpn_tpi", num_workers=2, initial_wealth="data"):
 
     p = Specifications(baseline=True, num_workers=num_workers)
     p.update_specifications({"start_year": START_YEAR})
-    p.update_specifications(calibrate.Calibration(p, use_demographics=True).get_dict())
+    calibrate.update_specs(
+        p, calibrate.Calibration(p, use_demographics=True).get_dict()
+    )
     # Convergence was verified with Anderson acceleration; it is retained as
     # the outer-loop method here. (The actual blocker was the alpha_G fiscal
     # inconsistency described above, not the solver, but Anderson is a safe

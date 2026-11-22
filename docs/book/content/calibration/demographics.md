@@ -22,7 +22,7 @@ Japan's UN data are in the shared [EAPD-DRB/Population-Data](https://github.com/
 
 Japan's population is shrinking: the steady-state population growth rate is about -1.07 percent a year. The age distribution in {numref}`FigJapanAging` shows the shift toward old age between 1990 and 2030.
 
-This one input explains most of Japan's pension burden. Solved on Japan's demographics with otherwise standard parameters, the model's public pension outlays are about 11.5 percent of GDP, against about 8 to 9 percent on OG-Core's default (US-like) demographics.
+This one input explains much of Japan's pension burden. Holding OG-Core's default (US) pension formula fixed, swapping in Japan's demographics raises steady-state pension outlays from about 8 to 9 percent of GDP to about 12 percent. With Japan's own pension formula ({ref}`Chap_Pensions`), first-year outlays are 10.2 percent of GDP against Japan's 10.4.
 
 ## Known limitations
 

@@ -10,6 +10,7 @@ parts:
   - file: content/calibration/demographics
   - file: content/calibration/macro
   - file: content/calibration/taxes
+  - file: content/calibration/pensions
   - file: content/calibration/wealth
   - file: content/calibration/validation
 - caption: Policy results

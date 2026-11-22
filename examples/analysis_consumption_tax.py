@@ -36,7 +36,7 @@ def solve_ss(calibrated, tau_c_rate, output_base):
     p.update_specifications({"start_year": START_YEAR})
     scenario = dict(calibrated)
     scenario["tau_c"] = [[tau_c_rate]]  # scenario lever
-    p.update_specifications(scenario)
+    calibrate.update_specs(p, scenario)
     p.baseline_dir = p.output_base = output_base
     runner(p, time_path=False, client=None)
     return utils.safe_read_pickle(os.path.join(output_base, "SS", "SS_vars.pkl"))
@@ -68,12 +68,14 @@ def main():
     )
     sep = "|" + "|".join(["---"] * (len(aggregates) + 2)) + "|"
     rows = []
+    gain = {}
     for rate, reform in reforms:
         changes = [
             f"{100 * (_scalar(reform[v]) - _scalar(base[v])) / _scalar(base[v]):+.2f}"
             for v in aggregates
         ]
         r_rev = _scalar(reform["total_tax_revenue"]) / _scalar(reform["Y"])
+        gain[rate] = r_rev - b_rev
         rows.append(
             f"| 10% -> {int(rate * 100)}% | "
             + " | ".join(changes)
@@ -98,8 +100,9 @@ def main():
         "only slightly, and its sign depends on how the extra revenue is "
         "recycled under the calibration's fixed spending shares, so it is "
         "best read as roughly unchanged rather than as a clean saving "
-        "effect. The revenue line is the point for Japan: each two-point "
-        "increase raises revenue by about 1.5 points of GDP, a real lever "
+        "effect. The revenue line is the point for Japan: raising the rate "
+        f"to 12% adds {100 * gain[0.12]:.1f} points of GDP in revenue and "
+        f"to 15% adds {100 * gain[0.15]:.1f}, a real lever "
         "against a fiscal gap where pension outlays alone are already "
         f"{b_pen:.1%} of GDP.\n\n"
         "The magnitudes are indicative, not final. This is a comparison of "

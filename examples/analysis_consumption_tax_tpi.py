@@ -11,16 +11,16 @@ net present value of the revenue gain over the first decade, discounted at
 several rates (using OG-Core's npv_table).
 
 On the transition solution: the baseline and reform transitions each
-converge (outer loop below 1e-5, debt held near its 2.0 target). The
-resource constraint is satisfied to ~1e-7 at every period except the
-second, where a single localized ~1.8e-3 spike survives as an
-initial-condition artifact (OG-Core seeds a baseline from the terminal
-steady state's wealth-by-age profile scaled to the initial population, not
-Japan's observed distribution; see docs/METHODOLOGY.md). It does not
-propagate and it cancels in the reform-minus-baseline differences this
-script reports, so the solution checks are disabled here to let both runs
-complete; the reported objects are all differences, in which the artifact
-cancels.
+converge (outer loop below 1e-5) and start from Japan's observed
+wealth-by-age distribution (ogjpn.wealth). Debt falls below its 2.0 target
+for the first 20 years and returns to it afterwards under OG-Core's closure
+rule (see the validation chapter of the docs). The resource constraint holds
+to below 1e-6 except in two single periods: t=2 (~1.3e-3, an
+initial-condition effect) and t=120 (~1.2e-3, where OG-Core freezes the
+population before Japan's has converged; OG-Core issue #1290). Both are
+common to baseline and reform and cancel in the reform-minus-baseline
+differences reported here, so the strict per-period RC check is disabled to
+let the runs complete.
 
 NOTE: demographics are real Japanese data; macro/tax parameters are still
 first-pass (see docs/NEXT_STEPS.md), so read directions and rough
@@ -39,11 +39,11 @@ from ogcore import (
 from ogcore.execute import runner
 from ogcore.parameters import Specifications
 
-from ogjpn import calibrate
+from ogjpn import calibrate, wealth
 from ogjpn.constants import START_YEAR
 
-# The transition converges; the only residual is a single-period t=2
-# initial-condition artifact that cancels in the reform-minus-baseline
+# The transition converges; the residuals are single-period errors at t=2
+# and t=120 that cancel in the reform-minus-baseline
 # differences reported below. Disable the strict per-period RC check so
 # both runs complete (this mirrors OG-Core's own test configuration).
 TPI.ENFORCE_SOLUTION_CHECKS = False
@@ -76,20 +76,30 @@ def _df_to_md(df):
     return "\n".join([head, sep, *body])
 
 
-def solve_tpi(calibrated, tau_c_rate, output_base, client, baseline_dir=None):
+def solve_tpi(
+    calibrated, tau_c_rate, output_base, client, baseline_dir=None, init_dist=None
+):
     """Solve a transition; baseline if baseline_dir is None, else a reform."""
     is_baseline = baseline_dir is None
     p = Specifications(baseline=is_baseline, num_workers=2)
     p.update_specifications({"start_year": START_YEAR})
     scenario = dict(calibrated)
     scenario["tau_c"] = [[tau_c_rate]]
-    p.update_specifications(scenario)
+    calibrate.update_specs(p, scenario)
     p.update_specifications({"TPI_outer_method": "anderson"})
     p.output_base = output_base
     p.baseline_dir = output_base if is_baseline else baseline_dir
+    # Start from Japan's observed wealth-by-age profile (ogjpn.wealth).
+    # The baseline builds it from its own steady state; reforms receive it
+    # and OG-Core then starts them from the baseline's period-0 wealth.
+    if init_dist is None:
+        runner(p, time_path=False, client=client)
+        ss = utils.safe_read_pickle(os.path.join(output_base, "SS", "SS_vars.pkl"))
+        init_dist = wealth.get_initial_hhwealth_dist(p, ss["b_sp1"]).tolist()
+    p.update_specifications({"initial_hhwealth_dist": init_dist})
     runner(p, time_path=True, client=client)
     tpi = utils.safe_read_pickle(os.path.join(output_base, "TPI", "TPI_vars.pkl"))
-    return p, tpi
+    return p, tpi, init_dist
 
 
 def main():
@@ -101,11 +111,13 @@ def main():
         calibrated = calibrate.Calibration(p0, use_demographics=True).get_dict()
         print("Built Japan calibration with real UN demographics.", flush=True)
 
-        base_p, base = solve_tpi(calibrated, 0.10, BASE_DIR, client)
+        base_p, base, init_dist = solve_tpi(calibrated, 0.10, BASE_DIR, client)
         print("Baseline transition solved.", flush=True)
         reforms = {}
         for rate, d in REFORM_DIRS.items():
-            rp, rtpi = solve_tpi(calibrated, rate, d, client, BASE_DIR)
+            rp, rtpi, _ = solve_tpi(
+                calibrated, rate, d, client, BASE_DIR, init_dist=init_dist
+            )
             reforms[rate] = (rp, rtpi)
             print(f"Reform {int(rate * 100)}% transition solved.", flush=True)
     finally:
@@ -182,8 +194,8 @@ def main():
         "first-pass), so read the shape of the paths and the sign of the NPV, "
         "not the last digit. The reported quantities are all "
         "reform-minus-baseline differences, so the single-period "
-        "initial-condition artifact noted in the module docstring cancels "
-        "out."
+        "resource-constraint errors at t=2 and t=120 noted in the module "
+        "docstring cancel out."
     )
     doc = "\n".join(
         [

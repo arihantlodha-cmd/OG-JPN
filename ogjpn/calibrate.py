@@ -19,14 +19,49 @@ Phase status:
 import numpy as np
 from ogcore import demographics
 
-from ogjpn import macro_params, tax_params
+from ogjpn import macro_params, pension_params, tax_params
 from ogjpn.constants import UN_COUNTRY_CODE
+
+# Initial guess for OG-Core's model-to-currency factor when the model is
+# anchored to yen: the steady-state factor is about 6.7 million yen per
+# model unit. OG-Core validates initial_guess_factor_SS against a maximum
+# of 500,000, set with dollar-anchored models in mind, and the steady state
+# does not converge from a guess at that cap, so update_specs sets it
+# directly on the Specifications object.
+FACTOR_GUESS_JPY = 6.7e6
+_DIRECT_KEYS = ("initial_guess_factor_SS",)
+
+
+def update_specs(p, params):
+    """
+    Apply a calibration dict to an OG-Core Specifications object.
+
+    Use this instead of ``p.update_specifications(params)``: it passes
+    everything through OG-Core's validation except the keys that must be
+    set directly (the yen-scale ``initial_guess_factor_SS``).
+
+    Args:
+        p (ogcore Specifications): model parameters, updated in place
+        params (dict): parameters, e.g. ``Calibration(p).get_dict()``
+    """
+    params = dict(params)
+    direct = {k: params.pop(k) for k in _DIRECT_KEYS if k in params}
+    p.update_specifications(params)
+    for key, value in direct.items():
+        setattr(p, key, value)
 
 
 class Calibration:
     """OG-Japan calibration built on top of an OG-Core Specifications."""
 
-    def __init__(self, p, use_demographics=True, demographic_data_path=None):
+    def __init__(
+        self,
+        p,
+        use_demographics=True,
+        demographic_data_path=None,
+        income_tax="progressive",
+        pension="japan",
+    ):
         """
         Args:
             p (ogcore Specifications): model parameters (supplies the E,
@@ -36,10 +71,27 @@ class Calibration:
                 macro and tax blocks are calibrated
             demographic_data_path (str): optional path to cache the
                 downloaded demographic data
+            income_tax (str): "progressive" (default; functions fitted to
+                Japan's salary-bracket tax data) or "linear" (constant
+                rates); see ogjpn.tax_params.get_tax_params
+            pension (str): "japan" (default) for Japan's two-tier pension
+                formula with the model anchored to yen
+                (ogjpn.pension_params), or "us" for OG-Core's default US
+                Social Security formula and dollar anchor
         """
-        self.macro_params = macro_params.get_macro_params()
-        # Size the linear income-tax arrays to the model's S age groups.
-        self.tax_params = tax_params.get_tax_params(p.S)
+        self.macro_params = macro_params.get_macro_params(income_tax, pension)
+        self.pension_params = {}
+        mean_income = float(p.mean_income_data)
+        if pension == "japan":
+            self.pension_params = pension_params.get_pension_params()
+            mean_income = self.pension_params["mean_income_data"]
+            self.pension_params["initial_guess_factor_SS"] = FACTOR_GUESS_JPY
+        elif pension != "us":
+            raise ValueError("pension must be 'japan' or 'us'")
+        # The income-tax functions are scaled to the income anchor in use.
+        self.tax_params = tax_params.get_tax_params(
+            p.S, income_tax=income_tax, mean_income=mean_income
+        )
 
         self.demographic_params = None
         if use_demographics:
@@ -64,12 +116,14 @@ class Calibration:
 
     def get_dict(self):
         """
-        Return the calibrated parameters as a dict for
-        ``Specifications.update_specifications``.
+        Return the calibrated parameters as a dict. Apply it with
+        ``ogjpn.calibrate.update_specs(p, d)``, which also handles the
+        parameters OG-Core's validation would reject.
         """
         calibrated = {}
         calibrated.update(self.macro_params)
         calibrated.update(self.tax_params)
+        calibrated.update(self.pension_params)
         if self.demographic_params is not None:
             # get_pop_objs returns exactly the demographic parameters that
             # update_specifications accepts, so pass them all through.

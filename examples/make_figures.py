@@ -6,41 +6,55 @@ Produces docs/policy_results.png, a two-panel summary of the long-run
 the pension-age and replacement-rate reforms cut the public pension burden,
 and the consumption tax raises government revenue.
 
-The values are the steady-state results reported in docs/results_*.md (real
-Japanese demographics, first-pass macro and tax calibration). They are kept
-here as constants so the figure regenerates without a model solve; if the
-calibration changes, rerun the analysis scripts and update these numbers.
+The values are read from the steady states the analysis scripts solve
+(analysis_consumption_tax.py, analysis_retirement_age.py,
+analysis_replacement_rate.py), so run those first; the figure then always
+matches docs/results_*.md.
 """
 
 import os
 
 import matplotlib
+import numpy as np
+from ogcore import utils
 
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
-# Public pension outlays as a share of GDP (docs/results_retirement_age.md,
-# docs/results_replacement_rate.md). Baseline is 11.4%.
-PENSION = {
-    "Baseline": 11.4,
-    "Pension age 68": 10.4,
-    "Pension age 70": 9.5,
-    "Replacement -10%": 10.3,
-    "Replacement -20%": 9.1,
-}
-# Government revenue as a share of GDP under the consumption tax
-# (docs/results_consumption_tax.md): 0.322 / 0.336 / 0.355.
-REVENUE = {
-    "10% (actual)": 32.2,
-    "12%": 33.6,
-    "15% (IMF)": 35.5,
-}
+RUNS = "/tmp"
+
+
+def _ratio(run, var):
+    """Steady-state var / Y, in percent, from an analysis script's output."""
+    ss = utils.safe_read_pickle(os.path.join(RUNS, run, "SS", "SS_vars.pkl"))
+    return 100 * float(np.squeeze(ss[var])) / float(np.squeeze(ss["Y"]))
+
+
+def load_results():
+    """Pension outlays and tax revenue (% of GDP) for each reform."""
+    pens = "agg_pension_outlays"
+    pension = {
+        "Baseline": _ratio("ogjpn_ra_65", pens),
+        "Pension age 68": _ratio("ogjpn_ra_68", pens),
+        "Pension age 70": _ratio("ogjpn_ra_70", pens),
+        "Replacement -10%": _ratio("ogjpn_rr_90", pens),
+        "Replacement -20%": _ratio("ogjpn_rr_80", pens),
+    }
+    rev = "total_tax_revenue"
+    revenue = {
+        "10% (actual)": _ratio("ogjpn_ct_base", rev),
+        "12%": _ratio("ogjpn_ct_12", rev),
+        "15% (IMF)": _ratio("ogjpn_ct_15", rev),
+    }
+    return pension, revenue
+
 
 BASE = "#4c4c4c"  # baseline / neutral
 HL = "#1f77b4"  # reforms
 
 
 def main():
+    PENSION, REVENUE = load_results()
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(11, 4.4))
 
     # --- Panel 1: pension burden ---
@@ -53,7 +67,7 @@ def main():
     ax1.invert_yaxis()
     ax1.set_xlabel("Public pension outlays (% of GDP)")
     ax1.set_title("Pension reforms cut the pension burden", fontsize=11)
-    ax1.set_xlim(0, 13)
+    ax1.set_xlim(0, max(vals) * 1.12)
     for b, v in zip(bars, vals):
         ax1.text(
             v + 0.15,
@@ -71,7 +85,7 @@ def main():
     bars2 = ax2.bar(range(len(labels2)), vals2, color=colors2, width=0.6)
     ax2.set_xticks(range(len(labels2)))
     ax2.set_xticklabels(labels2)
-    ax2.set_ylabel("Government revenue (% of GDP)")
+    ax2.set_ylabel("Tax revenue (% of GDP)")
     ax2.set_title("A higher consumption tax raises revenue", fontsize=11)
     ax2.set_ylim(0, 40)
     for b, v in zip(bars2, vals2):
@@ -91,8 +105,8 @@ def main():
     fig.text(
         0.5,
         -0.04,
-        "Steady state on real Japanese demographics; macro and tax "
-        "calibration first-pass. See docs/results_*.md.",
+        "Steady state on Japan's demographics, progressive income tax, and "
+        "two-tier pension. See docs/results_*.md.",
         ha="center",
         fontsize=8,
         color="#666666",

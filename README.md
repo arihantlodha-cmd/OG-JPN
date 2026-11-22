@@ -23,22 +23,29 @@ overlapping-generations models are built to study.
 
 ## What it does
 
-The model is calibrated to real Japanese data and solved end to end:
+The model is calibrated to Japanese data and solved end to end:
 
-- **Demographics** are live UN World Population Prospects data (country
-  code 392): fertility, mortality, and the population by age.
-- **The fiscal and tax side** is grounded in published figures: gross debt
-  215 percent of GDP (IMF), the capital share from the Penn World Table,
-  income, social-insurance, capital, corporate, and the 10 percent
-  consumption tax from national sources.
+- **Demographics**: UN World Population Prospects (country code 392):
+  fertility, mortality, and the population by age.
+- **Income tax**: a progressive schedule fitted to the National Tax
+  Agency's 2023 salary-bracket tax data (effective rates from about 2
+  percent at the bottom to 40 percent at the top).
+- **Pensions**: Japan's two-tier public pension (flat basic pension plus
+  the earnings-related employees' pension), with the model anchored to yen.
+- **Fiscal side**: gross debt 215 percent of GDP (IMF), the capital share
+  from the Penn World Table, statutory social insurance, capital,
+  corporate, and consumption tax rates.
+- **Initial wealth**: households start the transition with Japan's
+  observed wealth-by-age profile (2019 national survey).
 - The model solves a **steady state** and a full **transition path** (the
   economy's year-by-year journey as the population ages).
 
-Solved on Japan's actual age structure, the steady state reproduces the
-quantity nobody told it: fed only the demographics, it returns a public
-pension burden of about 11 to 12 percent of GDP, close to Japan's actual
-figure. See **[docs/METHODOLOGY.md](docs/METHODOLOGY.md)** for the full,
-honest validation (what matches, what is still first-pass, and why).
+Nothing was tuned to hit it, but the model's public pension bill in its
+first year is **10.2 percent of GDP, against 10.4 percent in Japan**
+(MHLW, FY2022), and it rises about two points over the next two decades as
+the population ages. Tax revenue is 33.3 percent of GDP against 34.4
+(OECD). See the **[validation chapter](https://arihantlodha-cmd.github.io/OG-JPN/content/calibration/validation.html)**
+for what matches, what does not yet, and why.
 
 ## Policy results
 

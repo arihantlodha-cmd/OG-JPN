@@ -63,7 +63,9 @@ def test_alpha_G_is_the_steady_state_residual_not_national_accounts():
     twenty periods, debt explodes, and the transition fails to converge.
     """
     alpha_G = macro_params.get_macro_params()["alpha_G"][0]
-    assert alpha_G == pytest.approx(0.062, abs=0.005)
+    assert alpha_G == pytest.approx(0.065, abs=0.005)
+    lin = macro_params.get_macro_params("linear", "us")["alpha_G"][0]
+    assert lin == pytest.approx(0.062, abs=0.005)
     assert alpha_G < 0.10  # must not be the ~0.20 national-accounts value
 
 
@@ -83,9 +85,9 @@ def test_tax_rates_match_sourced_values():
     assert tax_params.CIT_RATE == 0.30  # effective combined corporate rate
 
 
-def test_tax_functions_are_linear_with_correct_shapes():
+def test_linear_tax_option_has_correct_shapes():
     S = 80
-    t = tax_params.get_tax_params(S)
+    t = tax_params.get_tax_params(S, income_tax="linear")
     assert t["tax_func_type"] == "linear"
     assert t["tau_payroll"] == [[0.30]]
     assert t["cit_rate"] == [[0.30]]
@@ -102,11 +104,10 @@ def test_tax_functions_are_linear_with_correct_shapes():
 
 def test_tax_params_size_to_number_of_ages():
     # the income-tax arrays must resize to the model's S age groups
-    assert np.array(tax_params.get_tax_params(50)["etr_params"]).shape == (
-        1,
-        50,
-        1,
-    )
+    lin = tax_params.get_tax_params(50, income_tax="linear")
+    assert np.array(lin["etr_params"]).shape == (1, 50, 1)
+    prog = tax_params.get_tax_params(50, mean_income=1e5)
+    assert np.array(prog["etr_params"]).shape == (1, 50, 6)
 
 
 def test_linear_params_helper_shape():
@@ -131,7 +132,32 @@ def test_calibration_assembles_macro_and_tax_without_network():
         assert key in calibrated
     # tax keys present and sized to S
     assert calibrated["tau_c"] == [[0.10]]
-    assert np.array(calibrated["etr_params"]).shape == (1, p.S, 1)
+    assert calibrated["tax_func_type"] == "DEP_totalinc"
+    assert np.array(calibrated["etr_params"]).shape == (1, p.S, 6)
+    linear = calibrate.Calibration(
+        p, use_demographics=False, income_tax="linear", pension="us"
+    ).get_dict()
+    assert np.array(linear["etr_params"]).shape == (1, p.S, 1)
+    assert linear["alpha_G"] == [0.062] and calibrated["alpha_G"] == [0.065]
+    # default: Japan's pension formula, anchored to yen
+    assert calibrated["pension_system"] == "US-Style Social Security"
+    assert calibrated["mean_income_data"] == pytest.approx(4.595e6, rel=1e-3)
+    with pytest.raises(ValueError):
+        macro_params.get_macro_params("linear", "japan")
+
+
+def test_update_specs_sets_the_yen_factor_guess_past_ogcore_cap():
+    """OG-Core caps initial_guess_factor_SS at 500,000; update_specs sets the
+    yen-scale guess directly, and it survives later updates."""
+    from ogcore.parameters import Specifications
+
+    p = Specifications()
+    calibrate.update_specs(
+        p, calibrate.Calibration(p, use_demographics=False).get_dict()
+    )
+    assert p.initial_guess_factor_SS == pytest.approx(6.7e6)
+    p.update_specifications({"tau_c": [[0.12]]})
+    assert p.initial_guess_factor_SS == pytest.approx(6.7e6)
 
 
 def test_net_worth_profile_matches_survey_bands():
@@ -188,3 +214,95 @@ def test_household_wealth_ratio_from_national_accounts():
 
     assert wealth.HH_WEALTH_TO_GDP_INCL_LAND == pytest.approx(4.98, abs=0.01)
     assert wealth.HH_WEALTH_TO_GDP_EXCL_LAND == pytest.approx(3.69, abs=0.01)
+
+
+def test_nta_bracket_data_matches_published_totals():
+    """The packaged 2023 NTA salary-survey data reproduce the published
+    totals: 50.76 million full-year earners, mean salary 4.60 million yen,
+    11.89 trillion yen of income tax withheld."""
+    from ogjpn import income_tax
+
+    df = income_tax.load_nta_2023()
+    assert len(df) == 14
+    assert df.earners.sum() == pytest.approx(50_761_385, abs=10)
+    mean = df.salary_total_yen.sum() / df.earners.sum()
+    assert mean == pytest.approx(4.595e6, rel=1e-3)
+    assert df.income_tax_withheld_yen.sum() == pytest.approx(11.89e12, rel=1e-3)
+
+
+def test_taxable_income_inversion_matches_statute():
+    """Taxable income recovered from tax withheld matches a statutory
+    calculation for a single earner at the bracket mean (4.48 million yen:
+    employment deduction 20% + 440k, social insurance ~15%, basic 480k)."""
+    from ogjpn import income_tax
+
+    b = income_tax.bracket_rates()
+    row = b.iloc[4]
+    s = row.mean_salary_yen
+    statutory = s - (0.2 * s + 440_000) - 0.15 * s - 480_000
+    assert row.taxable_yen == pytest.approx(statutory, rel=0.05)
+
+
+def test_progressive_rates_rise_with_income_and_fit_the_data():
+    """Effective rates rise from ~2% to ~40% across brackets, and the
+    fitted DEP_totalinc function tracks them within 2.5 points."""
+    from ogjpn import income_tax
+
+    b = income_tax.bracket_rates()
+    assert b.etr.iloc[0] < 0.03 and b.etr.iloc[-1] > 0.35
+    assert np.all(np.diff(b.etr) > 0)
+    p = income_tax.fit_dep_totalinc(b.x, b.etr, b.earners)
+    fitted = income_tax.dep_totalinc(p, b.x.to_numpy())
+    assert np.max(np.abs(fitted - b.etr.to_numpy())) < 0.025
+    # at mean income the marginal rate is far below the old flat 30%
+    pm = income_tax.fit_dep_totalinc(b.x, b.mtr_labor, b.earners)
+    assert income_tax.dep_totalinc(pm, 1.0) < 0.15
+
+
+def test_progressive_params_scale_with_the_income_anchor():
+    """Rates at the anchor's mean income do not depend on the anchor."""
+    from ogjpn import income_tax
+
+    p = [0.03, 0.05, 0.5, 0.03]
+    for m in (58_645.0, 4.6e6):
+        q = income_tax.to_model_units(p, m)
+        assert income_tax.dep_totalinc(q[:4], m) == pytest.approx(
+            income_tax.dep_totalinc(p, 1.0)
+        )
+    t = tax_params.get_tax_params(80, income_tax="progressive", mean_income=1e5)
+    assert t["tax_func_type"] == "DEP_totalinc"
+    assert np.asarray(t["etr_params"]).shape == (1, 80, 6)
+    assert t["mtry_params"][0][0][2:4] == [0.20315, 0.20315]
+
+
+def _og_core_pia(aime, p):
+    """OG-Core's US-style PIA bracket formula (pensions.replacement_rate_vals)."""
+    if aime < p["AIME_bkt_1"]:
+        pia = p["PIA_rate_bkt_1"] * aime
+    elif aime < p["AIME_bkt_2"]:
+        pia = p["PIA_rate_bkt_1"] * p["AIME_bkt_1"] + p["PIA_rate_bkt_2"] * (
+            aime - p["AIME_bkt_1"]
+        )
+    else:
+        pia = (
+            p["PIA_rate_bkt_1"] * p["AIME_bkt_1"]
+            + p["PIA_rate_bkt_2"] * (p["AIME_bkt_2"] - p["AIME_bkt_1"])
+            + p["PIA_rate_bkt_3"] * (aime - p["AIME_bkt_2"])
+        )
+    return min(max(pia, p["PIA_minpayment"]), p["PIA_maxpayment"])
+
+
+def test_pension_brackets_reproduce_japans_two_tier_formula():
+    """Above the first bend point the bracket formula equals Japan's basic
+    pension plus 0.5481% x 40 years of average earnings, up to the cap; at
+    zero earnings it pays the basic pension."""
+    from ogjpn import pension_params as pp
+
+    p = pp.get_pension_params()
+    assert p["mean_income_data"] == pytest.approx(4.595e6, rel=1e-3)
+    assert p["PIA_minpayment"] == pytest.approx(66_250)
+    for aime in [p["AIME_bkt_1"], 150_000, 383_000, 600_000, 775_000, 2e6]:
+        assert _og_core_pia(aime, p) == pytest.approx(
+            pp.japan_monthly_benefit(aime), rel=1e-9
+        )
+    assert _og_core_pia(0.0, p) == pytest.approx(66_250)

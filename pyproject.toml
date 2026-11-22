@@ -36,5 +36,8 @@ Issues = "https://github.com/arihantlodha-cmd/OG-JPN/issues"
 [tool.setuptools.packages.find]
 include = ["ogjpn*"]
 
+[tool.setuptools.package-data]
+ogjpn = ["data/*.csv"]
+
 [tool.pytest.ini_options]
 testpaths = ["tests"]

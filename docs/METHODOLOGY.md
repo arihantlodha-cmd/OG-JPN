@@ -1,5 +1,11 @@
 # OG-Japan: methodology and current results
 
+> Superseded by the documentation site
+> (https://arihantlodha-cmd.github.io/OG-JPN/), which has the current
+> calibration and validation. This file is kept as the working record of
+> how the model was built; its figures predate the progressive income tax,
+> Japan's pension formula, and the yen anchor.
+
 This document describes how OG-Japan is built, what data it uses, and how
 well its steady state matches Japan today. It is written to be honest
 about what is calibrated and what is still first-pass.

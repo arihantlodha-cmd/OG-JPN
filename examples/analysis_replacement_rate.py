@@ -42,7 +42,7 @@ def solve_ss(calibrated, adjust, output_base):
     p.update_specifications({"start_year": START_YEAR})
     scenario = dict(calibrated)
     scenario["replacement_rate_adjust"] = [[adjust]]  # scenario lever
-    p.update_specifications(scenario)
+    calibrate.update_specs(p, scenario)
     p.baseline_dir = p.output_base = output_base
     runner(p, time_path=False, client=None)
     return utils.safe_read_pickle(os.path.join(output_base, "SS", "SS_vars.pkl"))
@@ -74,12 +74,14 @@ def write_results(base, reforms):
     )
     sep = "|" + "|".join(["---"] * (len(aggregates) + 2)) + "|"
     rows = []
+    pen = {}
     for cut, reform in reforms:
         changes = [
             f"{100 * (_scalar(reform[v]) - _scalar(base[v])) / _scalar(base[v]):+.2f}"
             for v in aggregates
         ]
         r_pen = _scalar(reform["agg_pension_outlays"]) / _scalar(reform["Y"])
+        pen[cut] = r_pen
         pct = round((1 - cut) * 100)
         rows.append(
             f"| -{pct}% benefits | "
@@ -102,8 +104,8 @@ def write_results(base, reforms):
         "retirees receive rather than when they can claim, and it produces "
         "the same signature. The direct effect is mechanical, the pension "
         "bill falls roughly in proportion to the cut (a ten percent cut takes "
-        "it from about 11.4 to 10.3 percent of GDP, a twenty percent cut to "
-        "9.1). The behavioral response runs mainly through labor: facing a "
+        f"it from about {100 * b_pen:.1f} to {100 * pen[0.90]:.1f} percent of "
+        f"GDP, a twenty percent cut to {100 * pen[0.80]:.1f}). The behavioral response runs mainly through labor: facing a "
         "thinner public pension, households work more (labor up about half a "
         "percent at the ten percent cut and over one percent at twenty), "
         "which lifts output modestly. Capital edges down rather than up in "
