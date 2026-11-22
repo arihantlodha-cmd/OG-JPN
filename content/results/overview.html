@@ -216,6 +216,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../calibration/demographics.html">Demographics</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../calibration/macro.html">Macroeconomic and fiscal parameters</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../calibration/taxes.html">Taxes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../calibration/pensions.html">Public pensions and the yen anchor</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../calibration/wealth.html">Initial distribution of household wealth</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../calibration/validation.html">Validation against Japan</a></li>
 </ul>
@@ -329,7 +330,10 @@
             <nav aria-label="Page">
                 <ul class="pst-show_toc_level nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-the-transition-adds">What the transition adds</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#how-to-read-the-numbers">How to read the numbers</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#how-to-read-the-numbers">How to read the numbers</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#household-solver-errors-in-a-few-cohorts">Household solver errors in a few cohorts</a></li>
+</ul>
+</li>
 </ul>
             </nav>
         </div>
@@ -351,14 +355,14 @@
 </tr>
 </thead>
 <tbody>
-<tr class="row-even"><td><p><a class="reference internal" href="consumption_tax.html#chap-constax"><span class="std std-ref">Consumption tax 10 to 15 percent</span></a></p></td>
-<td><p>revenue up about 1.5 points of GDP per two-point rise; consumption down, labor slightly up</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="consumption_tax.html#chap-constax"><span class="std std-ref">Consumption tax 10 to 12 and 15 percent</span></a></p></td>
+<td><p>tax revenue up 1.3 and 3.2 points of GDP; consumption down, labor slightly up</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="retirement_age.html#chap-retage"><span class="std std-ref">Pension age 65 to 70</span></a></p></td>
-<td><p>pension outlays from 11.5 to 9.6 percent of GDP; labor up</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="retirement_age.html#chap-retage"><span class="std std-ref">Pension age 65 to 68 and 70</span></a></p></td>
+<td><p>long-run pension outlays from 12.1 to 10.9 and 10.0 percent of GDP; labor up</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="replacement_rate.html#chap-replrate"><span class="std std-ref">Replacement-rate cut of 10 and 20 percent</span></a></p></td>
-<td><p>pension outlays from 11.5 to 9.2 percent of GDP; labor up</p></td>
+<td><p>long-run pension outlays from 12.1 to 10.9 and 9.7 percent of GDP; labor up</p></td>
 </tr>
 </tbody>
 </table>
@@ -372,12 +376,17 @@
 </figure>
 <section id="what-the-transition-adds">
 <h2>What the transition adds<a class="headerlink" href="#what-the-transition-adds" title="Link to this heading">#</a></h2>
-<p>In all three reforms, the transition path shows <strong>capital building up</strong> over the horizon, as each reform tilts households toward saving. The steady-state comparison alone does not show this; for the pension-age and replacement-rate reforms it even suggests the opposite. That is what the dynamics are for.</p>
+<p>Each reform improves the government budget, and for the first 20 years OG-Core holds government purchases at a fixed share of GDP, so the gain goes to <strong>paying down debt</strong>. Lower debt frees household saving for private capital, so capital rises along the transition (by close to 10 percent at year 20 under the 15 percent consumption tax) even where households themselves save less. After year 20 OG-Core’s debt-closure rule brings debt back to its target and capital returns toward its new steady state, which for all three reforms is close to or slightly below the baseline. The capital gain on the path is therefore mainly a consequence of using the proceeds to reduce debt, which is how OG-Core closes the budget, not a change in household saving. Each result page measures this channel from the solved paths.</p>
+<p>The steady-state comparison cannot show any of this, and it cannot give the year-by-year pension and revenue paths or their present values, which are what a finance ministry would weigh. The transition pages report those present values as a share of first-year GDP and in trillion yen at Japan’s FY2023 GDP.</p>
 </section>
 <section id="how-to-read-the-numbers">
 <h2>How to read the numbers<a class="headerlink" href="#how-to-read-the-numbers" title="Link to this heading">#</a></h2>
-<p>The tax side of the calibration is first-pass (see <a class="reference internal" href="../calibration/taxes.html#chap-taxes"><span class="std std-ref">Taxes</span></a>), so read results for their direction and rough size rather than their last digit. Reform-minus-baseline comparisons are robust to the model’s level misses in <code class="docutils literal notranslate"><span class="pre">C/Y</span></code> and household wealth, because the baseline and the reform carry the same calibration. The single-period resource-constraint errors at t = 2 and t = 120 (see <a class="reference internal" href="../calibration/wealth.html#chap-wealth"><span class="std std-ref">Initial distribution of household wealth</span></a> and <a class="reference internal" href="../calibration/demographics.html#chap-demog"><span class="std std-ref">Demographics</span></a>) are common to baseline and reform and cancel in the differences.</p>
-<p>The published results were produced with OG-Core’s default initial wealth distribution. Rerunning them from Japan’s observed distribution (<a class="reference internal" href="../calibration/wealth.html#chap-wealth"><span class="std std-ref">Initial distribution of household wealth</span></a>) is on the roadmap.</p>
+<p>Parts of the calibration are still first-pass (see <a class="reference internal" href="../calibration/taxes.html#chap-taxes"><span class="std std-ref">Taxes</span></a> and <a class="reference internal" href="../calibration/pensions.html#chap-pensions"><span class="std std-ref">Public pensions and the yen anchor</span></a>), so read results for their direction and rough size rather than their last digit. Reform-minus-baseline comparisons are robust to the model’s level misses in <code class="docutils literal notranslate"><span class="pre">C/Y</span></code> and household wealth, because the baseline and the reform carry the same calibration. The single-period resource-constraint errors at t = 2 and t = 120 (see <a class="reference internal" href="../calibration/wealth.html#chap-wealth"><span class="std std-ref">Initial distribution of household wealth</span></a> and <a class="reference internal" href="../calibration/demographics.html#chap-demog"><span class="std std-ref">Demographics</span></a>) are common to baseline and reform and cancel in the differences.</p>
+<p>All results use the default calibration (progressive income tax, Japan’s two-tier pension in yen), and the transitions start from Japan’s observed initial wealth distribution (<a class="reference internal" href="../calibration/wealth.html#chap-wealth"><span class="std std-ref">Initial distribution of household wealth</span></a>).</p>
+<section id="household-solver-errors-in-a-few-cohorts">
+<h3>Household solver errors in a few cohorts<a class="headerlink" href="#household-solver-errors-in-a-few-cohorts" title="Link to this heading">#</a></h3>
+<p>Checking the household first-order conditions along each solved transition (not only the aggregate resource constraint) found that one or two cohorts per run, entering between years 2 and 28, have large Euler-equation errors (up to about 0.7). The cause is in OG-Core: when its sparse-Jacobian household solve stops without converging, it does not fall back to dense finite differences, and the remaining retry can also stop short, with no warning. Re-solving the baseline with the dense solver removes the errors (below 1e-11) and changes the aggregates by at most 0.07 percent (labor and the interest rate, around year 9), under 0.03 percent for pension outlays and revenue. The reform effects reported here are 0.3 to 10 percent, so the results stand; at most the second decimal of some mid-path entries can move. A fix is proposed upstream (<a class="reference external" href="https://github.com/PSLmodels/OG-Core/pull/1294">OG-Core #1294</a>); with it, the sparse solver matches the dense solution to 4e-7 at little extra cost, and the transitions will be rerun once it is released.</p>
+</section>
 </section>
 </section>
 
@@ -448,7 +457,10 @@
   <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="pst-show_toc_level nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-the-transition-adds">What the transition adds</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#how-to-read-the-numbers">How to read the numbers</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#how-to-read-the-numbers">How to read the numbers</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#household-solver-errors-in-a-few-cohorts">Household solver errors in a few cohorts</a></li>
+</ul>
+</li>
 </ul>
   </nav></div>
 

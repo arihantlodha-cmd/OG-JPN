@@ -216,6 +216,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../calibration/demographics.html">Demographics</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../calibration/macro.html">Macroeconomic and fiscal parameters</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../calibration/taxes.html">Taxes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../calibration/pensions.html">Public pensions and the yen anchor</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../calibration/wealth.html">Initial distribution of household wealth</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../calibration/validation.html">Validation against Japan</a></li>
 </ul>
@@ -404,14 +405,15 @@
 </section>
 <section id="using-the-calibration-in-your-own-scripts">
 <h2>Using the calibration in your own scripts<a class="headerlink" href="#using-the-calibration-in-your-own-scripts" title="Link to this heading">#</a></h2>
+<p>Apply the calibration with <code class="docutils literal notranslate"><span class="pre">ogjpn.calibrate.update_specs</span></code> rather than <code class="docutils literal notranslate"><span class="pre">p.update_specifications</span></code>: the model is anchored to yen, and OG-Core’s validation rejects a yen-scale starting guess for the currency factor, so <code class="docutils literal notranslate"><span class="pre">update_specs</span></code> sets that one value directly.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">ogcore.parameters</span><span class="w"> </span><span class="kn">import</span> <span class="n">Specifications</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">ogcore.execute</span><span class="w"> </span><span class="kn">import</span> <span class="n">runner</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">ogjpn.calibrate</span><span class="w"> </span><span class="kn">import</span> <span class="n">Calibration</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ogjpn.calibrate</span><span class="w"> </span><span class="kn">import</span> <span class="n">Calibration</span><span class="p">,</span> <span class="n">update_specs</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">ogjpn.constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">START_YEAR</span>
 
 <span class="n">p</span> <span class="o">=</span> <span class="n">Specifications</span><span class="p">(</span><span class="n">baseline</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="n">p</span><span class="o">.</span><span class="n">update_specifications</span><span class="p">({</span><span class="s2">"start_year"</span><span class="p">:</span> <span class="n">START_YEAR</span><span class="p">})</span>
-<span class="n">p</span><span class="o">.</span><span class="n">update_specifications</span><span class="p">(</span><span class="n">Calibration</span><span class="p">(</span><span class="n">p</span><span class="p">)</span><span class="o">.</span><span class="n">get_dict</span><span class="p">())</span>
+<span class="n">update_specs</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">Calibration</span><span class="p">(</span><span class="n">p</span><span class="p">)</span><span class="o">.</span><span class="n">get_dict</span><span class="p">())</span>
 <span class="n">p</span><span class="o">.</span><span class="n">baseline_dir</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">output_base</span> <span class="o">=</span> <span class="s2">"./OUTPUT_BASELINE"</span>
 <span class="n">runner</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">time_path</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 </pre></div>

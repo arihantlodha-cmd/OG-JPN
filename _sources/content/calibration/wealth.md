@@ -36,11 +36,11 @@ Share of household wealth by age at the start of the transition: OG-Core's stead
 
 The steady-state proxy puts **37 percent** of household wealth with people aged 80 and over; the survey puts it at **23 percent**. Japan's wealth is concentrated in people's 50s and 60s far more than the steady state implies.
 
-Starting the baseline transition from the observed distribution cuts the resource-constraint error at t = 2 from 1.80e-3 to 1.24e-3 (31 percent smaller) and reduces the errors at t = 3 to 5 about 2.5-fold. It does not remove the t = 2 error entirely, so part of that error has another source, still under investigation. Both errors are confined to single periods and cancel in reform-minus-baseline comparisons.
+In a like-for-like test (the earlier flat-tax calibration), starting the baseline transition from the observed distribution cut the resource-constraint error at t = 2 from 1.80e-3 to 1.24e-3 (31 percent smaller) and reduces the errors at t = 3 to 5 about 2.5-fold. It does not remove the t = 2 error entirely (1.32e-3 under the current calibration), so part of that error has another source, still under investigation. Both errors are confined to single periods and cancel in reform-minus-baseline comparisons.
 
 ## Level of wealth
 
-The 2023 national accounts (Cabinet Office, 2023年度国民経済計算, stock edition) give household net worth of 2,965.1 trillion yen, of which 767.1 trillion is land. Against FY2023 nominal GDP of 595.2 trillion yen, that is **4.98 times GDP**, or **3.69 times GDP** excluding land, the comparable concept because the model has no land. The model's steady state holds **5.53 times GDP**, about 50 percent more. That gap is the same one behind the high capital-output ratio (see {ref}`Chap_Validation`). The ratios are in `ogjpn.wealth` but are not yet passed to OG-Core as `initial_wealth_ratio`, because starting a third below the steady-state wealth level is a large shock that needs testing of its own.
+The 2023 national accounts (Cabinet Office, 2023年度国民経済計算, stock edition) give household net worth of 2,965.1 trillion yen, of which 767.1 trillion is land. Against FY2023 nominal GDP of 595.2 trillion yen, that is **4.98 times GDP**, or **3.69 times GDP** excluding land, the comparable concept because the model has no land. The model's steady state holds **5.45 times GDP**, about 50 percent more. That gap is the same one behind the high capital-output ratio (see {ref}`Chap_Validation`). The ratios are in `ogjpn.wealth` but are not yet passed to OG-Core as `initial_wealth_ratio`, because starting a third below the steady-state wealth level is a large shock that needs testing of its own.
 
 ## Known limitations
 

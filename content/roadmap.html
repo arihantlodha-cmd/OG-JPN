@@ -216,6 +216,7 @@
 <li class="toctree-l1"><a class="reference internal" href="calibration/demographics.html">Demographics</a></li>
 <li class="toctree-l1"><a class="reference internal" href="calibration/macro.html">Macroeconomic and fiscal parameters</a></li>
 <li class="toctree-l1"><a class="reference internal" href="calibration/taxes.html">Taxes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="calibration/pensions.html">Public pensions and the yen anchor</a></li>
 <li class="toctree-l1"><a class="reference internal" href="calibration/wealth.html">Initial distribution of household wealth</a></li>
 <li class="toctree-l1"><a class="reference internal" href="calibration/validation.html">Validation against Japan</a></li>
 </ul>
@@ -349,21 +350,22 @@
 <ul class="simple">
 <li><p>Country skeleton on OG-Core, with Japan’s UN demographics (code 392).</p></li>
 <li><p>Macro and fiscal calibration from IMF, Penn World Table, and national sources.</p></li>
-<li><p>Tax calibration from published Japanese rates (income, social insurance, capital, corporate, consumption).</p></li>
-<li><p>Validated steady state and a converging transition path, on OG-Core 0.24.6.</p></li>
-<li><p>Three policy reforms (consumption tax, pension age, replacement rate), each as a steady-state comparison and on the transition path, with net present values.</p></li>
+<li><p><strong>Progressive personal income tax</strong> fitted to the National Tax Agency’s 2023 salary-bracket tax data; social insurance, capital, corporate, and consumption taxes from statutory rates.</p></li>
+<li><p><strong>Japan’s two-tier public pension</strong> (basic + employees’ pension) in yen, with the model’s income anchored to the 2023 mean salary.</p></li>
 <li><p>Japan’s observed initial wealth distribution from the 2019 national survey.</p></li>
+<li><p>Validated against Japan: first-year pension outlays 10.2 percent of GDP against 10.4 percent actual; tax revenue 33.3 against 34.4 percent.</p></li>
+<li><p>Converging transition path on OG-Core 0.24.6, and three policy reforms (consumption tax, pension age, replacement rate), each as a steady-state comparison and on the transition path, with net present values.</p></li>
 </ul>
 </section>
 <section id="next">
 <h2>Next<a class="headerlink" href="#next" title="Link to this heading">#</a></h2>
+<p>First, <strong>rerun the reform transitions once OG-Core’s household solver fix (<a class="reference external" href="https://github.com/PSLmodels/OG-Core/pull/1294">#1294</a>) is released.</strong> One or two cohorts per run currently carry large Euler errors from a silent sparse-Jacobian solver failure; the effect on aggregates is under 0.1 percent (see <a class="reference internal" href="results/overview.html#chap-results"><span class="std std-ref">Policy results</span></a>).</p>
 <ol class="arabic simple">
-<li><p><strong>Rerun the reform transitions from the observed initial wealth distribution</strong>, and update the result pages.</p></li>
-<li><p><strong>Find the rest of the t = 2 resource-constraint error.</strong> The observed wealth distribution cut it by 31 percent; the remainder has a different source.</p></li>
-<li><p><strong>The t = 120 population freeze.</strong> Report upstream that OG-Core fixes the population at <code class="docutils literal notranslate"><span class="pre">1.5</span> <span class="pre">*</span> <span class="pre">S</span></code> periods even when it has not converged, and propose a convergence-based alternative.</p></li>
-<li><p><strong>Yen income anchor.</strong> OG-JPN still uses OG-Core’s US mean income (<code class="docutils literal notranslate"><span class="pre">mean_income_data</span></code>, about $58,645), so currency output is in effect US dollars. The candidate is the National Tax Agency’s mean salary of full-year private-sector earners, 4.78 million yen (2024). The pension benefit formula is dollar-denominated, so switching needs a Japan pension formula and revalidation, not just a relabel.</p></li>
-<li><p><strong>Progressive income tax</strong>, fitted to Japan’s seven-bracket schedule and the income distribution.</p></li>
+<li><p><strong>The t = 120 population freeze.</strong> OG-Core fixes the population at <code class="docutils literal notranslate"><span class="pre">1.5</span> <span class="pre">*</span> <span class="pre">S</span></code> periods even when it has not converged (<a class="reference external" href="https://github.com/PSLmodels/OG-Core/issues/1290">OG-Core #1290</a>). Moving the freeze to period 200 removes the t = 120 error and halves it at the new freeze point; a convergence-based rule is the real fix.</p></li>
+<li><p><strong>The t = 2 resource-constraint error.</strong> The observed initial wealth distribution cut it by about 30 percent; the rest has another source.</p></li>
+<li><p><strong>Personal income tax revenue</strong> runs about a point of GDP high because OG-Core’s total-income form taxes capital income progressively; OG-Core’s separate labor/capital (<code class="docutils literal notranslate"><span class="pre">DEP</span></code>) form, or a lower effective rate on capital income, would fix it.</p></li>
 <li><p><strong>Level of initial wealth.</strong> Test <code class="docutils literal notranslate"><span class="pre">initial_wealth_ratio</span></code> at the national-accounts value (3.69 times GDP excluding land).</p></li>
+<li><p><strong>Pension details:</strong> the spouse’s basic pension, survivor benefits, and the macroeconomic slide as part of the baseline rather than a reform.</p></li>
 <li><p><strong>Income-mortality gradient</strong> from Japanese data.</p></li>
 <li><p><strong>Property tax</strong> through OG-Core’s wealth tax, once the convergence problem with the consumption-tax reform is understood.</p></li>
 </ol>
@@ -391,6 +393,24 @@
 </tr>
 <tr class="row-even"><td><p>Resource-constraint failure diagnostics (<a class="reference external" href="https://github.com/PSLmodels/OG-Core/pull/1213">OG-Core #1213</a>)</p></td>
 <td><p>merged</p></td>
+</tr>
+<tr class="row-odd"><td><p>Population frozen before convergence for fast-aging countries (<a class="reference external" href="https://github.com/PSLmodels/OG-Core/issues/1290">OG-Core #1290</a>)</p></td>
+<td><p>issue, with test</p></td>
+</tr>
+<tr class="row-even"><td><p>Optional <code class="docutils literal notranslate"><span class="pre">fixper</span></code> argument for the population freeze (<a class="reference external" href="https://github.com/PSLmodels/OG-Core/pull/1293">OG-Core #1293</a>)</p></td>
+<td><p>open</p></td>
+</tr>
+<tr class="row-odd"><td><p>Dense retry when the sparse-Jacobian household solve does not converge (<a class="reference external" href="https://github.com/PSLmodels/OG-Core/pull/1294">OG-Core #1294</a>)</p></td>
+<td><p>open</p></td>
+</tr>
+<tr class="row-even"><td><p>Non-dollar initial guess for the currency factor (<a class="reference external" href="https://github.com/PSLmodels/OG-Core/pull/1292">OG-Core #1292</a>)</p></td>
+<td><p>open</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">age_specific</span></code> parameter description (<a class="reference external" href="https://github.com/PSLmodels/OG-Core/pull/1291">OG-Core #1291</a>)</p></td>
+<td><p>open</p></td>
+</tr>
+<tr class="row-even"><td><p>OG-JPN in OG-Core’s list of country calibrations (<a class="reference external" href="https://github.com/PSLmodels/OG-Core/pull/1289">OG-Core #1289</a>)</p></td>
+<td><p>open</p></td>
 </tr>
 </tbody>
 </table>

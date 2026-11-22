@@ -211,6 +211,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../content/calibration/demographics.html">Demographics</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../content/calibration/macro.html">Macroeconomic and fiscal parameters</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../content/calibration/taxes.html">Taxes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../content/calibration/pensions.html">Public pensions and the yen anchor</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../content/calibration/wealth.html">Initial distribution of household wealth</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../content/calibration/validation.html">Validation against Japan</a></li>
 </ul>
@@ -407,25 +408,32 @@
     <span class="k">return</span> <span class="p">[[[</span><span class="n">rate</span><span class="p">]</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_ages</span><span class="p">)]]</span>
 
 
+<span class="k">def</span><span class="w"> </span><span class="nf">_dep_params</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">num_ages</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Repeat one DEP_totalinc parameter vector over ages: (1, S, 6)."""</span>
+    <span class="k">return</span> <span class="p">[[</span><span class="nb">list</span><span class="p">(</span><span class="n">params</span><span class="p">)</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_ages</span><span class="p">)]]</span>
+
+
 <div class="viewcode-block" id="get_tax_params">
 <a class="viewcode-back" href="../../content/api/public_api.html#ogjpn.tax_params.get_tax_params">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">get_tax_params</span><span class="p">(</span><span class="n">num_ages</span><span class="o">=</span><span class="mi">80</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_tax_params</span><span class="p">(</span><span class="n">num_ages</span><span class="o">=</span><span class="mi">80</span><span class="p">,</span> <span class="n">income_tax</span><span class="o">=</span><span class="s2">"progressive"</span><span class="p">,</span> <span class="n">mean_income</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Return Japan tax parameters for ``Specifications.update_specifications``.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        num_ages (int): number of age groups S in the model, used to size</span>
-<span class="sd">            the linear income-tax function arrays (default 80, OG-Core's S)</span>
+<span class="sd">            the income-tax function arrays (default 80, OG-Core's S)</span>
+<span class="sd">        income_tax (str): "progressive" (default) for DEP_totalinc</span>
+<span class="sd">            functions fitted to Japan's 2023 salary-bracket tax data (see</span>
+<span class="sd">            ogjpn.income_tax), or "linear" for constant average (8%) and</span>
+<span class="sd">            marginal (30% labor, 20.315% capital) rates</span>
+<span class="sd">        mean_income (float): the model's income anchor</span>
+<span class="sd">            (``mean_income_data``), used to put the progressive functions</span>
+<span class="sd">            in model income units; defaults to OG-Core's default value</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        tax_parameters (dict): Japan tax parameters</span>
 <span class="sd">    """</span>
     <span class="n">tax_parameters</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="c1"># Constant (linear) income tax functions, one sourced rate each.</span>
-        <span class="s2">"tax_func_type"</span><span class="p">:</span> <span class="s2">"linear"</span><span class="p">,</span>
-        <span class="s2">"etr_params"</span><span class="p">:</span> <span class="n">_linear_params</span><span class="p">(</span><span class="n">ETR_INCOME</span><span class="p">,</span> <span class="n">num_ages</span><span class="p">),</span>
-        <span class="s2">"mtrx_params"</span><span class="p">:</span> <span class="n">_linear_params</span><span class="p">(</span><span class="n">MTR_LABOR</span><span class="p">,</span> <span class="n">num_ages</span><span class="p">),</span>
-        <span class="s2">"mtry_params"</span><span class="p">:</span> <span class="n">_linear_params</span><span class="p">(</span><span class="n">MTR_CAPITAL</span><span class="p">,</span> <span class="n">num_ages</span><span class="p">),</span>
         <span class="c1"># Payroll (social insurance) tax and corporate income tax.</span>
         <span class="c1"># OG-Core &gt;= 0.19 takes tau_payroll as a (T, J) array, so a nested list.</span>
         <span class="s2">"tau_payroll"</span><span class="p">:</span> <span class="p">[[</span><span class="n">TAU_PAYROLL</span><span class="p">]],</span>
@@ -433,6 +441,45 @@
         <span class="c1"># Consumption tax: 10% since October 2019.</span>
         <span class="s2">"tau_c"</span><span class="p">:</span> <span class="p">[[</span><span class="n">TAU_C</span><span class="p">]],</span>
     <span class="p">}</span>
+    <span class="k">if</span> <span class="n">income_tax</span> <span class="o">==</span> <span class="s2">"linear"</span><span class="p">:</span>
+        <span class="c1"># Constant (linear) income tax functions, one sourced rate each.</span>
+        <span class="n">tax_parameters</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
+            <span class="p">{</span>
+                <span class="s2">"tax_func_type"</span><span class="p">:</span> <span class="s2">"linear"</span><span class="p">,</span>
+                <span class="s2">"etr_params"</span><span class="p">:</span> <span class="n">_linear_params</span><span class="p">(</span><span class="n">ETR_INCOME</span><span class="p">,</span> <span class="n">num_ages</span><span class="p">),</span>
+                <span class="s2">"mtrx_params"</span><span class="p">:</span> <span class="n">_linear_params</span><span class="p">(</span><span class="n">MTR_LABOR</span><span class="p">,</span> <span class="n">num_ages</span><span class="p">),</span>
+                <span class="s2">"mtry_params"</span><span class="p">:</span> <span class="n">_linear_params</span><span class="p">(</span><span class="n">MTR_CAPITAL</span><span class="p">,</span> <span class="n">num_ages</span><span class="p">),</span>
+            <span class="p">}</span>
+        <span class="p">)</span>
+    <span class="k">elif</span> <span class="n">income_tax</span> <span class="o">==</span> <span class="s2">"progressive"</span><span class="p">:</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">ogjpn</span><span class="w"> </span><span class="kn">import</span> <span class="n">income_tax</span> <span class="k">as</span> <span class="n">it</span>
+
+        <span class="k">if</span> <span class="n">mean_income</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="kn">from</span><span class="w"> </span><span class="nn">ogcore.parameters</span><span class="w"> </span><span class="kn">import</span> <span class="n">Specifications</span>
+
+            <span class="n">mean_income</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">Specifications</span><span class="p">()</span><span class="o">.</span><span class="n">mean_income_data</span><span class="p">)</span>
+        <span class="n">b</span> <span class="o">=</span> <span class="n">it</span><span class="o">.</span><span class="n">bracket_rates</span><span class="p">()</span>
+        <span class="n">etr</span> <span class="o">=</span> <span class="n">it</span><span class="o">.</span><span class="n">fit_dep_totalinc</span><span class="p">(</span><span class="n">b</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">b</span><span class="o">.</span><span class="n">etr</span><span class="p">,</span> <span class="n">b</span><span class="o">.</span><span class="n">earners</span><span class="p">)</span>
+        <span class="n">mtrx</span> <span class="o">=</span> <span class="n">it</span><span class="o">.</span><span class="n">fit_dep_totalinc</span><span class="p">(</span><span class="n">b</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">b</span><span class="o">.</span><span class="n">mtr_labor</span><span class="p">,</span> <span class="n">b</span><span class="o">.</span><span class="n">earners</span><span class="p">)</span>
+        <span class="c1"># Capital income: flat 20.315% (A = B = 0, min = max = rate).</span>
+        <span class="n">mtry</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="n">MTR_CAPITAL</span><span class="p">,</span> <span class="n">MTR_CAPITAL</span><span class="p">]</span>
+        <span class="n">tax_parameters</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
+            <span class="p">{</span>
+                <span class="s2">"tax_func_type"</span><span class="p">:</span> <span class="s2">"DEP_totalinc"</span><span class="p">,</span>
+                <span class="s2">"analytical_mtrs"</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+                <span class="s2">"etr_params"</span><span class="p">:</span> <span class="n">_dep_params</span><span class="p">(</span>
+                    <span class="n">it</span><span class="o">.</span><span class="n">to_model_units</span><span class="p">(</span><span class="n">etr</span><span class="p">,</span> <span class="n">mean_income</span><span class="p">),</span> <span class="n">num_ages</span>
+                <span class="p">),</span>
+                <span class="s2">"mtrx_params"</span><span class="p">:</span> <span class="n">_dep_params</span><span class="p">(</span>
+                    <span class="n">it</span><span class="o">.</span><span class="n">to_model_units</span><span class="p">(</span><span class="n">mtrx</span><span class="p">,</span> <span class="n">mean_income</span><span class="p">),</span> <span class="n">num_ages</span>
+                <span class="p">),</span>
+                <span class="s2">"mtry_params"</span><span class="p">:</span> <span class="n">_dep_params</span><span class="p">(</span>
+                    <span class="n">it</span><span class="o">.</span><span class="n">to_model_units</span><span class="p">(</span><span class="n">mtry</span><span class="p">,</span> <span class="n">mean_income</span><span class="p">),</span> <span class="n">num_ages</span>
+                <span class="p">),</span>
+            <span class="p">}</span>
+        <span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"income_tax must be 'linear' or 'progressive'"</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">tax_parameters</span></div>
 
 </pre></div>

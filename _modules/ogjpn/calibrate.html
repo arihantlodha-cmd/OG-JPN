@@ -211,6 +211,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../content/calibration/demographics.html">Demographics</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../content/calibration/macro.html">Macroeconomic and fiscal parameters</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../content/calibration/taxes.html">Taxes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../content/calibration/pensions.html">Public pensions and the yen anchor</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../content/calibration/wealth.html">Initial distribution of household wealth</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../content/calibration/validation.html">Validation against Japan</a></li>
 </ul>
@@ -347,8 +348,39 @@
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">ogcore</span><span class="w"> </span><span class="kn">import</span> <span class="n">demographics</span>
 
-<span class="kn">from</span><span class="w"> </span><span class="nn">ogjpn</span><span class="w"> </span><span class="kn">import</span> <span class="n">macro_params</span><span class="p">,</span> <span class="n">tax_params</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ogjpn</span><span class="w"> </span><span class="kn">import</span> <span class="n">macro_params</span><span class="p">,</span> <span class="n">pension_params</span><span class="p">,</span> <span class="n">tax_params</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">ogjpn.constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">UN_COUNTRY_CODE</span>
+
+<span class="c1"># Initial guess for OG-Core's model-to-currency factor when the model is</span>
+<span class="c1"># anchored to yen: the steady-state factor is about 6.7 million yen per</span>
+<span class="c1"># model unit. OG-Core validates initial_guess_factor_SS against a maximum</span>
+<span class="c1"># of 500,000, set with dollar-anchored models in mind, and the steady state</span>
+<span class="c1"># does not converge from a guess at that cap, so update_specs sets it</span>
+<span class="c1"># directly on the Specifications object.</span>
+<span class="n">FACTOR_GUESS_JPY</span> <span class="o">=</span> <span class="mf">6.7e6</span>
+<span class="n">_DIRECT_KEYS</span> <span class="o">=</span> <span class="p">(</span><span class="s2">"initial_guess_factor_SS"</span><span class="p">,)</span>
+
+
+<div class="viewcode-block" id="update_specs">
+<a class="viewcode-back" href="../../content/api/public_api.html#ogjpn.calibrate.update_specs">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">update_specs</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">params</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Apply a calibration dict to an OG-Core Specifications object.</span>
+
+<span class="sd">    Use this instead of ``p.update_specifications(params)``: it passes</span>
+<span class="sd">    everything through OG-Core's validation except the keys that must be</span>
+<span class="sd">    set directly (the yen-scale ``initial_guess_factor_SS``).</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        p (ogcore Specifications): model parameters, updated in place</span>
+<span class="sd">        params (dict): parameters, e.g. ``Calibration(p).get_dict()``</span>
+<span class="sd">    """</span>
+    <span class="n">params</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
+    <span class="n">direct</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">params</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">k</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">_DIRECT_KEYS</span> <span class="k">if</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">params</span><span class="p">}</span>
+    <span class="n">p</span><span class="o">.</span><span class="n">update_specifications</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">direct</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="nb">setattr</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span></div>
+
 
 
 <div class="viewcode-block" id="Calibration">
@@ -356,7 +388,14 @@
 <span class="k">class</span><span class="w"> </span><span class="nc">Calibration</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">"""OG-Japan calibration built on top of an OG-Core Specifications."""</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">use_demographics</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">demographic_data_path</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">p</span><span class="p">,</span>
+        <span class="n">use_demographics</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">demographic_data_path</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">income_tax</span><span class="o">=</span><span class="s2">"progressive"</span><span class="p">,</span>
+        <span class="n">pension</span><span class="o">=</span><span class="s2">"japan"</span><span class="p">,</span>
+    <span class="p">):</span>
 <span class="w">        </span><span class="sd">"""</span>
 <span class="sd">        Args:</span>
 <span class="sd">            p (ogcore Specifications): model parameters (supplies the E,</span>
@@ -366,10 +405,27 @@
 <span class="sd">                macro and tax blocks are calibrated</span>
 <span class="sd">            demographic_data_path (str): optional path to cache the</span>
 <span class="sd">                downloaded demographic data</span>
+<span class="sd">            income_tax (str): "progressive" (default; functions fitted to</span>
+<span class="sd">                Japan's salary-bracket tax data) or "linear" (constant</span>
+<span class="sd">                rates); see ogjpn.tax_params.get_tax_params</span>
+<span class="sd">            pension (str): "japan" (default) for Japan's two-tier pension</span>
+<span class="sd">                formula with the model anchored to yen</span>
+<span class="sd">                (ogjpn.pension_params), or "us" for OG-Core's default US</span>
+<span class="sd">                Social Security formula and dollar anchor</span>
 <span class="sd">        """</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">macro_params</span> <span class="o">=</span> <span class="n">macro_params</span><span class="o">.</span><span class="n">get_macro_params</span><span class="p">()</span>
-        <span class="c1"># Size the linear income-tax arrays to the model's S age groups.</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">tax_params</span> <span class="o">=</span> <span class="n">tax_params</span><span class="o">.</span><span class="n">get_tax_params</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">S</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">macro_params</span> <span class="o">=</span> <span class="n">macro_params</span><span class="o">.</span><span class="n">get_macro_params</span><span class="p">(</span><span class="n">income_tax</span><span class="p">,</span> <span class="n">pension</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pension_params</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">mean_income</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">mean_income_data</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">pension</span> <span class="o">==</span> <span class="s2">"japan"</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">pension_params</span> <span class="o">=</span> <span class="n">pension_params</span><span class="o">.</span><span class="n">get_pension_params</span><span class="p">()</span>
+            <span class="n">mean_income</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pension_params</span><span class="p">[</span><span class="s2">"mean_income_data"</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">pension_params</span><span class="p">[</span><span class="s2">"initial_guess_factor_SS"</span><span class="p">]</span> <span class="o">=</span> <span class="n">FACTOR_GUESS_JPY</span>
+        <span class="k">elif</span> <span class="n">pension</span> <span class="o">!=</span> <span class="s2">"us"</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"pension must be 'japan' or 'us'"</span><span class="p">)</span>
+        <span class="c1"># The income-tax functions are scaled to the income anchor in use.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tax_params</span> <span class="o">=</span> <span class="n">tax_params</span><span class="o">.</span><span class="n">get_tax_params</span><span class="p">(</span>
+            <span class="n">p</span><span class="o">.</span><span class="n">S</span><span class="p">,</span> <span class="n">income_tax</span><span class="o">=</span><span class="n">income_tax</span><span class="p">,</span> <span class="n">mean_income</span><span class="o">=</span><span class="n">mean_income</span>
+        <span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">demographic_params</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="k">if</span> <span class="n">use_demographics</span><span class="p">:</span>
@@ -396,12 +452,14 @@
 <a class="viewcode-back" href="../../content/api/public_api.html#ogjpn.calibrate.Calibration.get_dict">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">"""</span>
-<span class="sd">        Return the calibrated parameters as a dict for</span>
-<span class="sd">        ``Specifications.update_specifications``.</span>
+<span class="sd">        Return the calibrated parameters as a dict. Apply it with</span>
+<span class="sd">        ``ogjpn.calibrate.update_specs(p, d)``, which also handles the</span>
+<span class="sd">        parameters OG-Core's validation would reject.</span>
 <span class="sd">        """</span>
         <span class="n">calibrated</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="n">calibrated</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">macro_params</span><span class="p">)</span>
         <span class="n">calibrated</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tax_params</span><span class="p">)</span>
+        <span class="n">calibrated</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pension_params</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">demographic_params</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="c1"># get_pop_objs returns exactly the demographic parameters that</span>
             <span class="c1"># update_specifications accepts, so pass them all through.</span>

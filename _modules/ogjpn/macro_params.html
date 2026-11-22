@@ -211,6 +211,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../content/calibration/demographics.html">Demographics</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../content/calibration/macro.html">Macroeconomic and fiscal parameters</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../content/calibration/taxes.html">Taxes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../content/calibration/pensions.html">Public pensions and the yen anchor</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../content/calibration/wealth.html">Initial distribution of household wealth</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../content/calibration/validation.html">Validation against Japan</a></li>
 </ul>
@@ -347,13 +348,28 @@
 <span class="sd">labor share (see get_macro_params).</span>
 <span class="sd">"""</span>
 
+<span class="c1"># Steady-state residual G/Y for each (income tax, pension) calibration (see</span>
+<span class="c1"># the alpha_G comment below); the transition needs alpha_G equal to it.</span>
+<span class="n">ALPHA_G</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="p">(</span><span class="s2">"progressive"</span><span class="p">,</span> <span class="s2">"japan"</span><span class="p">):</span> <span class="mf">0.065</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">"progressive"</span><span class="p">,</span> <span class="s2">"us"</span><span class="p">):</span> <span class="mf">0.070</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">"linear"</span><span class="p">,</span> <span class="s2">"us"</span><span class="p">):</span> <span class="mf">0.062</span><span class="p">,</span>
+<span class="p">}</span>
+
 
 <div class="viewcode-block" id="get_macro_params">
 <a class="viewcode-back" href="../../content/api/public_api.html#ogjpn.macro_params.get_macro_params">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">get_macro_params</span><span class="p">():</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_macro_params</span><span class="p">(</span><span class="n">income_tax</span><span class="o">=</span><span class="s2">"progressive"</span><span class="p">,</span> <span class="n">pension</span><span class="o">=</span><span class="s2">"japan"</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Return a dict of Japan macro parameters for</span>
 <span class="sd">    ``Specifications.update_specifications``.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        income_tax (str): "progressive" or "linear", the income-tax</span>
+<span class="sd">            representation in use (ogjpn.tax_params)</span>
+<span class="sd">        pension (str): "japan" or "us", the pension formula in use</span>
+<span class="sd">            (ogjpn.pension_params). Together they set alpha_G, which must</span>
+<span class="sd">            equal the steady-state residual G/Y.</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        macro_parameters (dict): Japan macro parameters</span>
@@ -408,7 +424,16 @@
     <span class="c1"># exploding debt and forcing the closure rule to demand negative G later.</span>
     <span class="c1"># That inconsistency, not solver tuning, is why the transition would not</span>
     <span class="c1"># converge. Setting alpha_G to the steady-state residual share removes it.</span>
-    <span class="n">macro_parameters</span><span class="p">[</span><span class="s2">"alpha_G"</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.062</span><span class="p">]</span>
+    <span class="c1"># The residual depends on the calibration: 0.062 with the linear (flat)</span>
+    <span class="c1"># income tax and US pension formula, 0.070 with the progressive income</span>
+    <span class="c1"># tax (which raises revenue by about a point of GDP), and 0.065 with the</span>
+    <span class="c1"># progressive tax and Japan's two-tier pension (which pays out more).</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">income_tax</span><span class="p">,</span> <span class="n">pension</span><span class="p">)</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">ALPHA_G</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">"no alpha_G calibrated for income_tax=</span><span class="si">{</span><span class="n">income_tax</span><span class="si">!r}</span><span class="s2">, "</span>
+            <span class="sa">f</span><span class="s2">"pension=</span><span class="si">{</span><span class="n">pension</span><span class="si">!r}</span><span class="s2">; supported: </span><span class="si">{</span><span class="nb">sorted</span><span class="p">(</span><span class="n">ALPHA_G</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span>
+        <span class="p">)</span>
+    <span class="n">macro_parameters</span><span class="p">[</span><span class="s2">"alpha_G"</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">ALPHA_G</span><span class="p">[(</span><span class="n">income_tax</span><span class="p">,</span> <span class="n">pension</span><span class="p">)]]</span>
 
     <span class="c1"># Government non-pension transfers as a share of GDP. Estimated from</span>
     <span class="c1"># the composition of the 39.1% total (consumption ~20, public pensions</span>

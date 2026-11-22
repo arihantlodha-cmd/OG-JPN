@@ -216,6 +216,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../calibration/demographics.html">Demographics</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../calibration/macro.html">Macroeconomic and fiscal parameters</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../calibration/taxes.html">Taxes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../calibration/pensions.html">Public pensions and the yen anchor</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../calibration/wealth.html">Initial distribution of household wealth</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../calibration/validation.html">Validation against Japan</a></li>
 </ul>
@@ -333,6 +334,7 @@
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#ogjpn.calibrate.Calibration.get_dict"><code class="docutils literal notranslate"><span class="pre">Calibration.get_dict()</span></code></a></li>
 </ul>
 </li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ogjpn.calibrate.update_specs"><code class="docutils literal notranslate"><span class="pre">update_specs()</span></code></a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-ogjpn.macro_params"><code class="docutils literal notranslate"><span class="pre">ogjpn.macro_params</span></code></a><ul class="nav section-nav flex-column">
@@ -384,15 +386,33 @@ token (see README); optional so the pipeline still runs without it</p></li>
 </dl>
 <dl class="py class">
 <dt class="sig sig-object py" id="ogjpn.calibrate.Calibration">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ogjpn.calibrate.</span></span><span class="sig-name descname"><span class="pre">Calibration</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">p</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_demographics</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">demographic_data_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ogjpn/calibrate.html#Calibration"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ogjpn.calibrate.Calibration" title="Link to this definition">#</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ogjpn.calibrate.</span></span><span class="sig-name descname"><span class="pre">Calibration</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">p</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_demographics</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">demographic_data_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">income_tax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'progressive'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pension</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'japan'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ogjpn/calibrate.html#Calibration"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ogjpn.calibrate.Calibration" title="Link to this definition">#</a></dt>
 <dd><p>OG-Japan calibration built on top of an OG-Core Specifications.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="ogjpn.calibrate.Calibration.get_dict">
 <span class="sig-name descname"><span class="pre">get_dict</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ogjpn/calibrate.html#Calibration.get_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ogjpn.calibrate.Calibration.get_dict" title="Link to this definition">#</a></dt>
-<dd><p>Return the calibrated parameters as a dict for
-<code class="docutils literal notranslate"><span class="pre">Specifications.update_specifications</span></code>.</p>
+<dd><p>Return the calibrated parameters as a dict. Apply it with
+<code class="docutils literal notranslate"><span class="pre">ogjpn.calibrate.update_specs(p,</span> <span class="pre">d)</span></code>, which also handles the
+parameters OG-Core’s validation would reject.</p>
 </dd></dl>
 
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ogjpn.calibrate.update_specs">
+<span class="sig-prename descclassname"><span class="pre">ogjpn.calibrate.</span></span><span class="sig-name descname"><span class="pre">update_specs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">p</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">params</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ogjpn/calibrate.html#update_specs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ogjpn.calibrate.update_specs" title="Link to this definition">#</a></dt>
+<dd><p>Apply a calibration dict to an OG-Core Specifications object.</p>
+<p>Use this instead of <code class="docutils literal notranslate"><span class="pre">p.update_specifications(params)</span></code>: it passes
+everything through OG-Core’s validation except the keys that must be
+set directly (the yen-scale <code class="docutils literal notranslate"><span class="pre">initial_guess_factor_SS</span></code>).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>p</strong> (<em>ogcore Specifications</em>) – model parameters, updated in place</p></li>
+<li><p><strong>params</strong> (<em>dict</em>) – parameters, e.g. <code class="docutils literal notranslate"><span class="pre">Calibration(p).get_dict()</span></code></p></li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 
 </section>
@@ -419,15 +439,24 @@ do not break it out. gamma (capital share) is from the Penn World Table
 labor share (see get_macro_params).</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="ogjpn.macro_params.get_macro_params">
-<span class="sig-prename descclassname"><span class="pre">ogjpn.macro_params.</span></span><span class="sig-name descname"><span class="pre">get_macro_params</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ogjpn/macro_params.html#get_macro_params"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ogjpn.macro_params.get_macro_params" title="Link to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">ogjpn.macro_params.</span></span><span class="sig-name descname"><span class="pre">get_macro_params</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">income_tax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'progressive'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pension</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'japan'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ogjpn/macro_params.html#get_macro_params"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ogjpn.macro_params.get_macro_params" title="Link to this definition">#</a></dt>
 <dd><p>Return a dict of Japan macro parameters for
 <code class="docutils literal notranslate"><span class="pre">Specifications.update_specifications</span></code>.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Japan macro parameters</p>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>income_tax</strong> (<em>str</em>) – “progressive” or “linear”, the income-tax
+representation in use (ogjpn.tax_params)</p></li>
+<li><p><strong>pension</strong> (<em>str</em>) – “japan” or “us”, the pension formula in use
+(ogjpn.pension_params). Together they set alpha_G, which must
+equal the steady-state residual G/Y.</p></li>
+</ul>
 </dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>macro_parameters (dict)</p>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Japan macro parameters</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>macro_parameters (dict)</p>
 </dd>
 </dl>
 </dd></dl>
@@ -480,12 +509,21 @@ until that solver interaction is understood. The rest of the gap is
 inheritance and other minor taxes not modeled here.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="ogjpn.tax_params.get_tax_params">
-<span class="sig-prename descclassname"><span class="pre">ogjpn.tax_params.</span></span><span class="sig-name descname"><span class="pre">get_tax_params</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num_ages</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">80</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ogjpn/tax_params.html#get_tax_params"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ogjpn.tax_params.get_tax_params" title="Link to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">ogjpn.tax_params.</span></span><span class="sig-name descname"><span class="pre">get_tax_params</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num_ages</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">80</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">income_tax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'progressive'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mean_income</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ogjpn/tax_params.html#get_tax_params"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ogjpn.tax_params.get_tax_params" title="Link to this definition">#</a></dt>
 <dd><p>Return Japan tax parameters for <code class="docutils literal notranslate"><span class="pre">Specifications.update_specifications</span></code>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>num_ages</strong> (<em>int</em>) – number of age groups S in the model, used to size
-the linear income-tax function arrays (default 80, OG-Core’s S)</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>num_ages</strong> (<em>int</em>) – number of age groups S in the model, used to size
+the income-tax function arrays (default 80, OG-Core’s S)</p></li>
+<li><p><strong>income_tax</strong> (<em>str</em>) – “progressive” (default) for DEP_totalinc
+functions fitted to Japan’s 2023 salary-bracket tax data (see
+ogjpn.income_tax), or “linear” for constant average (8%) and
+marginal (30% labor, 20.315% capital) rates</p></li>
+<li><p><strong>mean_income</strong> (<em>float</em>) – the model’s income anchor
+(<code class="docutils literal notranslate"><span class="pre">mean_income_data</span></code>), used to put the progressive functions
+in model income units; defaults to OG-Core’s default value</p></li>
+</ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>Japan tax parameters</p>
@@ -657,6 +695,7 @@ the 2019 survey’s age bands.</p>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#ogjpn.calibrate.Calibration.get_dict"><code class="docutils literal notranslate"><span class="pre">Calibration.get_dict()</span></code></a></li>
 </ul>
 </li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ogjpn.calibrate.update_specs"><code class="docutils literal notranslate"><span class="pre">update_specs()</span></code></a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-ogjpn.macro_params"><code class="docutils literal notranslate"><span class="pre">ogjpn.macro_params</span></code></a><ul class="nav section-nav flex-column">

@@ -216,6 +216,7 @@
 <li class="toctree-l1"><a class="reference internal" href="demographics.html">Demographics</a></li>
 <li class="toctree-l1"><a class="reference internal" href="macro.html">Macroeconomic and fiscal parameters</a></li>
 <li class="toctree-l1"><a class="reference internal" href="taxes.html">Taxes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pensions.html">Public pensions and the yen anchor</a></li>
 <li class="toctree-l1"><a class="reference internal" href="wealth.html">Initial distribution of household wealth</a></li>
 <li class="toctree-l1 current active"><a class="current reference internal" href="#">Validation against Japan</a></li>
 </ul>
@@ -328,10 +329,13 @@
             </div>
             <nav aria-label="Page">
                 <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pension-outlays-compare-the-first-year-not-the-steady-state">Pension outlays: compare the first year, not the steady state</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#steady-state-ratios">Steady-state ratios</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-matches">What matches</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-capital-output-ratio-is-not-a-free-parameter">The capital-output ratio is not a free parameter</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#consumption-runs-high-because-government-purchases-are-squeezed">Consumption runs high because government purchases are squeezed</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#household-wealth">Household wealth</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-debt-path-along-the-transition">The debt path along the transition</a></li>
 </ul>
             </nav>
         </div>
@@ -345,7 +349,41 @@
                   
   <section class="tex2jax_ignore mathjax_ignore" id="validation-against-japan">
 <span id="chap-validation"></span><h1>Validation against Japan<a class="headerlink" href="#validation-against-japan" title="Link to this heading">#</a></h1>
-<p>How well does the calibrated steady state match Japan? Figures are from the current calibration on OG-Core 0.24.6 (<code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">examples/run_ogjpn_ss.py</span></code>).</p>
+<p>How well does the calibrated model match Japan? Figures are from the default calibration (progressive income tax, Japan’s two-tier pension in yen) on OG-Core 0.24.6.</p>
+<section id="pension-outlays-compare-the-first-year-not-the-steady-state">
+<h2>Pension outlays: compare the first year, not the steady state<a class="headerlink" href="#pension-outlays-compare-the-first-year-not-the-steady-state" title="Link to this heading">#</a></h2>
+<p>The steady state describes Japan’s <strong>terminal</strong> stable population, which is far older than today’s, so its pension bill is not comparable to Japan’s current spending. The right comparison is the first year of the transition path, which starts from today’s population.</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Public pension outlays / GDP</p></th>
+<th class="head"><p>Model</p></th>
+<th class="head"><p>Japan</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>First year of the transition (2025)</p></td>
+<td><p><strong>0.102</strong></p></td>
+<td><p><strong>0.104</strong> (MHLW, FY2022 budget: 58.9 trillion yen)</p></td>
+</tr>
+<tr class="row-odd"><td><p>10 years on</p></td>
+<td><p>0.109</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p>20 years on</p></td>
+<td><p>0.122</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p>Steady state</p></td>
+<td><p>0.121</p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Fed Japan’s demographics, its pension formula, and its tax data, the model reproduces Japan’s pension bill within 0.2 points of GDP, and shows it rising by about two points over the next two decades as the population ages further.</p>
+</section>
+<section id="steady-state-ratios">
+<h2>Steady-state ratios<a class="headerlink" href="#steady-state-ratios" title="Link to this heading">#</a></h2>
 <div class="pst-scrollable-table-container"><table class="table">
 <thead>
 <tr class="row-odd"><th class="head"><p>Ratio</p></th>
@@ -356,32 +394,32 @@
 </thead>
 <tbody>
 <tr class="row-even"><td><p>Interest rate <code class="docutils literal notranslate"><span class="pre">r</span></code></p></td>
-<td><p>0.045</p></td>
+<td><p>0.046</p></td>
 <td><p>~0.01-0.04</p></td>
 <td><p>top edge of range</p></td>
 </tr>
-<tr class="row-odd"><td><p>Public pension outlays / GDP</p></td>
-<td><p>0.115</p></td>
-<td><p>~0.10-0.11</p></td>
-<td><p>matches</p></td>
-</tr>
-<tr class="row-even"><td><p>Government debt / GDP</p></td>
+<tr class="row-odd"><td><p>Government debt / GDP</p></td>
 <td><p>2.00</p></td>
 <td><p>~2.1 (gross)</p></td>
 <td><p>matches (at OG-Core’s cap)</p></td>
 </tr>
-<tr class="row-odd"><td><p>Tax revenue / GDP (incl. social insurance)</p></td>
-<td><p>0.322</p></td>
-<td><p>0.376 (IMF)</p></td>
-<td><p>short by the property and other-tax gap</p></td>
+<tr class="row-even"><td><p>Tax revenue / GDP (incl. social insurance)</p></td>
+<td><p>0.333</p></td>
+<td><p>0.344 (OECD, 2022)</p></td>
+<td><p>close</p></td>
+</tr>
+<tr class="row-odd"><td><p>Personal income tax / GDP</p></td>
+<td><p>0.073</p></td>
+<td><p>~0.064 (OECD, 2021)</p></td>
+<td><p>somewhat high, see <a class="reference internal" href="taxes.html#chap-taxes"><span class="std std-ref">Taxes</span></a></p></td>
 </tr>
 <tr class="row-even"><td><p>Capital / GDP <code class="docutils literal notranslate"><span class="pre">K/Y</span></code></p></td>
-<td><p>4.37</p></td>
+<td><p>4.33</p></td>
 <td><p>~5.4 (Penn World Table)</p></td>
 <td><p>consistent with the source-matched benchmark</p></td>
 </tr>
 <tr class="row-odd"><td><p>Household wealth / GDP</p></td>
-<td><p>5.53</p></td>
+<td><p>5.47</p></td>
 <td><p>3.69 (national accounts, excl. land)</p></td>
 <td><p>high</p></td>
 </tr>
@@ -398,21 +436,27 @@
 </tbody>
 </table>
 </div>
+<p>The right benchmark for tax revenue is the OECD tax-to-GDP ratio (34.4 percent in 2022, including social security contributions). The IMF’s 37.6 percent of GDP is total general government revenue, which also includes non-tax revenue such as property income, so it overstates the gap a tax-only model should close.</p>
+</section>
 <section id="what-matches">
 <h2>What matches<a class="headerlink" href="#what-matches" title="Link to this heading">#</a></h2>
-<p>The fiscal and demographic side matches Japan: the pension burden, the debt ratio, and the interest rate. The closest match is the one the model was never told. Fed Japan’s age structure, it reproduces a public pension burden of about 11.5 percent of GDP.</p>
+<p>The fiscal and demographic side matches Japan: the pension bill, the debt ratio, the tax take, and the interest rate. None of these was targeted; they follow from Japan’s population, pension formula, tax schedule, and debt.</p>
 </section>
 <section id="the-capital-output-ratio-is-not-a-free-parameter">
 <h2>The capital-output ratio is not a free parameter<a class="headerlink" href="#the-capital-output-ratio-is-not-a-free-parameter" title="Link to this heading">#</a></h2>
-<p>In the steady state, <code class="docutils literal notranslate"><span class="pre">K/Y</span> <span class="pre">=</span> <span class="pre">gamma</span> <span class="pre">/</span> <span class="pre">(r</span> <span class="pre">+</span> <span class="pre">delta)</span></code> exactly, from the firm’s first-order condition. A low return and a high capital share together force a high <code class="docutils literal notranslate"><span class="pre">K/Y</span></code>, and both are real inputs here: <code class="docutils literal notranslate"><span class="pre">r</span></code> is in Japan’s range and <code class="docutils literal notranslate"><span class="pre">gamma</span> <span class="pre">=</span> <span class="pre">0.43</span></code> is the Penn World Table capital share. The ~3.0-3.5 figure often quoted for Japan uses a narrow net-capital concept. Measured from the same source as <code class="docutils literal notranslate"><span class="pre">gamma</span></code> (Penn World Table capital stock over real GDP, FRED <code class="docutils literal notranslate"><span class="pre">RKNANPJPA666NRUG</span></code> and <code class="docutils literal notranslate"><span class="pre">RGDPNAJPA666NRUG</span></code>), Japan’s ratio is about 5.4, so the model’s 4.37 is not too high. <code class="docutils literal notranslate"><span class="pre">K/Y</span></code> should not be tuned down.</p>
+<p>In the steady state, <code class="docutils literal notranslate"><span class="pre">K/Y</span> <span class="pre">=</span> <span class="pre">gamma</span> <span class="pre">/</span> <span class="pre">(r</span> <span class="pre">+</span> <span class="pre">delta)</span></code> exactly, from the firm’s first-order condition. A low return and a high capital share together force a high <code class="docutils literal notranslate"><span class="pre">K/Y</span></code>, and both are real inputs here: <code class="docutils literal notranslate"><span class="pre">r</span></code> is in Japan’s range and <code class="docutils literal notranslate"><span class="pre">gamma</span> <span class="pre">=</span> <span class="pre">0.43</span></code> is the Penn World Table capital share. The ~3.0-3.5 figure often quoted for Japan uses a narrow net-capital concept. Measured from the same source as <code class="docutils literal notranslate"><span class="pre">gamma</span></code> (Penn World Table capital stock over real GDP, FRED <code class="docutils literal notranslate"><span class="pre">RKNANPJPA666NRUG</span></code> and <code class="docutils literal notranslate"><span class="pre">RGDPNAJPA666NRUG</span></code>), Japan’s ratio is about 5.4, so the model’s 4.33 is not too high. <code class="docutils literal notranslate"><span class="pre">K/Y</span></code> should not be tuned down.</p>
 </section>
 <section id="consumption-runs-high-because-government-purchases-are-squeezed">
 <h2>Consumption runs high because government purchases are squeezed<a class="headerlink" href="#consumption-runs-high-because-government-purchases-are-squeezed" title="Link to this heading">#</a></h2>
-<p><code class="docutils literal notranslate"><span class="pre">G</span></code> is the residual that closes the government budget, so when revenue falls short, <code class="docutils literal notranslate"><span class="pre">G</span></code> is squeezed and output the government would buy shows up as household consumption instead. Adding Japan’s full social insurance lifted revenue from 25.9 to 32.2 percent of GDP and brought <code class="docutils literal notranslate"><span class="pre">C/Y</span></code> down from 0.79. The remaining gap has a ceiling the model cannot remove: Japan’s government spends about 39.1 percent of GDP and collects 37.6 percent, funding the difference by borrowing. A steady state with a fixed debt ratio must balance, so it cannot reproduce a government that permanently spends more than it collects.</p>
+<p><code class="docutils literal notranslate"><span class="pre">G</span></code> is the residual that closes the government budget, so when revenue falls short, <code class="docutils literal notranslate"><span class="pre">G</span></code> is squeezed and output the government would buy shows up as household consumption instead. Adding Japan’s full social insurance lifted revenue from 25.9 to 32.2 percent of GDP and brought <code class="docutils literal notranslate"><span class="pre">C/Y</span></code> down from 0.79, and the progressive income tax lifted it to 33.3 percent and <code class="docutils literal notranslate"><span class="pre">C/Y</span></code> to 0.73. The remaining gap has a ceiling the model cannot remove: Japan’s government spends about 39.1 percent of GDP and collects 37.6 percent, funding the difference by borrowing. A steady state with a fixed debt ratio must balance, so it cannot reproduce a government that permanently spends more than it collects. One measurable consequence of the high consumption share: in the model each point of consumption tax raises about 3.9 trillion yen (at FY2023 GDP), against about 3.0 trillion in Japan (FY2024 budget, 30.2 trillion yen at 10 percent), so consumption-tax revenue is overstated by roughly the same third.</p>
 </section>
 <section id="household-wealth">
 <h2>Household wealth<a class="headerlink" href="#household-wealth" title="Link to this heading">#</a></h2>
-<p>Household wealth is 5.53 times GDP in the model against 3.69 in the national accounts (excluding land). In the model, household wealth is the domestic capital stock plus the domestically held share of government debt, so the high <code class="docutils literal notranslate"><span class="pre">K/Y</span></code>, combined with Japan’s debt, carries through. Whether the remaining gap reflects the treatment of foreign assets or of pension wealth is an open question.</p>
+<p>Household wealth is 5.47 times GDP in the model against 3.69 in the national accounts (excluding land). In the model, household wealth is the domestic capital stock plus the domestically held share of government debt, so the high <code class="docutils literal notranslate"><span class="pre">K/Y</span></code>, combined with Japan’s debt, carries through. Whether the remaining gap reflects the treatment of foreign assets or of pension wealth is an open question.</p>
+</section>
+<section id="the-debt-path-along-the-transition">
+<h2>The debt path along the transition<a class="headerlink" href="#the-debt-path-along-the-transition" title="Link to this heading">#</a></h2>
+<p>Debt does not stay at its target along the transition. Government purchases are fixed at <code class="docutils literal notranslate"><span class="pre">alpha_G</span></code> times GDP for the first 20 years (OG-Core’s <code class="docutils literal notranslate"><span class="pre">tG1</span></code>), and because today’s pension bill (10.2 percent of GDP) is below its long-run level (12.1 percent), the government runs surpluses and debt falls from 2.0 to about 1.6 times GDP by year 20. OG-Core’s debt-closure rule then adjusts purchases to bring debt back to target: purchases jump to about 11.5 percent of GDP in year 20 and settle back to 6.5 percent as debt returns to 2.0 by around year 40. The jump is a feature of the closure rule, not of Japan. It affects baseline and reform alike, so it largely differences out of reform comparisons, but year-20 levels of <code class="docutils literal notranslate"><span class="pre">G</span></code> should not be read literally.</p>
 </section>
 </section>
 
@@ -482,10 +526,13 @@
   </div>
   <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pension-outlays-compare-the-first-year-not-the-steady-state">Pension outlays: compare the first year, not the steady state</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#steady-state-ratios">Steady-state ratios</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-matches">What matches</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-capital-output-ratio-is-not-a-free-parameter">The capital-output ratio is not a free parameter</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#consumption-runs-high-because-government-purchases-are-squeezed">Consumption runs high because government purchases are squeezed</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#household-wealth">Household wealth</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#the-debt-path-along-the-transition">The debt path along the transition</a></li>
 </ul>
   </nav></div>
 

@@ -68,7 +68,7 @@
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
     <link rel="next" title="Validation against Japan" href="validation.html" />
-    <link rel="prev" title="Taxes" href="taxes.html" />
+    <link rel="prev" title="Public pensions and the yen anchor" href="pensions.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="" />
@@ -218,6 +218,7 @@
 <li class="toctree-l1"><a class="reference internal" href="demographics.html">Demographics</a></li>
 <li class="toctree-l1"><a class="reference internal" href="macro.html">Macroeconomic and fiscal parameters</a></li>
 <li class="toctree-l1"><a class="reference internal" href="taxes.html">Taxes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pensions.html">Public pensions and the yen anchor</a></li>
 <li class="toctree-l1 current active"><a class="current reference internal" href="#">Initial distribution of household wealth</a></li>
 <li class="toctree-l1"><a class="reference internal" href="validation.html">Validation against Japan</a></li>
 </ul>
@@ -399,11 +400,11 @@
 </figcaption>
 </figure>
 <p>The steady-state proxy puts <strong>37 percent</strong> of household wealth with people aged 80 and over; the survey puts it at <strong>23 percent</strong>. Japan’s wealth is concentrated in people’s 50s and 60s far more than the steady state implies.</p>
-<p>Starting the baseline transition from the observed distribution cuts the resource-constraint error at t = 2 from 1.80e-3 to 1.24e-3 (31 percent smaller) and reduces the errors at t = 3 to 5 about 2.5-fold. It does not remove the t = 2 error entirely, so part of that error has another source, still under investigation. Both errors are confined to single periods and cancel in reform-minus-baseline comparisons.</p>
+<p>In a like-for-like test (the earlier flat-tax calibration), starting the baseline transition from the observed distribution cut the resource-constraint error at t = 2 from 1.80e-3 to 1.24e-3 (31 percent smaller) and reduces the errors at t = 3 to 5 about 2.5-fold. It does not remove the t = 2 error entirely (1.32e-3 under the current calibration), so part of that error has another source, still under investigation. Both errors are confined to single periods and cancel in reform-minus-baseline comparisons.</p>
 </section>
 <section id="level-of-wealth">
 <h2>Level of wealth<a class="headerlink" href="#level-of-wealth" title="Link to this heading">#</a></h2>
-<p>The 2023 national accounts (Cabinet Office, 2023年度国民経済計算, stock edition) give household net worth of 2,965.1 trillion yen, of which 767.1 trillion is land. Against FY2023 nominal GDP of 595.2 trillion yen, that is <strong>4.98 times GDP</strong>, or <strong>3.69 times GDP</strong> excluding land, the comparable concept because the model has no land. The model’s steady state holds <strong>5.53 times GDP</strong>, about 50 percent more. That gap is the same one behind the high capital-output ratio (see <a class="reference internal" href="validation.html#chap-validation"><span class="std std-ref">Validation against Japan</span></a>). The ratios are in <code class="docutils literal notranslate"><span class="pre">ogjpn.wealth</span></code> but are not yet passed to OG-Core as <code class="docutils literal notranslate"><span class="pre">initial_wealth_ratio</span></code>, because starting a third below the steady-state wealth level is a large shock that needs testing of its own.</p>
+<p>The 2023 national accounts (Cabinet Office, 2023年度国民経済計算, stock edition) give household net worth of 2,965.1 trillion yen, of which 767.1 trillion is land. Against FY2023 nominal GDP of 595.2 trillion yen, that is <strong>4.98 times GDP</strong>, or <strong>3.69 times GDP</strong> excluding land, the comparable concept because the model has no land. The model’s steady state holds <strong>5.45 times GDP</strong>, about 50 percent more. That gap is the same one behind the high capital-output ratio (see <a class="reference internal" href="validation.html#chap-validation"><span class="std std-ref">Validation against Japan</span></a>). The ratios are in <code class="docutils literal notranslate"><span class="pre">ogjpn.wealth</span></code> but are not yet passed to OG-Core as <code class="docutils literal notranslate"><span class="pre">initial_wealth_ratio</span></code>, because starting a third below the steady-state wealth level is a large shock that needs testing of its own.</p>
 </section>
 <section id="known-limitations">
 <h2>Known limitations<a class="headerlink" href="#known-limitations" title="Link to this heading">#</a></h2>
@@ -445,12 +446,12 @@
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="taxes.html"
+       href="pensions.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">Taxes</p>
+        <p class="prev-next-title">Public pensions and the yen anchor</p>
       </div>
     </a>
     <a class="right-next"
