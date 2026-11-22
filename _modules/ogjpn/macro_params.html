@@ -1,0 +1,493 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ogjpn.macro_params &#8212; OG-JPN</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=55c26ed414f5f8a31ebb" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=55c26ed414f5f8a31ebb" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/sphinx-book-theme.css?v=3c74b3bc" />
+    <link rel="stylesheet" type="text/css" href="../../_static/togglebutton.css?v=9c3e77be" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=6a604523" />
+  
+  <!-- So that users can add custom icons -->
+  <script defer src="../../_static/scripts/fontawesome.js?digest=55c26ed414f5f8a31ebb"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=55c26ed414f5f8a31ebb" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=55c26ed414f5f8a31ebb" />
+
+    <script src="../../_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../_static/copybutton.js?v=f281be69"></script>
+    <script src="../../_static/scripts/sphinx-book-theme.js?v=fab101a9"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../../_static/togglebutton.js?v=b8b12719"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script data-sd-tabs-storage-prefix="sphinx-design-tab-id-" src="../../_static/design-tabs.js?v=fcb327ea"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="../../_static/sphinx-thebe.js?v=c100c467"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/ogjpn/macro_params';</script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
+    <link rel="canonical" href="https://arihantlodha-cmd.github.io/OG-JPN/_modules/ogjpn/macro_params.html" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="" />
+  
+    
+    <script src="../../_static/searchtools.js"></script>
+    <script src="../../_static/language_data.js"></script>
+    <script src="../../searchindex.js"></script>
+  
+  </head>
+  <body data-default-mode="">
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+  
+  
+  
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../content/intro/intro.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">OG-JPN</p>
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Getting started</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../content/intro/running.html">Installing and running OG-JPN</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../content/contributing/contributor_guide.html">Contributor guide</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Calibration</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../content/calibration/demographics.html">Demographics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../content/calibration/macro.html">Macroeconomic and fiscal parameters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../content/calibration/taxes.html">Taxes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../content/calibration/wealth.html">Initial distribution of household wealth</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../content/calibration/validation.html">Validation against Japan</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Policy results</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../content/results/overview.html">Policy results</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../content/results/consumption_tax.html">Raising the consumption tax</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../content/results/retirement_age.html">Raising the pension eligibility age</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../content/results/replacement_rate.html">Cutting the pension replacement rate</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../content/api/public_api.html">OG-JPN API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../content/roadmap.html">Roadmap</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../content/references.html">Data sources and references</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button pst-navbar-icon"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button>
+
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button>
+
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1></h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <h1>Source code for ogjpn.macro_params</h1><div class="highlight"><pre>
+<span></span><span class="sd">"""</span>
+<span class="sd">OG-Japan macro calibration.</span>
+
+<span class="sd">Sourced from the IMF World Economic Outlook via the IMF DataMapper API</span>
+<span class="sd">(retrieved 2026-08-18). Japan's general government, share of GDP:</span>
+
+<span class="sd">  - gross debt 214.5% (2024, GGXWDG_NGDP)</span>
+<span class="sd">  - total revenue 37.6% (2024, indicator "rev")</span>
+<span class="sd">  - total expenditure 39.1% (2024, indicator "exp")</span>
+<span class="sd">  - net lending/borrowing -1.7% (2024, GGXCNL_NGDP)</span>
+<span class="sd">  - real GDP growth ~0.7% (2023, NGDP_RPCH)</span>
+
+<span class="sd">These pin the debt ratio, the growth rate, and the overall size of</span>
+<span class="sd">government. The split of total expenditure (39.1%) into its OG-Core</span>
+<span class="sd">pieces -- government consumption (alpha_G), pensions (a separate model</span>
+<span class="sd">outlay), non-pension transfers (alpha_T), interest, and investment -- is</span>
+<span class="sd">estimated from the standard composition, since the aggregate API series</span>
+<span class="sd">do not break it out. gamma (capital share) is from the Penn World Table</span>
+<span class="sd">labor share (see get_macro_params).</span>
+<span class="sd">"""</span>
+
+
+<div class="viewcode-block" id="get_macro_params">
+<a class="viewcode-back" href="../../content/api/public_api.html#ogjpn.macro_params.get_macro_params">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_macro_params</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    Return a dict of Japan macro parameters for</span>
+<span class="sd">    ``Specifications.update_specifications``.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        macro_parameters (dict): Japan macro parameters</span>
+<span class="sd">    """</span>
+    <span class="n">macro_parameters</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="c1"># Long-run productivity growth (real GDP per worker). Set to ~0.8%/yr,</span>
+    <span class="c1"># consistent with Japan's low real GDP growth (~0.7% in 2023, IMF WEO</span>
+    <span class="c1"># NGDP_RPCH) and a conservative proxy for per-worker productivity</span>
+    <span class="c1"># growth given the shrinking workforce.</span>
+    <span class="n">macro_parameters</span><span class="p">[</span><span class="s2">"g_y_annual"</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.008</span>
+
+    <span class="c1"># Capital share of income, gamma = 1 - labor share. Grounded in the</span>
+    <span class="c1"># Penn World Table share of labor compensation for Japan (FRED series</span>
+    <span class="c1"># LABSHPJPA156NRUG): the 2013-2023 mean labor share is 0.568, so the</span>
+    <span class="c1"># capital share is about 0.43. The pre-COVID 2010s average gives ~0.44</span>
+    <span class="c1"># (2020-2023 are mildly elevated), so 0.43 sits in a tight, well-</span>
+    <span class="c1"># identified band, above the 0.38 first-pass value used previously.</span>
+    <span class="n">macro_parameters</span><span class="p">[</span><span class="s2">"gamma"</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.43</span><span class="p">]</span>
+
+    <span class="c1"># Government-debt-to-GDP ratio. Japan's gross general government debt is</span>
+    <span class="c1"># 214.5% of GDP in 2024 (IMF WEO, GGXWDG_NGDP) -- so extreme that it</span>
+    <span class="c1"># exceeds OG-Core's built-in maximum for this parameter (200%), so we</span>
+    <span class="c1"># use the cap, 2.0. (Japan's NET debt, ~1.3-1.6x GDP, would sit inside</span>
+    <span class="c1"># the range; gross-at-the-cap reflects Japan's headline burden.)</span>
+    <span class="c1">#</span>
+    <span class="c1"># Two separate parameters matter here and both must be set. debt_ratio_ss</span>
+    <span class="c1"># is the ratio the STEADY STATE holds; initial_debt_ratio is the ratio</span>
+    <span class="c1"># the transition STARTS from. OG-Core's default debt_ratio_ss is also</span>
+    <span class="c1"># 2.0, so leaving it unset happens to give the same steady state, but we</span>
+    <span class="c1"># set it explicitly so the calibration says what it means (Japan's debt</span>
+    <span class="c1"># stabilized at its current high level) rather than relying on a default.</span>
+    <span class="n">macro_parameters</span><span class="p">[</span><span class="s2">"debt_ratio_ss"</span><span class="p">]</span> <span class="o">=</span> <span class="mf">2.0</span>
+    <span class="n">macro_parameters</span><span class="p">[</span><span class="s2">"initial_debt_ratio"</span><span class="p">]</span> <span class="o">=</span> <span class="mf">2.0</span>
+
+    <span class="c1"># Government consumption spending as a share of GDP. Japan's headline</span>
+    <span class="c1"># general government final consumption is ~20% of GDP, but that national-</span>
+    <span class="c1"># accounts figure is not the right number for this parameter, and using</span>
+    <span class="c1"># it breaks the transition. OG-Core books public pensions</span>
+    <span class="c1"># (agg_pension_outlays, ~11% here) and other transfers (alpha_T, 9%)</span>
+    <span class="c1"># separately, so alpha_G is only the residual government PURCHASES of</span>
+    <span class="c1"># goods after those, and much of Japan's measured "government consumption"</span>
+    <span class="c1"># is in-kind health and long-term care that overlaps the social-insurance</span>
+    <span class="c1"># transfers already modeled. The value that closes the government budget</span>
+    <span class="c1"># at debt_ratio_ss, given the model's revenue (~32% of GDP) and the</span>
+    <span class="c1"># separately-modeled pensions and transfers, is about 6.2% of GDP -- and</span>
+    <span class="c1"># that is exactly the G/Y the steady state produces as a residual. The</span>
+    <span class="c1"># transition must run the SAME fiscal policy as the steady state it</span>
+    <span class="c1"># converges to: before the debt-closure rule engages (t &lt; tG1) the</span>
+    <span class="c1"># transition sets G = alpha_G * Y directly, so an alpha_G of 0.20 would</span>
+    <span class="c1"># make the economy spend ~4x the sustainable level for 20 periods,</span>
+    <span class="c1"># exploding debt and forcing the closure rule to demand negative G later.</span>
+    <span class="c1"># That inconsistency, not solver tuning, is why the transition would not</span>
+    <span class="c1"># converge. Setting alpha_G to the steady-state residual share removes it.</span>
+    <span class="n">macro_parameters</span><span class="p">[</span><span class="s2">"alpha_G"</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.062</span><span class="p">]</span>
+
+    <span class="c1"># Government non-pension transfers as a share of GDP. Estimated from</span>
+    <span class="c1"># the composition of the 39.1% total (consumption ~20, public pensions</span>
+    <span class="c1"># ~10 handled as a separate model outlay, leaving ~9 for other</span>
+    <span class="c1"># transfers, interest, and investment). Verify against OECD social</span>
+    <span class="c1"># spending less public pensions.</span>
+    <span class="c1"># Recalibrated from 0.10 to 0.09 (Nov 2026): 0.10 no longer clears the</span>
+    <span class="c1"># steady state against OG-Core 0.19.x; 0.09 does and keeps revenue at</span>
+    <span class="c1"># ~32% of GDP, pensions ~11.5%, G ~6.2% (see docs/NEXT_STEPS.md section 7).</span>
+    <span class="n">macro_parameters</span><span class="p">[</span><span class="s2">"alpha_T"</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.09</span><span class="p">]</span>
+
+    <span class="k">return</span> <span class="n">macro_parameters</span></div>
+
+</pre></div>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Ari Lodha
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2026.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../_static/scripts/bootstrap.js?digest=55c26ed414f5f8a31ebb"></script>
+<script defer src="../../_static/scripts/pydata-sphinx-theme.js?digest=55c26ed414f5f8a31ebb"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

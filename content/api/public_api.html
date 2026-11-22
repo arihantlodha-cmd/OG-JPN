@@ -1,0 +1,730 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>OG-JPN API &#8212; OG-JPN</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=55c26ed414f5f8a31ebb" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=55c26ed414f5f8a31ebb" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/sphinx-book-theme.css?v=3c74b3bc" />
+    <link rel="stylesheet" type="text/css" href="../../_static/togglebutton.css?v=9c3e77be" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=6a604523" />
+  
+  <!-- So that users can add custom icons -->
+  <script defer src="../../_static/scripts/fontawesome.js?digest=55c26ed414f5f8a31ebb"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=55c26ed414f5f8a31ebb" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=55c26ed414f5f8a31ebb" />
+
+    <script src="../../_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../_static/copybutton.js?v=f281be69"></script>
+    <script src="../../_static/scripts/sphinx-book-theme.js?v=fab101a9"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../../_static/togglebutton.js?v=b8b12719"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script data-sd-tabs-storage-prefix="sphinx-design-tab-id-" src="../../_static/design-tabs.js?v=fcb327ea"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="../../_static/sphinx-thebe.js?v=c100c467"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'content/api/public_api';</script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
+    <link rel="canonical" href="https://arihantlodha-cmd.github.io/OG-JPN/content/api/public_api.html" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Roadmap" href="../roadmap.html" />
+    <link rel="prev" title="Cutting the pension replacement rate" href="../results/replacement_rate.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="" />
+  
+    
+    <script src="../../_static/searchtools.js"></script>
+    <script src="../../_static/language_data.js"></script>
+    <script src="../../searchindex.js"></script>
+  
+  </head>
+  <body data-default-mode="">
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+  
+  
+  
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../intro/intro.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">OG-JPN</p>
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Getting started</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../intro/running.html">Installing and running OG-JPN</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contributing/contributor_guide.html">Contributor guide</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Calibration</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../calibration/demographics.html">Demographics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../calibration/macro.html">Macroeconomic and fiscal parameters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../calibration/taxes.html">Taxes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../calibration/wealth.html">Initial distribution of household wealth</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../calibration/validation.html">Validation against Japan</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Policy results</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../results/overview.html">Policy results</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../results/consumption_tax.html">Raising the consumption tax</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../results/retirement_age.html">Raising the pension eligibility age</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../results/replacement_rate.html">Cutting the pension replacement rate</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">OG-JPN API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../roadmap.html">Roadmap</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../references.html">Data sources and references</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button pst-navbar-icon"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button>
+
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button>
+<button class="sidebar-toggle secondary-toggle btn btn-sm pst-navbar-icon" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>OG-JPN API</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-ogjpn.calibrate"><code class="docutils literal notranslate"><span class="pre">ogjpn.calibrate</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ogjpn.calibrate.Calibration"><code class="docutils literal notranslate"><span class="pre">Calibration</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#ogjpn.calibrate.Calibration.get_dict"><code class="docutils literal notranslate"><span class="pre">Calibration.get_dict()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-ogjpn.macro_params"><code class="docutils literal notranslate"><span class="pre">ogjpn.macro_params</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ogjpn.macro_params.get_macro_params"><code class="docutils literal notranslate"><span class="pre">get_macro_params()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-ogjpn.tax_params"><code class="docutils literal notranslate"><span class="pre">ogjpn.tax_params</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ogjpn.tax_params.get_tax_params"><code class="docutils literal notranslate"><span class="pre">get_tax_params()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-ogjpn.wealth"><code class="docutils literal notranslate"><span class="pre">ogjpn.wealth</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ogjpn.wealth.get_initial_hhwealth_dist"><code class="docutils literal notranslate"><span class="pre">get_initial_hhwealth_dist()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ogjpn.wealth.net_worth_by_age"><code class="docutils literal notranslate"><span class="pre">net_worth_by_age()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-ogjpn.constants"><code class="docutils literal notranslate"><span class="pre">ogjpn.constants</span></code></a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="og-jpn-api">
+<span id="chap-api"></span><h1>OG-JPN API<a class="headerlink" href="#og-jpn-api" title="Link to this heading">#</a></h1>
+<p>The <code class="docutils literal notranslate"><span class="pre">ogjpn</span></code> package is the Japan calibration layer. Each module returns parameters in the form OG-Core’s <code class="docutils literal notranslate"><span class="pre">Specifications.update_specifications</span></code> accepts.</p>
+<section id="module-ogjpn.calibrate">
+<span id="ogjpn-calibrate"></span><h2><code class="docutils literal notranslate"><span class="pre">ogjpn.calibrate</span></code><a class="headerlink" href="#module-ogjpn.calibrate" title="Link to this heading">#</a></h2>
+<p>OG-Japan (OG-JPN) calibration.</p>
+<p>The Calibration class assembles the country-specific pieces (macro
+parameters, tax parameters, and demographics) into a single dict that can
+be handed to an OG-Core Specifications object via
+<code class="docutils literal notranslate"><span class="pre">update_specifications</span></code>. This mirrors the Calibration classes in the
+other country models (OG-USA, OG-THA, OG-BRA).</p>
+<dl class="simple">
+<dt>Phase status:</dt><dd><ul class="simple">
+<li><p>macro parameters: provisional first pass (ogjpn.macro_params)</p></li>
+<li><p>tax parameters: first-pass linear calibration of income, payroll,
+capital, corporate, and consumption taxes from published Japanese
+rates (ogjpn.tax_params)</p></li>
+<li><p>demographics: live UN data by country code 392, requires a UN API
+token (see README); optional so the pipeline still runs without it</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py class">
+<dt class="sig sig-object py" id="ogjpn.calibrate.Calibration">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ogjpn.calibrate.</span></span><span class="sig-name descname"><span class="pre">Calibration</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">p</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_demographics</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">demographic_data_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ogjpn/calibrate.html#Calibration"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ogjpn.calibrate.Calibration" title="Link to this definition">#</a></dt>
+<dd><p>OG-Japan calibration built on top of an OG-Core Specifications.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="ogjpn.calibrate.Calibration.get_dict">
+<span class="sig-name descname"><span class="pre">get_dict</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ogjpn/calibrate.html#Calibration.get_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ogjpn.calibrate.Calibration.get_dict" title="Link to this definition">#</a></dt>
+<dd><p>Return the calibrated parameters as a dict for
+<code class="docutils literal notranslate"><span class="pre">Specifications.update_specifications</span></code>.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-ogjpn.macro_params">
+<span id="ogjpn-macro-params"></span><h2><code class="docutils literal notranslate"><span class="pre">ogjpn.macro_params</span></code><a class="headerlink" href="#module-ogjpn.macro_params" title="Link to this heading">#</a></h2>
+<p>OG-Japan macro calibration.</p>
+<p>Sourced from the IMF World Economic Outlook via the IMF DataMapper API
+(retrieved 2026-08-18). Japan’s general government, share of GDP:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>gross debt 214.5% (2024, GGXWDG_NGDP)</p></li>
+<li><p>total revenue 37.6% (2024, indicator “rev”)</p></li>
+<li><p>total expenditure 39.1% (2024, indicator “exp”)</p></li>
+<li><p>net lending/borrowing -1.7% (2024, GGXCNL_NGDP)</p></li>
+<li><p>real GDP growth ~0.7% (2023, NGDP_RPCH)</p></li>
+</ul>
+</div></blockquote>
+<p>These pin the debt ratio, the growth rate, and the overall size of
+government. The split of total expenditure (39.1%) into its OG-Core
+pieces – government consumption (alpha_G), pensions (a separate model
+outlay), non-pension transfers (alpha_T), interest, and investment – is
+estimated from the standard composition, since the aggregate API series
+do not break it out. gamma (capital share) is from the Penn World Table
+labor share (see get_macro_params).</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="ogjpn.macro_params.get_macro_params">
+<span class="sig-prename descclassname"><span class="pre">ogjpn.macro_params.</span></span><span class="sig-name descname"><span class="pre">get_macro_params</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ogjpn/macro_params.html#get_macro_params"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ogjpn.macro_params.get_macro_params" title="Link to this definition">#</a></dt>
+<dd><p>Return a dict of Japan macro parameters for
+<code class="docutils literal notranslate"><span class="pre">Specifications.update_specifications</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Japan macro parameters</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>macro_parameters (dict)</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-ogjpn.tax_params">
+<span id="ogjpn-tax-params"></span><h2><code class="docutils literal notranslate"><span class="pre">ogjpn.tax_params</span></code><a class="headerlink" href="#module-ogjpn.tax_params" title="Link to this heading">#</a></h2>
+<p>OG-Japan tax calibration.</p>
+<p>This is a first-pass calibration of Japan’s income, payroll, capital, and
+consumption taxes, grounded in published rates rather than a tax
+microsimulator (Japan has no open-source equivalent of the US
+Tax-Calculator). It uses OG-Core’s linear (constant-rate) tax functions,
+which the model supports directly, so each rate is a single, sourced
+number rather than a fitted polynomial that would imply precision the
+underlying data does not support.</p>
+<dl class="simple">
+<dt>Sources (all real, retrieved 2026-08):</dt><dd><ul class="simple">
+<li><p>Consumption tax 10% since Oct 2019 (National Tax Agency / MOF).</p></li>
+<li><p>Personal income tax: national schedule 5-45% over seven brackets plus
+a flat 10% local inhabitant tax and a 2.1% reconstruction surtax on
+the national tax (PwC Worldwide Tax Summaries: Japan). The average
+effective personal income tax burden is low because of large
+deductions: OECD Taxing Wages 2025 puts the net average tax rate for a
+single worker at the average wage at 22.0%, of which roughly 15 points
+are employee social insurance, leaving income tax alone near 7-8%.</p></li>
+<li><p>Social insurance (payroll on labor): the full combined contribution is
+about 30% of remuneration (Japan Pension Service / MHLW): pension 18.3%,
+health ~10%, long-term care ~1.6% (age 40+), employment ~0.9%, with
+employer and employee sides both borne by labor. OG-Core’s payroll tax
+revenue funds general government rather than an earmarked pension pot,
+so all of it correctly finances spending.</p></li>
+<li><p>Capital income: listed dividends, interest, and share capital gains
+are taxed at a flat 20.315% (15% national + 5% local + 0.315%
+reconstruction surtax) (PwC Worldwide Tax Summaries: Japan).</p></li>
+<li><p>Corporate income: effective combined rate about 30% (national 23.2%
+plus local corporate, inhabitant, and enterprise taxes) (PwC / JETRO).</p></li>
+</ul>
+</dd>
+</dl>
+<p>What is still first-pass: the income tax is treated as a single average
+effective rate with a separate constant marginal rate, rather than the full
+progressive schedule (refining it needs the income distribution behind the
+published effective rates). The social insurance contribution cap and the
+frac_tax_payroll split are not modeled. Model revenue reaches about 32% of
+GDP against Japan’s 37.6%. Japan’s property tax (Fixed Asset plus City
+Planning Tax, ~2% of GDP) could be added through OG-Core’s wealth tax
+(p_wealth), and doing so raises revenue to ~34% and trims C/Y, but it makes
+the consumption-tax reform experiment fail to converge, so it is deferred
+until that solver interaction is understood. The rest of the gap is
+inheritance and other minor taxes not modeled here.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="ogjpn.tax_params.get_tax_params">
+<span class="sig-prename descclassname"><span class="pre">ogjpn.tax_params.</span></span><span class="sig-name descname"><span class="pre">get_tax_params</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num_ages</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">80</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ogjpn/tax_params.html#get_tax_params"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ogjpn.tax_params.get_tax_params" title="Link to this definition">#</a></dt>
+<dd><p>Return Japan tax parameters for <code class="docutils literal notranslate"><span class="pre">Specifications.update_specifications</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>num_ages</strong> (<em>int</em>) – number of age groups S in the model, used to size
+the linear income-tax function arrays (default 80, OG-Core’s S)</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Japan tax parameters</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>tax_parameters (dict)</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-ogjpn.wealth">
+<span id="ogjpn-wealth"></span><h2><code class="docutils literal notranslate"><span class="pre">ogjpn.wealth</span></code><a class="headerlink" href="#module-ogjpn.wealth" title="Link to this heading">#</a></h2>
+<p>Japan’s observed initial distribution of household wealth, for the start
+of the transition path.</p>
+<p>By default OG-Core starts a baseline transition from the terminal steady
+state’s wealth-by-age profile, rescaled to the initial population. For
+Japan that proxy is poor: today’s population is far older than the
+terminal stable population, so the steady-state profile puts wealth in the
+wrong cohorts, and the mismatch showed up as a one-period seam in the
+resource constraint at t=2 (see docs/NEXT_STEPS.md, item 4).</p>
+<p>OG-Core (PR #1254) lets a country model supply <code class="docutils literal notranslate"><span class="pre">initial_hhwealth_dist</span></code>,
+an S x J matrix of shares of aggregate household wealth. This module builds
+it from Japanese survey data:</p>
+<ul class="simple">
+<li><p><strong>Age profile (data).</strong> Mean household net worth (家計資産総額, which is
+the 純資産総額 of the statistical tables: net financial assets plus
+housing and residential land) by age of household head, all households,
+from the 2019 National Survey of Family Income, Consumption and Wealth
+(2019年全国家計構造調査), Statistics Bureau of Japan, 結果の概要
+(2021-05-18), Figure IV-4.</p></li>
+<li><p><strong>Within-age split across lifetime-income groups (model).</strong> The survey
+summary does not cross age with lifetime income, so the split across the
+J groups at each age is taken from the model’s own steady state. Only
+the age profile is replaced by data.</p></li>
+</ul>
+<p>Known limits, stated rather than hidden:</p>
+<ul class="simple">
+<li><p>The survey reports wealth per household by the age of the head; the
+model is per person. Assigning household wealth to the head’s age
+overstates wealth at young ages slightly (adult children living with
+their parents hold little but are counted at their own age in the
+model) and is the standard first-pass mapping.</p></li>
+<li><p>The survey uses age bands (under 30, 30s, …, 80 and over). The profile
+is interpolated linearly between band midpoints and held flat beyond the
+first and last midpoints.</p></li>
+<li><p>Only the shape is taken from the data. The level of aggregate wealth is
+still the steady-state level unless <code class="docutils literal notranslate"><span class="pre">initial_wealth_ratio</span></code> is also set.</p></li>
+</ul>
+<dl class="py function">
+<dt class="sig sig-object py" id="ogjpn.wealth.get_initial_hhwealth_dist">
+<span class="sig-prename descclassname"><span class="pre">ogjpn.wealth.</span></span><span class="sig-name descname"><span class="pre">get_initial_hhwealth_dist</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">p</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b_sp1_ss</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ogjpn/wealth.html#get_initial_hhwealth_dist"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ogjpn.wealth.get_initial_hhwealth_dist" title="Link to this definition">#</a></dt>
+<dd><p>Build OG-Core’s <code class="docutils literal notranslate"><span class="pre">initial_hhwealth_dist</span></code> for Japan.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>p</strong> (<em>ogcore Specifications</em>) – model parameters with Japan demographics
+already applied (supplies E, S, J, lambdas, and omega)</p></li>
+<li><p><strong>b_sp1_ss</strong> (<em>Numpy array</em>) – S x J steady-state savings <code class="docutils literal notranslate"><span class="pre">b_sp1</span></code>, used
+only for the within-age split across lifetime-income groups</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><dl class="simple">
+<dt>S x J shares of aggregate household wealth, summing</dt><dd><p>to one</p>
+</dd>
+</dl>
+</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>(Numpy array)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ogjpn.wealth.net_worth_by_age">
+<span class="sig-prename descclassname"><span class="pre">ogjpn.wealth.</span></span><span class="sig-name descname"><span class="pre">net_worth_by_age</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ages</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ogjpn/wealth.html#net_worth_by_age"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ogjpn.wealth.net_worth_by_age" title="Link to this definition">#</a></dt>
+<dd><p>Mean household net worth (thousand yen) at each age, interpolated from
+the 2019 survey’s age bands.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>ages</strong> (<em>array_like</em>) – ages in years</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>net worth at each age, same shape as <code class="docutils literal notranslate"><span class="pre">ages</span></code></p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>(Numpy array)</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-ogjpn.constants">
+<span id="ogjpn-constants"></span><h2><code class="docutils literal notranslate"><span class="pre">ogjpn.constants</span></code><a class="headerlink" href="#module-ogjpn.constants" title="Link to this heading">#</a></h2>
+<p>Country constants for OG-Japan (OG-JPN).</p>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./content/api"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="../results/replacement_rate.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Cutting the pension replacement rate</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="../roadmap.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Roadmap</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item"><div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-ogjpn.calibrate"><code class="docutils literal notranslate"><span class="pre">ogjpn.calibrate</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ogjpn.calibrate.Calibration"><code class="docutils literal notranslate"><span class="pre">Calibration</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#ogjpn.calibrate.Calibration.get_dict"><code class="docutils literal notranslate"><span class="pre">Calibration.get_dict()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-ogjpn.macro_params"><code class="docutils literal notranslate"><span class="pre">ogjpn.macro_params</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ogjpn.macro_params.get_macro_params"><code class="docutils literal notranslate"><span class="pre">get_macro_params()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-ogjpn.tax_params"><code class="docutils literal notranslate"><span class="pre">ogjpn.tax_params</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ogjpn.tax_params.get_tax_params"><code class="docutils literal notranslate"><span class="pre">get_tax_params()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-ogjpn.wealth"><code class="docutils literal notranslate"><span class="pre">ogjpn.wealth</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ogjpn.wealth.get_initial_hhwealth_dist"><code class="docutils literal notranslate"><span class="pre">get_initial_hhwealth_dist()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ogjpn.wealth.net_worth_by_age"><code class="docutils literal notranslate"><span class="pre">net_worth_by_age()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-ogjpn.constants"><code class="docutils literal notranslate"><span class="pre">ogjpn.constants</span></code></a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Ari Lodha
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2026.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../_static/scripts/bootstrap.js?digest=55c26ed414f5f8a31ebb"></script>
+<script defer src="../../_static/scripts/pydata-sphinx-theme.js?digest=55c26ed414f5f8a31ebb"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>
