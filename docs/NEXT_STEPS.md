@@ -155,6 +155,11 @@ consequences:
   from a published source (for example the National Tax Agency 民間給与実態
   統計調査 average annual salary, or the MHLW 国民生活基礎調査 mean household
   income), with the year and figure documented.
+  Sourced candidate (Nov 2026): OG-Core defines `mean_income_data` as mean
+  income in the tax microdata (per tax unit), so the closest Japanese
+  concept is the NTA 民間給与実態統計調査 mean annual salary of full-year
+  private-sector earners: 4.60 million yen for 2023 and 4.78 million yen
+  for 2024 (令和6年分). Use 4.78 million yen (2024) with the start year.
 - `factor` feeds the pension replacement rate `theta`, and the default
   pension benefit formula (US Social Security bend points) is dollar-
   denominated, so changing the anchor by the roughly 78x dollar-to-yen

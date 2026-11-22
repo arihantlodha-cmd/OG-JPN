@@ -132,3 +132,59 @@ def test_calibration_assembles_macro_and_tax_without_network():
     # tax keys present and sized to S
     assert calibrated["tau_c"] == [[0.10]]
     assert np.array(calibrated["etr_params"]).shape == (1, p.S, 1)
+
+
+def test_net_worth_profile_matches_survey_bands():
+    """The 2019 全国家計構造調査 band means are reproduced at band midpoints,
+    and the profile is flat beyond the first and last midpoints."""
+    from ogjpn import wealth
+
+    assert wealth.net_worth_by_age(45) == pytest.approx(19035.0)
+    assert wealth.net_worth_by_age(85) == pytest.approx(43860.0)
+    assert wealth.net_worth_by_age(21) == pytest.approx(2568.0)
+    assert wealth.net_worth_by_age(100) == pytest.approx(43860.0)
+    # hump that keeps rising into old age, as the survey reports
+    prof = wealth.net_worth_by_age(np.arange(25, 86, 10))
+    assert np.all(np.diff(prof) > 0)
+
+
+def test_initial_hhwealth_dist_shape_and_split():
+    """The distribution is S x J, sums to one, takes its age profile from
+    the survey and its within-age split across income groups from the
+    steady state."""
+    from types import SimpleNamespace
+
+    from ogjpn import wealth
+
+    S, J, E = 80, 3, 20
+    lambdas = np.array([0.5, 0.3, 0.2])
+    omega_age = np.full(S, 1.0 / S)
+    p = SimpleNamespace(
+        S=S,
+        J=J,
+        E=E,
+        lambdas=lambdas,
+        omega=(omega_age[:, None] * lambdas[None, :])[None, :, :],
+    )
+    # steady state where group j saves (j + 1) times as much at every age
+    b_ss = np.tile(np.array([1.0, 2.0, 3.0]), (S, 1))
+    dist = wealth.get_initial_hhwealth_dist(p, b_ss)
+    assert dist.shape == (S, J)
+    assert dist.sum() == pytest.approx(1.0)
+    # within-age ratios follow the steady state (per person: share / pop)
+    per_person = dist / p.omega[0]
+    assert per_person[40, 2] / per_person[40, 0] == pytest.approx(3.0)
+    # across ages, per-person wealth follows the survey profile
+    ages = E + np.arange(S) + 2
+    prof = wealth.net_worth_by_age(ages)
+    ratio = per_person[:, 0] / prof
+    assert np.allclose(ratio, ratio[0])
+
+
+def test_household_wealth_ratio_from_national_accounts():
+    """End-2023 household net worth / FY2023 GDP: ~5.0 with land, ~3.7 on
+    the model-comparable (no-land) basis."""
+    from ogjpn import wealth
+
+    assert wealth.HH_WEALTH_TO_GDP_INCL_LAND == pytest.approx(4.98, abs=0.01)
+    assert wealth.HH_WEALTH_TO_GDP_EXCL_LAND == pytest.approx(3.69, abs=0.01)
