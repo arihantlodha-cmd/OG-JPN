@@ -61,9 +61,16 @@ Building OG-JPN surfaced improvements to OG-Core itself, contributed back:
   approved): a table of the net present value of a reform's flow-variable
   changes, which OG-JPN uses to report the transition results.
 - **Custom initial wealth distribution**
-  ([PR #1209](https://github.com/PSLmodels/OG-Core/pull/1209)): a hook for a
-  country model to supply an observed initial wealth distribution instead of
-  the steady-state one (see Limitations).
+  ([PR #1209](https://github.com/PSLmodels/OG-Core/pull/1209), superseded by
+  the maintainers' [#1254](https://github.com/PSLmodels/OG-Core/pull/1254),
+  merged): lets a country model supply an observed initial wealth
+  distribution instead of the steady-state one. OG-JPN feeds it Japan's
+  survey wealth-by-age profile (`ogjpn/wealth.py`).
+- **Japan in the shared demographic data**
+  ([EAPD-DRB/Population-Data #14](https://github.com/EAPD-DRB/Population-Data/pull/14),
+  merged) and in OG-Core's `country_dict`
+  ([PR #1196](https://github.com/PSLmodels/OG-Core/pull/1196)), so Japan runs
+  offline like the other supported countries.
 - **Resource-constraint failure diagnostics**
   ([PR #1213](https://github.com/PSLmodels/OG-Core/pull/1213)): the transition
   solver now reports the size and location of a resource-constraint failure
@@ -106,19 +113,29 @@ docs/
 
 ## Running
 
-With OG-Core installed in the environment and a free UN Data Portal API
-token saved as `un_api_token.txt` in the run directory:
+Install OG-Core and this package into the same environment:
 
 ```
-PYTHONPATH=. python examples/run_ogjpn_ss.py    # steady state + validation
-PYTHONPATH=. python examples/run_ogjpn_tpi.py   # baseline transition
+pip install ogcore
+git clone https://github.com/arihantlodha-cmd/OG-JPN.git
+cd OG-JPN
+pip install -e .
 ```
 
-Without a token, OG-Core falls back to an offline data mirror
-([EAPD-DRB/Population-Data](https://github.com/EAPD-DRB/Population-Data)),
-which does not yet include Japan, so live Japan demographics need the token
-today. Adding Japan to that mirror is a remaining give-back (see
-docs/NEXT_STEPS.md).
+Then:
+
+```
+python examples/run_ogjpn_ss.py    # steady state + validation
+python examples/run_ogjpn_tpi.py   # baseline transition
+python -m pytest tests/            # calibration tests
+```
+
+Japan's demographics come from the UN World Population Prospects (country
+code 392). Japan is in OG-Core's offline data mirror
+([EAPD-DRB/Population-Data](https://github.com/EAPD-DRB/Population-Data),
+added by OG-JPN in PR #14), so the model runs without a UN API token. A
+free UN Data Portal token, saved as `~/.config/og/un_api_token.txt`, pulls
+the live data instead.
 
 ## Roadmap
 

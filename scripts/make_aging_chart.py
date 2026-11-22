@@ -5,9 +5,10 @@ aging that drives OG-Japan's high pension burden.
 """
 
 import os
+
+import matplotlib
 import numpy as np
 import pandas as pd
-import matplotlib
 
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
@@ -40,15 +41,41 @@ def main():
     ax.plot(a30, s30, color=C_2030, linewidth=2.0)
 
     # direct labels (identity without relying on a legend box)
-    ax.text(a90[np.argmax(s90)], max(s90) + 0.03, "1990",
-            color=C_1990, fontsize=11, fontweight="bold", ha="center")
-    ax.text(82, s30[82] + 0.06, "2030", color=C_2030, fontsize=11,
-            fontweight="bold", ha="center")
+    ax.text(
+        a90[np.argmax(s90)],
+        max(s90) + 0.03,
+        "1990",
+        color=C_1990,
+        fontsize=11,
+        fontweight="bold",
+        ha="center",
+    )
+    ax.text(
+        82,
+        s30[82] + 0.06,
+        "2030",
+        color=C_2030,
+        fontsize=11,
+        fontweight="bold",
+        ha="center",
+    )
 
-    ax.set_title("Japan is aging: population by age, 1990 vs 2030",
-                 color=INK, fontsize=13, fontweight="bold", loc="left", pad=30)
-    ax.text(0, 1.05, "share of population at each age (%), UN World Population Prospects",
-            transform=ax.transAxes, color=MUTED, fontsize=9.5)
+    ax.set_title(
+        "Japan is aging: population by age, 1990 vs 2030",
+        color=INK,
+        fontsize=13,
+        fontweight="bold",
+        loc="left",
+        pad=30,
+    )
+    ax.text(
+        0,
+        1.05,
+        "share of population at each age (%), UN World Population Prospects",
+        transform=ax.transAxes,
+        color=MUTED,
+        fontsize=9.5,
+    )
     ax.set_xlabel("age", color=MUTED, fontsize=10)
     ax.set_ylabel("% of population", color=MUTED, fontsize=10)
 

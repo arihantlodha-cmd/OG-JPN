@@ -40,9 +40,10 @@ def get_with_retry(url, headers, attempts=6):
         except requests.exceptions.RequestException as exc:
             if i == attempts - 1:
                 raise
-            wait = 2 ** i
+            wait = 2**i
             print(f"    transient error ({exc}); retrying in {wait}s...")
             time.sleep(wait)
+
 
 BASE = "https://population.un.org/dataportalapi/api/v1"
 JAPAN = "392"
@@ -90,9 +91,7 @@ def fetch_indicator(code, token):
     # Same filtering/renaming as ogcore.demographics.get_un_data
     df = df[df.Variant == "Median"]
     df = df[df.Sex == "Both sexes"][["TimeLabel", "AgeLabel", "Value"]]
-    df = df.rename(
-        columns={"TimeLabel": "year", "AgeLabel": "age", "Value": "value"}
-    )
+    df = df.rename(columns={"TimeLabel": "year", "AgeLabel": "age", "Value": "value"})
     df.age = df.age.astype(str)
     df.loc[df.age == "100+", "age"] = "100"
     df.age = df.age.astype(int)

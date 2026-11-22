@@ -5,11 +5,10 @@ Goal: assemble the OG-Japan calibration (macro, tax, and demographics)
 into an OG-Core Specifications object and solve the steady state, proving
 the OG-JPN pipeline works end to end.
 
-Pulling live Japan demographics requires a free UN API token saved as
-``un_api_token.txt`` (see the project README). If no token is present,
-OG-Core's offline data mirror does not yet include Japan, so this script
-falls back to the macro + tax calibration on top of OG-Core's default
-demographics and clearly says so.
+Japan's demographics come from OG-Core's offline UN data mirror, or live
+from the UN Data Portal if a free API token is saved (see the project
+README). If neither is reachable, this script falls back to the macro + tax
+calibration on top of OG-Core's default demographics and clearly says so.
 """
 
 import os
@@ -37,8 +36,8 @@ def main(output_base="/tmp/ogjpn_phase0"):
             f"Could not load {COUNTRY_NAME} demographics "
             f"({type(exc).__name__}: {exc}).\n"
             "Falling back to Japan macro + tax on OG-Core default "
-            "demographics. Add a UN API token (un_api_token.txt) to pull "
-            "live Japan data."
+            "demographics. Check the network connection (the offline mirror "
+            "is fetched from GitHub) or add a UN API token."
         )
         c = calibrate.Calibration(p, use_demographics=False)
 

@@ -19,7 +19,7 @@ RC check is disabled to let both runs complete.
 
 NOTE: demographics are real Japanese data; macro/tax parameters are still
 first-pass (see docs/NEXT_STEPS.md), so read directions and rough
-magnitudes, not the last digit. Requires a UN API token in un_api_token.txt.
+magnitudes, not the last digit. Runs on Japan's UN demographics from the offline mirror, or live with a UN API token.
 """
 
 import os

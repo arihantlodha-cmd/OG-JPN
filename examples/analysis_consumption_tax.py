@@ -12,8 +12,7 @@ in the main aggregates as a table written to docs/.
 
 NOTE: the demographics are real Japanese data, but the macro and tax
 parameters are still provisional first-pass values (see docs/NEXT_STEPS.md),
-so treat the magnitudes as indicative rather than final. Requires a UN API
-token in un_api_token.txt.
+so treat the magnitudes as indicative rather than final. Runs on Japan's UN demographics (offline mirror, or live with a UN API token).
 """
 
 import os
