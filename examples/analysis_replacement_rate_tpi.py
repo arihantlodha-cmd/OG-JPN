@@ -113,7 +113,7 @@ def main():
 
     lines = []
     for adj, (rp, rtpi) in reforms.items():
-        pct = int(round((1 - adj) * 100))
+        pct = round((1 - adj) * 100)
         r_paths = {v: _agg_path(rtpi, v) for v in AGGS}
         r_pen = _agg_path(rtpi, "agg_pension_outlays") / r_paths["Y"]
         lines.append(f"\n### {pct}% benefit cut\n")
@@ -134,7 +134,7 @@ def main():
 
     npv_lines = ["\n## Net present value of the change, first 10 years\n"]
     for adj, (rp, rtpi) in reforms.items():
-        pct = int(round((1 - adj) * 100))
+        pct = round((1 - adj) * 100)
         tbl = output_tables.npv_table(
             base,
             base_p,

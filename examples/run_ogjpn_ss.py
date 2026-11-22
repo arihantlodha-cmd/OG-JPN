@@ -56,7 +56,9 @@ def main(output_base="/tmp/ogjpn_phase0"):
     print(f"Total tax revenue / Y:      {float(ss['total_tax_revenue']) / Y:.4f}")
     print(f"Pension outlays / Y:        {float(ss['agg_pension_outlays']) / Y:.4f}")
     print(f"Debt / Y:                   {float(ss['D']) / Y:.4f}")
-    print(f"Govt spending G:            {G:.5f} ({'positive' if G >= 0 else 'NEGATIVE'})")
+    print(
+        f"Govt spending G:            {G:.5f} ({'positive' if G >= 0 else 'NEGATIVE'})"
+    )
     print("Steady state solved successfully.")
 
 

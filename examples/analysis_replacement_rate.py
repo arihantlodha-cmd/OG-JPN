@@ -80,7 +80,7 @@ def write_results(base, reforms):
             for v in aggregates
         ]
         r_pen = _scalar(reform["agg_pension_outlays"]) / _scalar(reform["Y"])
-        pct = int(round((1 - cut) * 100))
+        pct = round((1 - cut) * 100)
         rows.append(
             f"| -{pct}% benefits | "
             + " | ".join(changes)

@@ -7,3 +7,4 @@ dist/
 un_api_token.txt
 OUTPUT*/
 *.pkl
+Data/
