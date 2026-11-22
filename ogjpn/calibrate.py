@@ -9,9 +9,10 @@ other country models (OG-USA, OG-THA, OG-BRA).
 
 Phase status:
   - macro parameters: provisional first pass (ogjpn.macro_params)
-  - tax parameters: first-pass linear calibration of income, payroll,
-    capital, corporate, and consumption taxes from published Japanese
-    rates (ogjpn.tax_params)
+  - tax parameters: progressive labor income tax fitted to NTA data, an
+    effective capital income tax from the national accounts, and payroll,
+    corporate, and consumption taxes from published Japanese rates
+    (ogjpn.tax_params)
   - demographics: live UN data by country code 392, requires a UN API
     token (see README); optional so the pipeline still runs without it
 """
@@ -23,7 +24,7 @@ from ogjpn import macro_params, pension_params, tax_params
 from ogjpn.constants import UN_COUNTRY_CODE
 
 # Initial guess for OG-Core's model-to-currency factor when the model is
-# anchored to yen: the steady-state factor is about 6.7 million yen per
+# anchored to yen: the steady-state factor is about 6.6 million yen per
 # model unit. OG-Core validates initial_guess_factor_SS against a maximum
 # of 500,000, set with dollar-anchored models in mind, and the steady state
 # does not converge from a guess at that cap, so update_specs sets it
@@ -61,6 +62,7 @@ class Calibration:
         demographic_data_path=None,
         income_tax="progressive",
         pension="japan",
+        labor_share=None,
     ):
         """
         Args:
@@ -78,6 +80,9 @@ class Calibration:
                 formula with the model anchored to yen
                 (ogjpn.pension_params), or "us" for OG-Core's default US
                 Social Security formula and dollar anchor
+            labor_share (array_like): labor share of income by age for the
+                progressive income tax; defaults to the stored steady-state
+                shares (see scripts/calibrate_labor_share.py)
         """
         self.macro_params = macro_params.get_macro_params(income_tax, pension)
         self.pension_params = {}
@@ -90,7 +95,10 @@ class Calibration:
             raise ValueError("pension must be 'japan' or 'us'")
         # The income-tax functions are scaled to the income anchor in use.
         self.tax_params = tax_params.get_tax_params(
-            p.S, income_tax=income_tax, mean_income=mean_income
+            p.S,
+            income_tax=income_tax,
+            mean_income=mean_income,
+            labor_share=labor_share,
         )
 
         self.demographic_params = None

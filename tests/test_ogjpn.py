@@ -63,7 +63,7 @@ def test_alpha_G_is_the_steady_state_residual_not_national_accounts():
     twenty periods, debt explodes, and the transition fails to converge.
     """
     alpha_G = macro_params.get_macro_params()["alpha_G"][0]
-    assert alpha_G == pytest.approx(0.065, abs=0.005)
+    assert alpha_G == pytest.approx(0.058, abs=0.005)
     lin = macro_params.get_macro_params("linear", "us")["alpha_G"][0]
     assert lin == pytest.approx(0.062, abs=0.005)
     assert alpha_G < 0.10  # must not be the ~0.20 national-accounts value
@@ -138,7 +138,7 @@ def test_calibration_assembles_macro_and_tax_without_network():
         p, use_demographics=False, income_tax="linear", pension="us"
     ).get_dict()
     assert np.array(linear["etr_params"]).shape == (1, p.S, 1)
-    assert linear["alpha_G"] == [0.062] and calibrated["alpha_G"] == [0.065]
+    assert linear["alpha_G"] == [0.062] and calibrated["alpha_G"] == [0.058]
     # default: Japan's pension formula, anchored to yen
     assert calibrated["pension_system"] == "US-Style Social Security"
     assert calibrated["mean_income_data"] == pytest.approx(4.595e6, rel=1e-3)
@@ -272,7 +272,52 @@ def test_progressive_params_scale_with_the_income_anchor():
     t = tax_params.get_tax_params(80, income_tax="progressive", mean_income=1e5)
     assert t["tax_func_type"] == "DEP_totalinc"
     assert np.asarray(t["etr_params"]).shape == (1, 80, 6)
-    assert t["mtry_params"][0][0][2:4] == [0.20315, 0.20315]
+    tau_k = income_tax.effective_capital_tax_rate()
+    assert t["mtry_params"][0][0][2:4] == [tau_k, tau_k]
+
+
+def test_effective_capital_tax_rate_from_national_accounts():
+    """Japan taxes interest, dividends, and investment-trust income at
+    20.315%, but most household capital income (owner-occupied housing,
+    insurance and pension reserves) is untaxed: about 5.7% overall."""
+    from ogjpn import income_tax
+
+    assert income_tax.effective_capital_tax_rate() == pytest.approx(0.0574, abs=1e-3)
+    assert income_tax.effective_capital_tax_rate() < income_tax.CAPITAL_TAX_STATUTORY
+
+
+def test_age_specific_params_reproduce_the_separable_tax():
+    """At each age the DEP_totalinc curve on total income equals the labor
+    schedule on labor income plus the flat capital tax, exactly."""
+    from ogjpn import income_tax
+
+    etr, mtrx = [0.03, 0.05, 0.5, 0.02], [0.02, 0.08, 0.5, 0.0]
+    lam, tau_k, m = np.array([1.0, 0.8, 0.3, 0.0]), 0.06, 4.6e6
+    e, mx, my = income_tax.age_specific_params(etr, mtrx, lam, tau_k, m)
+    for s, ls in enumerate(lam):
+        for inc in (0.5 * m, m, 5 * m):
+            labor = ls * inc
+            tax = labor * income_tax.dep_totalinc(etr, labor / m) + (
+                (1 - ls) * inc * tau_k
+            )
+            assert income_tax.dep_totalinc(e[s][:4], inc) * inc == pytest.approx(tax)
+            assert income_tax.dep_totalinc(mx[s][:4], inc) == pytest.approx(
+                income_tax.dep_totalinc(mtrx, labor / m)
+            )
+            assert income_tax.dep_totalinc(my[s][:4], inc) == pytest.approx(tau_k)
+
+
+def test_stored_labor_share_by_age():
+    """Stored steady-state labor shares: one per model age, near 1 for the
+    young, falling with age as capital income takes over."""
+    from ogjpn import income_tax
+
+    lam = income_tax.load_labor_share_by_age()
+    assert lam.shape == (80,)
+    assert np.all((lam >= 0) & (lam <= 1))
+    assert lam[0] > 0.95 and lam[-1] < 0.5
+    with pytest.raises(ValueError):
+        tax_params.get_tax_params(60, mean_income=1e5, labor_share=lam)
 
 
 def _og_core_pia(aime, p):

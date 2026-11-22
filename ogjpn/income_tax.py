@@ -32,10 +32,27 @@ on income expressed relative to mean salary, then rescaled to the model's
 income anchor (``mean_income_data``), so the progressivity relative to the
 mean is right whatever currency the anchor is in.
 
+Labor and capital income are taxed separately in Japan: salaries on the
+progressive schedule, most financial income at a flat rate. OG-Core's
+``DEP_totalinc`` form takes total income I, but its parameters can vary by
+age. At age s with labor share of income lambda_s, the separable tax
+lambda tau_L(lambda I) + (1 - lambda) tau_k is again a DEP_totalinc curve
+(``age_specific_params``), so each age gets its own curve. The labor shares
+come from the model's own steady state (``labor_share_by_age``, iterated to
+a fixed point by scripts/calibrate_labor_share.py and stored in
+data/labor_share_by_age.csv).
+
+The capital rate tau_k is an effective rate, not the 20.315% statute:
+Japan taxes interest, dividends, and investment-trust income at 20.315%,
+but leaves untaxed the return on owner-occupied housing and the investment
+income of insurance and pension reserves, which together are most of
+household capital income (``effective_capital_tax_rate``).
+
 Limits: the survey covers private-sector salary earners only; deductions
-other than the basic deduction are averaged into the inversion; the
-income-tax function is applied to total (labor + capital) income, as
-OG-Core's total-income form does.
+other than the basic deduction are averaged into the inversion; the labor
+share is an average over lifetime-income groups at each age; realized
+capital gains, rental income (taxed progressively), and NISA exemptions are
+left out of the capital rate.
 """
 
 from importlib import resources
@@ -63,6 +80,116 @@ RESIDENT_PER_CAPITA = 5_000  # 均等割, approximate
 SI_EMPLOYEE = 0.15  # pension 9.15% + health ~5% + care/employment ~0.9%
 PENSION_EMPLOYEE = 0.0915
 PENSION_CAP_SALARY = 650_000 * 12 + 1_500_000  # top standard monthly pay + bonus cap
+
+
+# Statutory flat rate on interest, dividends, and listed capital gains
+# (15% national + 5% local + 0.315% reconstruction surtax).
+CAPITAL_TAX_STATUTORY = 0.20315
+
+# Household (incl. unincorporated enterprises) primary income, FY2023,
+# trillion yen (Cabinet Office, 2023年度国民経済計算, 制度部門別所得支出勘定
+# 家計, table 1: 第1次所得の配分勘定).
+SNA_FY2023_HH_PROPERTY_INCOME = 30.5  # 財産所得（受取）
+SNA_FY2023_HH_OWNER_OCCUPIED_SURPLUS = 18.0  # 営業余剰（持ち家）（純）
+# The parts taxed at the flat rate: interest actually received (before the
+# FISIM adjustment), dividends, and investment-trust income.
+SNA_FY2023_HH_INTEREST_PRE_FISIM = 3.6
+SNA_FY2023_HH_DIVIDENDS = 9.5
+SNA_FY2023_HH_INVESTMENT_TRUST = 0.6
+
+
+def effective_capital_tax_rate():
+    """
+    Income tax collected per yen of household capital income in Japan.
+
+    The statutory 20.315% applies to interest, dividends, and investment
+    trust income; household capital income also includes the return on
+    owner-occupied housing and on insurance and pension reserves, which are
+    not taxed as they accrue. FY2023 national accounts give about 5.7%.
+
+    Returns:
+        (float): effective average tax rate on household capital income
+    """
+    taxed = (
+        SNA_FY2023_HH_INTEREST_PRE_FISIM
+        + SNA_FY2023_HH_DIVIDENDS
+        + SNA_FY2023_HH_INVESTMENT_TRUST
+    )
+    total = SNA_FY2023_HH_PROPERTY_INCOME + SNA_FY2023_HH_OWNER_OCCUPIED_SURPLUS
+    return CAPITAL_TAX_STATUTORY * taxed / total
+
+
+def load_labor_share_by_age():
+    """
+    Steady-state labor share of household income by model age, stored by
+    scripts/calibrate_labor_share.py.
+
+    Returns:
+        (Numpy array): labor share at each of the S model ages
+    """
+    path = resources.files("ogjpn").joinpath("data/labor_share_by_age.csv")
+    with path.open() as f:
+        return pd.read_csv(f).labor_share.to_numpy()
+
+
+def labor_share_by_age(ss, p):
+    """
+    Labor share of household income (labor + capital) at each age, averaged
+    over lifetime-income groups with population weights.
+
+    Args:
+        ss (dict): OG-Core SS_vars
+        p (OG-Core Specifications object): model parameters
+
+    Returns:
+        (Numpy array): labor share at each of the S ages
+    """
+    labor = np.asarray(ss["labor_income"])
+    capital = np.asarray(ss["capital_income"])
+    weights = np.asarray(p.omega_SS).reshape(labor.shape[0], -1)
+    if weights.shape[1] != labor.shape[1]:
+        weights = weights * np.asarray(p.lambdas).reshape(1, -1)
+    return (weights * labor).sum(1) / (weights * (labor + capital)).sum(1)
+
+
+def age_specific_params(etr, mtrx, labor_share, tau_k, mean_income):
+    """
+    DEP_totalinc parameters by age for a separable labor/capital tax.
+
+    With labor share lambda at an age, labor income is lambda I, so the tax
+    on labor is lambda I tau_L(lambda I) and on capital (1 - lambda) I
+    tau_k. Dividing by I, the effective rate is lambda tau_L(lambda I) +
+    (1 - lambda) tau_k: a DEP_totalinc curve with A and B scaled by lambda^2
+    and lambda, and the top and bottom rates by lambda plus the constant
+    capital term. The marginal rate on labor is the labor schedule at
+    lambda I (A and B scaled, rates unchanged); the marginal rate on capital
+    is tau_k.
+
+    Args:
+        etr (array_like): A, B, max, min of the labor effective rate on
+            income relative to mean salary (fit_dep_totalinc)
+        mtrx (array_like): same for the labor marginal rate
+        labor_share (array_like): labor share of income at each age
+        tau_k (float): flat tax rate on capital income
+        mean_income (float): model income at the mean salary
+
+    Returns:
+        (tuple): etr, mtrx, mtry parameters, each a list of S lists of six
+            OG-Core DEP_totalinc coefficients
+    """
+    out_etr, out_mtrx, out_mtry = [], [], []
+    for lam in np.clip(np.asarray(labor_share, float), 0.0, 1.0):
+        A, B, mx, mn = etr
+        c = (1 - lam) * tau_k
+        out_etr.append(
+            to_model_units(
+                [A * lam**2, B * lam, lam * mx + c, lam * mn + c], mean_income
+            )
+        )
+        A, B, mx, mn = mtrx
+        out_mtrx.append(to_model_units([A * lam**2, B * lam, mx, mn], mean_income))
+        out_mtry.append(to_model_units([0.0, 0.0, tau_k, tau_k], mean_income))
+    return out_etr, out_mtrx, out_mtry
 
 
 def load_nta_2023():

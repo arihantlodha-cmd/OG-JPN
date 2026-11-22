@@ -19,9 +19,8 @@ per-period RC check is disabled to let the runs complete. (An earlier
 version of this reform also showed a 3-5 percent error in the final period
 of the horizon; on OG-Core 0.24.6 that is below 1e-6.)
 
-NOTE: demographics are real Japanese data; macro/tax parameters are still
-first-pass (see docs/NEXT_STEPS.md), so read directions and rough
-magnitudes, not the last digit. Runs on Japan's UN demographics from the offline mirror, or live with a UN API token.
+NOTE: read directions and rough magnitudes, not the last digit; the
+calibration and its validation are in the docs (docs/book). Runs on Japan's UN demographics from the offline mirror, or live with a UN API token.
 """
 
 import os
@@ -180,8 +179,7 @@ def main():
         "the 2025 start), then the net present value of the "
         "reform-minus-baseline change over the first decade at 1/2/3% discount "
         "rates (OG-Core npv_table), as a share of first-year GDP and in "
-        "trillion yen at Japan's FY2023 GDP. Macro/tax parameters are "
-        "first-pass (see docs/NEXT_STEPS.md); read directions and rough "
+        "trillion yen at Japan's FY2023 GDP. Read directions and rough "
         "magnitudes, not the last digit."
     )
     ci = {k: reporting.crowding_in(base, rtpi) for k, (_, rtpi) in reforms.items()}

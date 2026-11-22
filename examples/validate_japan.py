@@ -36,9 +36,11 @@ def main(out="/tmp/ogjpn_validate"):
         ("Interest rate r", _s(ss["r"]), "~0.01-0.04"),
         ("Pension outlays/GDP", _s(ss["agg_pension_outlays"]) / Y, "~0.10-0.11"),
         ("Debt/GDP", _s(ss["D"]) / Y, "~2.1 (gross)"),
-        # Model revenue includes social contributions, so the benchmark is
-        # Japan's TOTAL general govt revenue (37.6%, IMF), not tax-only.
-        ("Revenue/GDP (incl. social)", _s(ss["total_tax_revenue"]) / Y, "~0.376 (IMF)"),
+        # Taxes including social contributions: OECD Revenue Statistics.
+        ("Tax revenue/GDP", _s(ss["total_tax_revenue"]) / Y, "~0.344 (OECD)"),
+        # Taxes on household income, FY2023 national accounts (31.6 tn yen
+        # over 595.2 tn yen of GDP); OECD's PIT category gives ~0.064.
+        ("Personal income tax/GDP", _s(ss["iit_revenue"]) / Y, "~0.053 (SNA)"),
     ]
     print("\n=== OG-Japan steady state vs Japan (rough actuals) ===")
     for name, model, actual in rows:

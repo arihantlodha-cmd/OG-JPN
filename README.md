@@ -27,9 +27,11 @@ The model is calibrated to Japanese data and solved end to end:
 
 - **Demographics**: UN World Population Prospects (country code 392):
   fertility, mortality, and the population by age.
-- **Income tax**: a progressive schedule fitted to the National Tax
-  Agency's 2023 salary-bracket tax data (effective rates from about 2
-  percent at the bottom to 40 percent at the top).
+- **Income tax**: a progressive schedule on labor income fitted to the
+  National Tax Agency's 2023 salary-bracket tax data (effective rates from
+  about 2 percent at the bottom to 40 percent at the top), and capital
+  income taxed at Japan's effective rate of 5.7 percent (national
+  accounts), combined age by age.
 - **Pensions**: Japan's two-tier public pension (flat basic pension plus
   the earnings-related employees' pension), with the model anchored to yen.
 - **Fiscal side**: gross debt 215 percent of GDP (IMF), the capital share
@@ -41,10 +43,11 @@ The model is calibrated to Japanese data and solved end to end:
   economy's year-by-year journey as the population ages).
 
 Nothing was tuned to hit it, but the model's public pension bill in its
-first year is **10.2 percent of GDP, against 10.4 percent in Japan**
+first year is **10.1 percent of GDP, against 10.4 percent in Japan**
 (MHLW, FY2022), and it rises about two points over the next two decades as
-the population ages. Tax revenue is 33.3 percent of GDP against 34.4
-(OECD). See the **[validation chapter](https://arihantlodha-cmd.github.io/OG-JPN/content/calibration/validation.html)**
+the population ages. Tax revenue is 31.8 percent of GDP against 34.4
+(OECD), and personal income tax 5.7 percent against 5.3 (national
+accounts). See the **[validation chapter](https://arihantlodha-cmd.github.io/OG-JPN/content/calibration/validation.html)**
 for what matches, what does not yet, and why.
 
 ## Policy results
@@ -56,14 +59,14 @@ Japanese demographics:
 | Reform | Long-run effect |
 |---|---|
 | [Consumption tax 10 to 12 and 15 percent](docs/results_consumption_tax.md) | tax revenue up 1.3 and 3.2 points of GDP; consumption down, labor slightly up |
-| [Pension age 65 to 68 and 70](docs/results_retirement_age.md) | long-run pension bill from 12.1 to 10.9 and 10.0 percent of GDP; labor up |
-| [Replacement-rate cut 10 and 20 percent](docs/results_replacement_rate.md) | long-run pension bill from 12.1 to 10.9 and 9.7 percent of GDP; labor up |
+| [Pension age 65 to 68 and 70](docs/results_retirement_age.md) | long-run pension bill from 12.0 to 10.8 and 9.9 percent of GDP; labor up |
+| [Replacement-rate cut 10 and 20 percent](docs/results_replacement_rate.md) | long-run pension bill from 12.0 to 10.8 and 9.6 percent of GDP; labor up |
 
 ![Long-run effects of three fiscal reforms](docs/policy_results.png)
 
 The transition versions (the `*_tpi.md` docs) add the year-by-year path
 and the net present value of each change. They also show capital rising
-along the transition (close to 10 percent by year 20 under the 15 percent
+along the transition (about 9 percent by year 20 under the 15 percent
 consumption tax). That comes mainly from debt: for its first 20 years
 OG-Core holds government purchases at a fixed share of GDP, so each
 reform's budget gain pays down debt, which frees saving for private
@@ -111,9 +114,8 @@ Building OG-JPN surfaced improvements to OG-Core itself, contributed back:
 
 ## Honest limitations
 
-- The income tax uses a single average effective rate rather than Japan's
-  full progressive schedule; sharpening it needs the income distribution
-  behind the published rates.
+- The income tax is fitted to salary earners (the NTA survey), and the
+  labor/capital split is an average at each age, not by household.
 - The transition satisfies the resource constraint to below 1e-6 everywhere
   except two single periods, both of which cancel in reform-minus-baseline
   results. **t = 2** (initial condition): starting from Japan's observed
@@ -122,8 +124,11 @@ Building OG-JPN surfaced improvements to OG-Core itself, contributed back:
   source, still being traced. **t = 120** (~1.2e-3): OG-Core freezes the
   population at period `1.5 * S` even though Japan's age mix is still
   moving, so population growth jumps there.
-- The income anchor (`mean_income_data`) is still OG-Core's US default, so
-  currency-denominated output is not yet in yen (see docs/NEXT_STEPS.md).
+- A few cohorts in three of the nine transitions carry large Euler errors
+  from a silent OG-Core solver failure; re-solving with the proposed fix
+  (OG-Core #1294) moves aggregates by under 0.1 percent.
+- Consumption runs high (C/Y 0.74 against about 0.54) because a
+  balanced-budget steady state cannot reproduce Japan's permanent deficit.
 
 ## Layout
 
@@ -132,7 +137,11 @@ ogjpn/
   calibrate.py     assembles macro + tax + demographics into OG-Core
   macro_params.py  debt, growth, capital share, spending shares (sourced)
   tax_params.py    income, social insurance, capital, corporate, consumption taxes
+  income_tax.py    progressive labor tax (NTA data) and effective capital tax
+  pension_params.py  Japan's two-tier pension formula and the yen anchor
+  reporting.py     crowding-in and NPV summaries for the write-ups
   wealth.py        Japan's initial wealth-by-age distribution (2019 survey)
+  data/            NTA bracket data and steady-state labor shares by age
   constants.py     country code (392) and metadata
 examples/          steady state, transition, and the three reform analyses
 scripts/           data fetch and figure scripts

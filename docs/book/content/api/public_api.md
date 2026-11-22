@@ -24,6 +24,27 @@ The `ogjpn` package is the Japan calibration layer. Each module returns paramete
    :members:
 ```
 
+## `ogjpn.income_tax`
+
+```{eval-rst}
+.. automodule:: ogjpn.income_tax
+   :members:
+```
+
+## `ogjpn.pension_params`
+
+```{eval-rst}
+.. automodule:: ogjpn.pension_params
+   :members:
+```
+
+## `ogjpn.reporting`
+
+```{eval-rst}
+.. automodule:: ogjpn.reporting
+   :members:
+```
+
 ## `ogjpn.wealth`
 
 ```{eval-rst}

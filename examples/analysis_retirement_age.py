@@ -14,9 +14,8 @@ demographics) and solves the baseline and both reform steady states,
 reporting the long-run percent change in the main aggregates and the change
 in pension outlays as a share of GDP.
 
-NOTE: demographics are real Japanese data; macro/tax parameters are still
-first-pass (see docs/NEXT_STEPS.md), so read directions and rough
-magnitudes, not the last digit. Runs on Japan's UN demographics from the offline mirror, or live with a UN API token.
+NOTE: read directions and rough magnitudes, not the last digit; the
+calibration and its validation are in the docs (docs/book). Runs on Japan's UN demographics from the offline mirror, or live with a UN API token.
 """
 
 import os
@@ -90,9 +89,8 @@ def write_results(base, reforms):
     title = "Long-run (steady-state) effect of raising Japan's pension age"
     caption = (
         "Real Japan demographics (UN, code 392); percent change in the "
-        "steady-state aggregate vs the age-65 baseline. Macro/tax parameters "
-        "are first-pass (see docs/NEXT_STEPS.md), so read the signs and rough "
-        "magnitudes, not the last digit. Baseline pension outlays are "
+        "steady-state aggregate vs the age-65 baseline. Read the signs and "
+        "rough magnitudes, not the last digit. Baseline pension outlays are "
         f"{b_pen:.1%} of GDP."
     )
     interpretation = (
@@ -113,11 +111,10 @@ def write_results(base, reforms):
         "burden in the long run.\n\n"
         "The magnitudes are indicative, not final. This is a comparison of "
         "two steady states, robust to the level miss in C/Y (see "
-        "docs/METHODOLOGY.md) because both sides carry the same calibration, "
-        "but the tax and pension calibration is still first-pass, so the "
-        "honest reading is the direction and rough size, not the last digit. "
-        "The transition-path version, with the year-by-year phase-in, is the "
-        "natural next step."
+        "the validation chapter of the docs) because both sides carry the "
+        "same calibration, so the honest reading is the direction and rough "
+        "size, not the last digit. The transition-path version "
+        "(results_retirement_age_tpi.md) adds the year-by-year phase-in."
     )
     table = "\n".join(
         [

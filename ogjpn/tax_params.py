@@ -1,47 +1,32 @@
 """
 OG-Japan tax calibration.
 
-This is a first-pass calibration of Japan's income, payroll, capital, and
-consumption taxes, grounded in published rates rather than a tax
-microsimulator (Japan has no open-source equivalent of the US
-Tax-Calculator). It uses OG-Core's linear (constant-rate) tax functions,
-which the model supports directly, so each rate is a single, sourced
-number rather than a fitted polynomial that would imply precision the
-underlying data does not support.
+Japan has no open-source tax microsimulation model (no equivalent of the US
+Tax-Calculator), so taxes are calibrated from administrative data and
+published rates:
 
-Sources (all real, retrieved 2026-08):
-  - Consumption tax 10% since Oct 2019 (National Tax Agency / MOF).
-  - Personal income tax: national schedule 5-45% over seven brackets plus
-    a flat 10% local inhabitant tax and a 2.1% reconstruction surtax on
-    the national tax (PwC Worldwide Tax Summaries: Japan). The average
-    effective personal income tax burden is low because of large
-    deductions: OECD Taxing Wages 2025 puts the net average tax rate for a
-    single worker at the average wage at 22.0%, of which roughly 15 points
-    are employee social insurance, leaving income tax alone near 7-8%.
-  - Social insurance (payroll on labor): the full combined contribution is
-    about 30% of remuneration (Japan Pension Service / MHLW): pension 18.3%,
-    health ~10%, long-term care ~1.6% (age 40+), employment ~0.9%, with
-    employer and employee sides both borne by labor. OG-Core's payroll tax
-    revenue funds general government rather than an earmarked pension pot,
-    so all of it correctly finances spending.
-  - Capital income: listed dividends, interest, and share capital gains
-    are taxed at a flat 20.315% (15% national + 5% local + 0.315%
-    reconstruction surtax) (PwC Worldwide Tax Summaries: Japan).
+  - Personal income tax (default, ``income_tax="progressive"``): Japan's
+    progressive schedule on labor income, fitted to the National Tax
+    Agency's 2023 salary-bracket data, plus a flat effective tax on capital
+    income, combined age by age into OG-Core's DEP_totalinc form (see
+    ogjpn.income_tax). The option ``income_tax="linear"`` keeps the earlier
+    constant rates (8% average, 30% marginal on labor, 20.315% on capital).
+  - Social insurance (payroll on labor): about 30% of remuneration (Japan
+    Pension Service / MHLW): pension 18.3%, health ~10%, long-term care
+    ~0.8% (blended), employment ~0.9%, employer and employee sides both
+    borne by labor. OG-Core's payroll tax revenue funds general government
+    rather than an earmarked pension pot. The contribution cap is not
+    modeled.
   - Corporate income: effective combined rate about 30% (national 23.2%
     plus local corporate, inhabitant, and enterprise taxes) (PwC / JETRO).
+  - Consumption tax: 10% since October 2019 (National Tax Agency / MOF).
 
-What is still first-pass: the income tax is treated as a single average
-effective rate with a separate constant marginal rate, rather than the full
-progressive schedule (refining it needs the income distribution behind the
-published effective rates). The social insurance contribution cap and the
-frac_tax_payroll split are not modeled. Model revenue reaches about 32% of
-GDP against Japan's 37.6%. Japan's property tax (Fixed Asset plus City
-Planning Tax, ~2% of GDP) could be added through OG-Core's wealth tax
-(p_wealth), and doing so raises revenue to ~34% and trims C/Y, but it makes
-the consumption-tax reform experiment fail to converge, so it is deferred
-until that solver interaction is understood. The rest of the gap is
-inheritance and other minor taxes not modeled here.
+Japan's property tax (Fixed Asset plus City Planning Tax, ~2% of GDP) could
+be added through OG-Core's wealth tax but made the consumption-tax reform
+fail to converge, so it is deferred.
 """
+
+import numpy as np
 
 # Japan effective/marginal tax rates as constant (linear) tax functions.
 ETR_INCOME = 0.08  # average effective personal income tax on total income
@@ -79,12 +64,13 @@ def _linear_params(rate, num_ages):
     return [[[rate] for _ in range(num_ages)]]
 
 
-def _dep_params(params, num_ages):
-    """Repeat one DEP_totalinc parameter vector over ages: (1, S, 6)."""
-    return [[list(params) for _ in range(num_ages)]]
-
-
-def get_tax_params(num_ages=80, income_tax="progressive", mean_income=None):
+def get_tax_params(
+    num_ages=80,
+    income_tax="progressive",
+    mean_income=None,
+    labor_share=None,
+    capital_tax=None,
+):
     """
     Return Japan tax parameters for ``Specifications.update_specifications``.
 
@@ -98,6 +84,12 @@ def get_tax_params(num_ages=80, income_tax="progressive", mean_income=None):
         mean_income (float): the model's income anchor
             (``mean_income_data``), used to put the progressive functions
             in model income units; defaults to OG-Core's default value
+        labor_share (array_like): labor share of income at each age, for
+            the progressive option; defaults to the stored steady-state
+            shares (ogjpn.income_tax.load_labor_share_by_age)
+        capital_tax (float): flat tax rate on capital income for the
+            progressive option; defaults to Japan's effective rate
+            (ogjpn.income_tax.effective_capital_tax_rate, about 5.7%)
 
     Returns:
         tax_parameters (dict): Japan tax parameters
@@ -130,21 +122,30 @@ def get_tax_params(num_ages=80, income_tax="progressive", mean_income=None):
         b = it.bracket_rates()
         etr = it.fit_dep_totalinc(b.x, b.etr, b.earners)
         mtrx = it.fit_dep_totalinc(b.x, b.mtr_labor, b.earners)
-        # Capital income: flat 20.315% (A = B = 0, min = max = rate).
-        mtry = [0.0, 0.0, MTR_CAPITAL, MTR_CAPITAL]
+        if labor_share is None:
+            # Stored for S = 80; other S get the same life-cycle profile.
+            stored = it.load_labor_share_by_age()
+            labor_share = np.interp(
+                np.linspace(0, 1, num_ages),
+                np.linspace(0, 1, len(stored)),
+                stored,
+            )
+        if len(labor_share) != num_ages:
+            raise ValueError(
+                f"labor_share has {len(labor_share)} ages, model has {num_ages}"
+            )
+        if capital_tax is None:
+            capital_tax = it.effective_capital_tax_rate()
+        etr_s, mtrx_s, mtry_s = it.age_specific_params(
+            etr, mtrx, labor_share, capital_tax, mean_income
+        )
         tax_parameters.update(
             {
                 "tax_func_type": "DEP_totalinc",
                 "analytical_mtrs": False,
-                "etr_params": _dep_params(
-                    it.to_model_units(etr, mean_income), num_ages
-                ),
-                "mtrx_params": _dep_params(
-                    it.to_model_units(mtrx, mean_income), num_ages
-                ),
-                "mtry_params": _dep_params(
-                    it.to_model_units(mtry, mean_income), num_ages
-                ),
+                "etr_params": [etr_s],
+                "mtrx_params": [mtrx_s],
+                "mtry_params": [mtry_s],
             }
         )
     else:

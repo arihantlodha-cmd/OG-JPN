@@ -9,7 +9,7 @@ The macro parameters are set in `ogjpn/macro_params.py`. Each value is sourced i
 | `gamma` (capital share) | 0.43 | Penn World Table labor share for Japan, 2013-2023 mean 0.568 (FRED `LABSHPJPA156NRUG`) |
 | `debt_ratio_ss` (steady-state debt/GDP) | 2.0 | IMF WEO gross general government debt, 214.5% of GDP (2024), capped at OG-Core's maximum of 2.0 |
 | `initial_debt_ratio` | 2.0 | same |
-| `alpha_G` (government purchases/GDP) | 0.062 | steady-state residual, see below |
+| `alpha_G` (government purchases/GDP) | 0.058 | steady-state residual, see below |
 | `alpha_T` (non-pension transfers/GDP) | 0.09 | composition of IMF total expenditure (39.1% of GDP) |
 
 ## Debt beyond OG-Core's range
@@ -20,7 +20,7 @@ Japan's gross debt of 214.5 percent of GDP is above OG-Core's built-in maximum f
 
 Japan's general government final consumption is about 20 percent of GDP, but that figure is the wrong value for `alpha_G`. OG-Core books public pensions and non-pension transfers (`alpha_T`) as separate outlays, so `alpha_G` is only the remaining government purchases. Much of Japan's measured government consumption is in-kind health and long-term care, which overlaps the social insurance already modeled.
 
-The value that closes the government budget at the steady-state debt ratio, given model revenue of about 32 percent of GDP, is about 6.2 percent of GDP. That is exactly the `G/Y` the steady state produces as a residual. The transition has to run the same fiscal policy as the steady state it converges to: before OG-Core's debt-closure rule engages, the transition spends `G = alpha_G * Y` directly. With `alpha_G = 0.20` that is roughly four times what the budget can sustain, debt explodes, and the transition does not converge. Setting `alpha_G` to the steady-state residual fixed it.
+The value that closes the government budget at the steady-state debt ratio, given model revenue of about 32 percent of GDP, is about 5.8 percent of GDP under the default calibration (6.2 percent under the earlier flat-tax calibration). That is exactly the `G/Y` the steady state produces as a residual. The transition has to run the same fiscal policy as the steady state it converges to: before OG-Core's debt-closure rule engages, the transition spends `G = alpha_G * Y` directly. With `alpha_G = 0.20` that is roughly four times what the budget can sustain, debt explodes, and the transition does not converge. Setting `alpha_G` to the steady-state residual fixed it.
 
 ## Recalibration for OG-Core 0.19 and later
 

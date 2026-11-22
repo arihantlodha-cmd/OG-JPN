@@ -22,8 +22,7 @@ labor share (see get_macro_params).
 # Steady-state residual G/Y for each (income tax, pension) calibration (see
 # the alpha_G comment below); the transition needs alpha_G equal to it.
 ALPHA_G = {
-    ("progressive", "japan"): 0.065,
-    ("progressive", "us"): 0.070,
+    ("progressive", "japan"): 0.058,
     ("linear", "us"): 0.062,
 }
 
@@ -94,9 +93,10 @@ def get_macro_params(income_tax="progressive", pension="japan"):
     # That inconsistency, not solver tuning, is why the transition would not
     # converge. Setting alpha_G to the steady-state residual share removes it.
     # The residual depends on the calibration: 0.062 with the linear (flat)
-    # income tax and US pension formula, 0.070 with the progressive income
-    # tax (which raises revenue by about a point of GDP), and 0.065 with the
-    # progressive tax and Japan's two-tier pension (which pays out more).
+    # income tax and US pension formula, and 0.058 with the default
+    # progressive labor tax, effective capital tax, and Japan's two-tier
+    # pension. (Under the earlier total-income progressive tax it was 0.065;
+    # the effective capital rate collects about 1.5 points of GDP less.)
     if (income_tax, pension) not in ALPHA_G:
         raise ValueError(
             f"no alpha_G calibrated for income_tax={income_tax!r}, "

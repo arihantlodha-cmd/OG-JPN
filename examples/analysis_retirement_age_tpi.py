@@ -21,9 +21,8 @@ common to baseline and reform and cancel in the reform-minus-baseline
 differences reported here, so the strict per-period RC check is disabled to
 let the runs complete.
 
-NOTE: demographics are real Japanese data; macro/tax parameters are still
-first-pass (see docs/NEXT_STEPS.md), so read directions and rough
-magnitudes, not the last digit. Runs on Japan's UN demographics from the offline mirror, or live with a UN API token.
+NOTE: read directions and rough magnitudes, not the last digit; the
+calibration and its validation are in the docs (docs/book). Runs on Japan's UN demographics from the offline mirror, or live with a UN API token.
 """
 
 import os
@@ -182,9 +181,9 @@ def main():
         "Real Japan demographics (UN, code 392). Percent change vs the age-65 "
         "baseline transition at several horizons (years from the 2025 start), "
         "then the net present value of the reform-minus-baseline change over "
-        "the first decade at 1/2/3% discount rates (OG-Core npv_table, model "
-        "units). Macro/tax parameters are first-pass (see docs/NEXT_STEPS.md); "
-        "read directions and rough magnitudes, not the last digit."
+        "the first decade at 1/2/3% discount rates (OG-Core npv_table), as "
+        "a share of first-year GDP and in trillion yen at Japan's FY2023 GDP. "
+        "Read directions and rough magnitudes, not the last digit."
     )
     ci = {k: reporting.crowding_in(base, rtpi) for k, (_, rtpi) in reforms.items()}
     big_pen = reporting.path(reforms[70][1], "agg_pension_outlays") / reporting.path(

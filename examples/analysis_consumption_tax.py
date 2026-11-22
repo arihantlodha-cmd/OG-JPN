@@ -11,7 +11,7 @@ STATES reusing those demographics, and reports the long-run percent change
 in the main aggregates as a table written to docs/.
 
 NOTE: the demographics are real Japanese data, but the macro and tax
-parameters are still provisional first-pass values (see docs/NEXT_STEPS.md),
+parameters are documented in the docs (docs/book),
 so treat the magnitudes as indicative rather than final. Runs on Japan's UN demographics (offline mirror, or live with a UN API token).
 """
 
@@ -85,8 +85,7 @@ def main():
     title = "Long-run (steady-state) effect of raising Japan's consumption tax"
     caption = (
         "Real Japan demographics (UN, code 392); percent change in the "
-        "steady-state aggregate vs the 10% baseline. Macro/tax parameters "
-        "are first-pass (see docs/NEXT_STEPS.md), so read the signs and "
+        "steady-state aggregate vs the 10% baseline. Read the signs and "
         "rough magnitudes, not the last digit. Baseline pension outlays are "
         f"{b_pen:.1%} of GDP."
     )
@@ -107,10 +106,9 @@ def main():
         f"{b_pen:.1%} of GDP.\n\n"
         "The magnitudes are indicative, not final. This is a comparison of "
         "two steady states, which is robust to the level miss in C/Y (see "
-        "docs/METHODOLOGY.md; K/Y is roughly consistent with the Penn World "
-        "Table benchmark) because both sides carry the same calibration, "
-        "but the tax side is still first-pass, so the honest reading is the "
-        "direction and rough size, not the last digit."
+        "the validation chapter of the docs) because both sides carry the "
+        "same calibration, so the honest reading is the direction and rough "
+        "size, not the last digit."
     )
     table = "\n".join(
         [f"# {title}", "", caption, "", header, sep, *rows, "", interpretation, ""]

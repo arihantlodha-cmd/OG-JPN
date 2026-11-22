@@ -15,9 +15,8 @@ demographics) and solves the baseline and both reform steady states,
 reporting the long-run percent change in the main aggregates and the change
 in pension outlays as a share of GDP.
 
-NOTE: demographics are real Japanese data; macro/tax parameters are still
-first-pass (see docs/NEXT_STEPS.md), so read directions and rough
-magnitudes, not the last digit. Runs on Japan's UN demographics from the offline mirror, or live with a UN API token.
+NOTE: read directions and rough magnitudes, not the last digit; the
+calibration and its validation are in the docs (docs/book). Runs on Japan's UN demographics from the offline mirror, or live with a UN API token.
 """
 
 import os
@@ -92,8 +91,7 @@ def write_results(base, reforms):
     title = "Long-run (steady-state) effect of cutting Japan's pension replacement rate"
     caption = (
         "Real Japan demographics (UN, code 392); percent change in the "
-        "steady-state aggregate vs the current-schedule baseline. Macro/tax "
-        "parameters are first-pass (see docs/NEXT_STEPS.md), so read the "
+        "steady-state aggregate vs the current-schedule baseline. Read the "
         "signs and rough magnitudes, not the last digit. Baseline pension "
         f"outlays are {b_pen:.1%} of GDP."
     )
@@ -116,9 +114,9 @@ def write_results(base, reforms):
         "rather than workers, the mirror image of raising the claiming age.\n\n"
         "The magnitudes are indicative, not final. This is a comparison of "
         "two steady states, robust to the level miss in C/Y (see "
-        "docs/METHODOLOGY.md) because both sides carry the same calibration, "
-        "but the pension calibration is still first-pass, so the honest "
-        "reading is the direction and rough size, not the last digit. The "
+        "the validation chapter of the docs) because both sides carry the "
+        "same calibration, so the honest reading is the direction and rough "
+        "size, not the last digit. The "
         "retirement-age transition showed capital building up over the path "
         "even where its steady-state comparison did not, so the transition "
         "version of this reform is the natural next step."

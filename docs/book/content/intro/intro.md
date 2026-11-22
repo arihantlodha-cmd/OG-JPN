@@ -18,7 +18,7 @@ Japan is an unusually important case for this class of model. It has the oldest 
 Japan's population by age, 1990 and 2030 (UN World Population Prospects).
 ```
 
-Fed Japan's demographics, its two-tier pension formula, and its tax data, the model's public pension outlays in its first year are 10.2 percent of GDP, against 10.4 percent in Japan, and they rise by about two points over the next two decades. See {ref}`Chap_Validation` for what matches, what does not yet, and why.
+Fed Japan's demographics, its two-tier pension formula, and its tax data, the model's public pension outlays in its first year are 10.1 percent of GDP, against 10.4 percent in Japan, and they rise by about two points over the next two decades. See {ref}`Chap_Validation` for what matches, what does not yet, and why.
 
 This documentation contains the following sections:
 
