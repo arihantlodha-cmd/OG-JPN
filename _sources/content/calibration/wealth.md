@@ -36,7 +36,7 @@ Share of household wealth by age at the start of the transition: OG-Core's stead
 
 The steady-state proxy puts **37 percent** of household wealth with people aged 80 and over; the survey puts it at **23 percent**. Japan's wealth is concentrated in people's 50s and 60s far more than the steady state implies.
 
-In a like-for-like test (the earlier flat-tax calibration), starting the baseline transition from the observed distribution cut the resource-constraint error at t = 2 from 1.80e-3 to 1.24e-3 (31 percent smaller) and reduces the errors at t = 3 to 5 about 2.5-fold. It does not remove the t = 2 error entirely (1.32e-3 under the current calibration), so part of that error has another source, still under investigation. Both errors are confined to single periods and cancel in reform-minus-baseline comparisons.
+In a like-for-like test (the earlier flat-tax calibration), starting the baseline transition from the observed distribution cut the resource-constraint error at t = 2 from 1.80e-3 to 1.24e-3 (31 percent smaller) and reduces the errors at t = 3 to 5 about 2.5-fold. The t = 2 error itself turned out to come from OG-Core's population projection, which started one year early, so that the population broke its own law of motion between periods 1 and 2 ({ref}`Chap_Demog`). The error is proportional to the wealth held at the ages affected, which is why a different wealth distribution shrank it without removing it.
 
 ## Level of wealth
 

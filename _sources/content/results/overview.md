@@ -24,7 +24,7 @@ The steady-state comparison cannot show any of this, and it cannot give the year
 
 ## How to read the numbers
 
-Parts of the calibration are still first-pass (see {ref}`Chap_Taxes` and {ref}`Chap_Pensions`), so read results for their direction and rough size rather than their last digit. Reform-minus-baseline comparisons are robust to the model's level misses in `C/Y` and household wealth, because the baseline and the reform carry the same calibration. The single-period resource-constraint errors at t = 2 and t = 120 (see {ref}`Chap_Wealth` and {ref}`Chap_Demog`) are common to baseline and reform and cancel in the differences.
+Read results for their direction and rough size rather than their last digit. Reform-minus-baseline comparisons are robust to the model's level misses in `C/Y` and household wealth, because the baseline and the reform carry the same calibration. The single-period resource-constraint errors at t = 2 and t = 120 (both from OG-Core's population path, see {ref}`Chap_Demog`) are common to baseline and reform and cancel in the differences.
 
 All results use the default calibration (progressive labor income tax, effective capital income tax, Japan's two-tier pension in yen), and the transitions start from Japan's observed initial wealth distribution ({ref}`Chap_Wealth`).
 

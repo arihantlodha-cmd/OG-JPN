@@ -359,10 +359,9 @@
 </section>
 <section id="next">
 <h2>Next<a class="headerlink" href="#next" title="Link to this heading">#</a></h2>
-<p>First, <strong>rerun the reform transitions once OG-Core’s household solver fix (<a class="reference external" href="https://github.com/PSLmodels/OG-Core/pull/1294">#1294</a>) is released.</strong> A few cohorts in three of the nine runs carry large Euler errors from a silent sparse-Jacobian solver failure; re-solving one with the fix moves aggregates by under 0.1 percent (see <a class="reference internal" href="results/overview.html#chap-results"><span class="std std-ref">Policy results</span></a>).</p>
+<p>First, <strong>rerun the reform transitions once OG-Core’s household solver fix (<a class="reference external" href="https://github.com/PSLmodels/OG-Core/pull/1294">#1294</a>) and population fix (<a class="reference external" href="https://github.com/PSLmodels/OG-Core/pull/1295">#1295</a>) are released.</strong> A few cohorts in three of the nine runs carry large Euler errors from a silent sparse-Jacobian solver failure; re-solving one with the fix moves aggregates by under 0.1 percent (see <a class="reference internal" href="results/overview.html#chap-results"><span class="std std-ref">Policy results</span></a>).</p>
 <ol class="arabic simple">
 <li><p><strong>The t = 120 population freeze.</strong> OG-Core fixes the population at <code class="docutils literal notranslate"><span class="pre">1.5</span> <span class="pre">*</span> <span class="pre">S</span></code> periods even when it has not converged (<a class="reference external" href="https://github.com/PSLmodels/OG-Core/issues/1290">OG-Core #1290</a>). Moving the freeze to period 200 removes the t = 120 error and halves it at the new freeze point; a convergence-based rule is the real fix.</p></li>
-<li><p><strong>The t = 2 resource-constraint error.</strong> The observed initial wealth distribution cut it by about 30 percent; the rest has another source.</p></li>
 <li><p><strong>Level of initial wealth.</strong> Test <code class="docutils literal notranslate"><span class="pre">initial_wealth_ratio</span></code> at the national-accounts value (3.69 times GDP excluding land).</p></li>
 <li><p><strong>Pension details:</strong> the spouse’s basic pension, survivor benefits, and the macroeconomic slide as part of the baseline rather than a reform.</p></li>
 <li><p><strong>Income-mortality gradient</strong> from Japanese data.</p></li>
@@ -402,13 +401,16 @@
 <tr class="row-odd"><td><p>Dense retry when the sparse-Jacobian household solve does not converge (<a class="reference external" href="https://github.com/PSLmodels/OG-Core/pull/1294">OG-Core #1294</a>)</p></td>
 <td><p>open</p></td>
 </tr>
-<tr class="row-even"><td><p>Non-dollar initial guess for the currency factor (<a class="reference external" href="https://github.com/PSLmodels/OG-Core/pull/1292">OG-Core #1292</a>)</p></td>
+<tr class="row-even"><td><p>Population projection starts from the last data year, removing the t = 2 resource-constraint error (<a class="reference external" href="https://github.com/PSLmodels/OG-Core/pull/1295">OG-Core #1295</a>)</p></td>
 <td><p>open</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">age_specific</span></code> parameter description (<a class="reference external" href="https://github.com/PSLmodels/OG-Core/pull/1291">OG-Core #1291</a>)</p></td>
+<tr class="row-odd"><td><p>Non-dollar initial guess for the currency factor (<a class="reference external" href="https://github.com/PSLmodels/OG-Core/pull/1292">OG-Core #1292</a>)</p></td>
 <td><p>open</p></td>
 </tr>
-<tr class="row-even"><td><p>OG-JPN in OG-Core’s list of country calibrations (<a class="reference external" href="https://github.com/PSLmodels/OG-Core/pull/1289">OG-Core #1289</a>)</p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">age_specific</span></code> parameter description (<a class="reference external" href="https://github.com/PSLmodels/OG-Core/pull/1291">OG-Core #1291</a>)</p></td>
+<td><p>open</p></td>
+</tr>
+<tr class="row-odd"><td><p>OG-JPN in OG-Core’s list of country calibrations (<a class="reference external" href="https://github.com/PSLmodels/OG-Core/pull/1289">OG-Core #1289</a>)</p></td>
 <td><p>open</p></td>
 </tr>
 </tbody>
