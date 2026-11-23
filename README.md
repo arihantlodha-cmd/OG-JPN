@@ -107,6 +107,12 @@ Building OG-JPN surfaced improvements to OG-Core itself, contributed back:
   sparse FOC Jacobian, a household solve that stopped without converging was
   never retried with dense finite differences, leaving large Euler errors
   for a few cohorts with no warning. Found by checking OG-JPN's transitions.
+- **Population projection one year early**
+  ([PR #1295](https://github.com/PSLmodels/OG-Core/pull/1295)): with UN
+  data the projection overwrote the last data year using the next year's
+  mortality, so the population broke its own law of motion in one period,
+  the source of the t = 2 resource-constraint error in every OG-JPN
+  transition.
 - **Non-dollar currency anchor**
   ([PR #1292](https://github.com/PSLmodels/OG-Core/pull/1292)): lifts the cap
   on the initial guess for the currency factor so a model can be anchored to
@@ -118,10 +124,10 @@ Building OG-JPN surfaced improvements to OG-Core itself, contributed back:
   labor/capital split is an average at each age, not by household.
 - The transition satisfies the resource constraint to below 1e-6 everywhere
   except two single periods, both of which cancel in reform-minus-baseline
-  results. **t = 2** (initial condition): starting from Japan's observed
-  wealth-by-age profile (`ogjpn/wealth.py`) instead of OG-Core's
-  steady-state proxy cut it from 1.8e-3 to 1.2e-3; the rest has another
-  source, still being traced. **t = 120** (~1.2e-3): OG-Core freezes the
+  results. **t = 2** (~1.5e-3): OG-Core's population projection started
+  one year early, so in that one period the population broke its own law
+  of motion; [PR #1295](https://github.com/PSLmodels/OG-Core/pull/1295)
+  fixes it, and with the fix the t = 2 error is below 1e-6. **t = 120** (~1.2e-3): OG-Core freezes the
   population at period `1.5 * S` even though Japan's age mix is still
   moving, so population growth jumps there.
 - A few cohorts in three of the nine transitions carry large Euler errors

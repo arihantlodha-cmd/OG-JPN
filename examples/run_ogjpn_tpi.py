@@ -15,8 +15,8 @@ transition runs the same fiscal policy as the steady state it converges to
 initial wealth distribution (--initial-wealth data, ogjpn/wealth.py).
 
 The resource constraint holds to below 1e-6 except in two single periods:
-t=2 (~1.3e-3, an initial-condition effect; the observed wealth distribution
-cut it by about 30 percent) and t=120 (~1.2e-3, where OG-Core freezes the
+t=2 (~1.5e-3, from an off-by-one in OG-Core's population projection;
+fixed by OG-Core PR #1295) and t=120 (~1.2e-3, where OG-Core freezes the
 population at fixper = 1.5*S before Japan's has converged; OG-Core issue
 #1290). OG-Core's strict per-period check flags them, so the runner raises
 after writing the path; this script reports the error and continues, and

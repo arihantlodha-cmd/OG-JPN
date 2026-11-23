@@ -13,14 +13,13 @@
 
 ## Next
 
-First, **rerun the reform transitions once OG-Core's household solver fix ([#1294](https://github.com/PSLmodels/OG-Core/pull/1294)) is released.** A few cohorts in three of the nine runs carry large Euler errors from a silent sparse-Jacobian solver failure; re-solving one with the fix moves aggregates by under 0.1 percent (see {ref}`Chap_Results`).
+First, **rerun the reform transitions once OG-Core's household solver fix ([#1294](https://github.com/PSLmodels/OG-Core/pull/1294)) and population fix ([#1295](https://github.com/PSLmodels/OG-Core/pull/1295)) are released.** A few cohorts in three of the nine runs carry large Euler errors from a silent sparse-Jacobian solver failure; re-solving one with the fix moves aggregates by under 0.1 percent (see {ref}`Chap_Results`).
 
 1. **The t = 120 population freeze.** OG-Core fixes the population at `1.5 * S` periods even when it has not converged ([OG-Core #1290](https://github.com/PSLmodels/OG-Core/issues/1290)). Moving the freeze to period 200 removes the t = 120 error and halves it at the new freeze point; a convergence-based rule is the real fix.
-2. **The t = 2 resource-constraint error.** The observed initial wealth distribution cut it by about 30 percent; the rest has another source.
-3. **Level of initial wealth.** Test `initial_wealth_ratio` at the national-accounts value (3.69 times GDP excluding land).
-4. **Pension details:** the spouse's basic pension, survivor benefits, and the macroeconomic slide as part of the baseline rather than a reform.
-5. **Income-mortality gradient** from Japanese data.
-6. **Property tax** through OG-Core's wealth tax, once the convergence problem with the consumption-tax reform is understood.
+2. **Level of initial wealth.** Test `initial_wealth_ratio` at the national-accounts value (3.69 times GDP excluding land).
+3. **Pension details:** the spouse's basic pension, survivor benefits, and the macroeconomic slide as part of the baseline rather than a reform.
+4. **Income-mortality gradient** from Japanese data.
+5. **Property tax** through OG-Core's wealth tax, once the convergence problem with the consumption-tax reform is understood.
 
 ## Contributions upstream
 
@@ -34,6 +33,7 @@ First, **rerun the reform transitions once OG-Core's household solver fix ([#129
 | Population frozen before convergence for fast-aging countries ([OG-Core #1290](https://github.com/PSLmodels/OG-Core/issues/1290)) | issue, with test |
 | Optional `fixper` argument for the population freeze ([OG-Core #1293](https://github.com/PSLmodels/OG-Core/pull/1293)) | open |
 | Dense retry when the sparse-Jacobian household solve does not converge ([OG-Core #1294](https://github.com/PSLmodels/OG-Core/pull/1294)) | open |
+| Population projection starts from the last data year, removing the t = 2 resource-constraint error ([OG-Core #1295](https://github.com/PSLmodels/OG-Core/pull/1295)) | open |
 | Non-dollar initial guess for the currency factor ([OG-Core #1292](https://github.com/PSLmodels/OG-Core/pull/1292)) | open |
 | `age_specific` parameter description ([OG-Core #1291](https://github.com/PSLmodels/OG-Core/pull/1291)) | open |
 | OG-JPN in OG-Core's list of country calibrations ([OG-Core #1289](https://github.com/PSLmodels/OG-Core/pull/1289)) | open |

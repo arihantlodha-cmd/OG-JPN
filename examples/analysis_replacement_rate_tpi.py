@@ -11,8 +11,8 @@ npv_table).
 On the transition solution: each transition converges (outer loop below
 1e-5) and starts from Japan's observed wealth-by-age distribution
 (ogjpn.wealth). The resource constraint holds to below 1e-6 except in two
-single periods common to every OG-JPN transition: t=2 (~1.3e-3, an
-initial-condition effect) and t=120 (~1.2e-3, where OG-Core freezes the
+single periods common to every OG-JPN transition: t=2 (~1.5e-3, from an off-by-one in OG-Core's population
+projection; fixed by OG-Core PR #1295) and t=120 (~1.2e-3, where OG-Core freezes the
 population before Japan's has converged; OG-Core issue #1290). Both cancel
 in the reform-minus-baseline differences reported here, so the strict
 per-period RC check is disabled to let the runs complete. (An earlier

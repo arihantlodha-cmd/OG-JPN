@@ -15,8 +15,8 @@ converge (outer loop below 1e-5) and start from Japan's observed
 wealth-by-age distribution (ogjpn.wealth). Debt falls below its 2.0 target
 for the first 20 years and returns to it afterwards under OG-Core's closure
 rule (see the validation chapter of the docs). The resource constraint holds
-to below 1e-6 except in two single periods: t=2 (~1.3e-3, an
-initial-condition effect) and t=120 (~1.2e-3, where OG-Core freezes the
+to below 1e-6 except in two single periods: t=2 (~1.5e-3, from an off-by-one in OG-Core's population
+projection; fixed by OG-Core PR #1295) and t=120 (~1.2e-3, where OG-Core freezes the
 population before Japan's has converged; OG-Core issue #1290). Both are
 common to baseline and reform and cancel in the reform-minus-baseline
 differences reported here, so the strict per-period RC check is disabled to
